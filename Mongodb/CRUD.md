@@ -4,6 +4,19 @@
 
 ### db.collection.insertOne()
 
+> 插入一条数据
+
+**语法：**
+
+```
+db.collection.insertOne(
+   <document>,
+   {
+      writeConcern: <document>
+   }
+)
+```
+
 ```javascript
 db.inventory.insertOne(
    { 
@@ -21,9 +34,11 @@ db.inventory.insertOne(
 }
 ```
 
-
-
 ### db.collection.insertMany()
+
+> 插入多条数据
+
+**语法：**
 
 ```
 db.collection.insertMany(
@@ -35,10 +50,22 @@ db.collection.insertMany(
 )
 ```
 
-```powershell
-#  插入多条数据
-> var res = db.collection.insertMany([{"b": 3}, {'c': 4}])
-> res
+```javascript
+db.inventory.insertMany([
+    { 
+        item: "journal", 
+        qty: 25, status: "A", 
+        size: { h: 14, w: 21, uom: "cm" }, 
+        tags: [ "blank", "red" ] 
+    },
+    { 
+        item: "notebook", 
+        qty: 50, status: "A", 
+        size: { h: 8.5, w: 11, uom: "in" }, 
+        tags: [ "red", "blank" ] 
+    }
+])
+# 返回结果
 {
         "acknowledged" : true,
         "insertedIds" : [
@@ -46,9 +73,154 @@ db.collection.insertMany(
                 ObjectId("571a22a911a82a1d94c02338")
         ]
 }
+
 ```
 
+**插入多个指定`_id`字段的文档**
+
+值`_id`在集合中必须唯一，以避免重复的键错误。
+
+```javascript
+try {
+   db.products.insertMany( [
+      { _id: 10, item: "large box", qty: 20 },
+      { _id: 11, item: "small box", qty: 55 },
+      { _id: 12, item: "medium box", qty: 30 }
+   ] );
+} catch (e) {
+   print (e);
+}
+# 该操作返回以下文档
+{ "acknowledged" : true, "insertedIds" : [ 10, 11, 12 ] }
+
+## 插入具有_id已经存在的值的文档将报错
+try {
+   db.products.insertMany( [
+      { _id: 13, item: "envelopes", qty: 60 },
+      { _id: 13, item: "stamps", qty: 110 },
+      { _id: 14, item: "packing tape", qty: 38 }
+   ] );
+} catch (e) {
+   print (e);
+}
+# 报错
+BulkWriteError({
+   "writeErrors" : [
+      {
+         "index" : 0,
+         "code" : 11000,
+         "errmsg" : "E11000 duplicate key error collection: inventory.products index: _id_ dup key: { : 13.0 }",
+         "op" : {
+            "_id" : 13,
+            "item" : "stamps",
+            "qty" : 110
+         }
+      }
+   ],
+   "writeConcernErrors" : [ ],
+   "nInserted" : 1,
+   "nUpserted" : 0,
+   "nMatched" : 0,
+   "nModified" : 0,
+   "nRemoved" : 0,
+   "upserted" : [ ]
+})
+```
+
+请注意，第一个文档将成功插入，但第二个插入将失败。这也将阻止插入队列中剩余的其他文档。`_id: 13`
+
+使用`ordered`to `false`，插入操作将继续处理所有剩余文档。
+
+### db.collection.insert()
+
+> 将一个或多个文档插入集合中。
+
+```
+db.collection.insert(
+   <document or array of documents>,
+   {
+     writeConcern: <document>,
+     ordered: <boolean>
+   }
+)
+```
+
+| 参数           | 描述                                                         |
+| :------------- | :----------------------------------------------------------- |
+| `document`     | 要插入集合的文档或文档数组。                                 |
+| `writeConcern` | 可选的。表达[书面关切的](https://mongodb.net.cn/manual/reference/write-concern/)文件。省略使用默认的写关注。请参阅[写关注点](https://mongodb.net.cn/manual/reference/method/db.collection.insert/#insert-wc)。如果在事务中运行，则不要为操作明确设置写关注点。要对事务使用写关注，请参见 [事务和写关注](https://mongodb.net.cn/manual/core/transactions/#transactions-write-concern)。 |
+| `ordered`      | 可选的。如果为`true`，请按顺序在数组中插入文档，并且如果其中一个文档发生错误，则MongoDB将返回而不处理数组中的其余文档。如果为`false`，请执行无序插入，并且如果其中一个文档发生错误，请继续处理数组中的其余文档。默认为`true`。 |
+
 ## 更新文档(表记录)
+
+### db.collection.updateOne（***filter***，***update***，***options* **）
+
+```
+db.collection.updateOne(
+   <filter>,
+   <update>,
+   {
+     upsert: <boolean>,
+     writeConcern: <document>,
+     collation: <document>,
+     arrayFilters: [ <filterdocument1>, ... ],
+     hint:  <document|string>        // Available starting in MongoDB 4.2.1
+   }
+)
+```
+
+**返回值**
+
+- `matchedCount` 包含匹配文件的数量
+- `modifiedCount` 包含修改后的文件数
+- `upsertedId`包含`_id`上色文档的。
+- 一个布尔值`acknowledged`，就`true`好像该操作在运行时带有 [写关注关系](https://mongodb.net.cn/manual/reference/glossary/#term-write-concern)或`false`是否禁用了写关注关系
+
+### db.collection.updateMany（***filter***，***update***，***options* **）
+
+```
+db.collection.updateMany(
+   <filter>,
+   <update>,
+   {
+     upsert: <boolean>,
+     writeConcern: <document>,
+     collation: <document>,
+     arrayFilters: [ <filterdocument1>, ... ],
+     hint:  <document|string>        // Available starting in MongoDB 4.2.1
+   }
+)
+```
+
+```
+db.collection.updateMany(
+   <query>,
+   [
+      { $set: { status: "Modified", comments: [ "$misc1", "$misc2" ] } },
+      { $unset: [ "misc1", "misc2" ] }
+   ]
+   ...
+)
+```
+
+### db.collection.replaceOne（***filter***，***replace***，***options* **）
+
+> 根据过滤器替换集合中的单个文档.替换匹配的集合中的第一个匹配的文件`filter`，使用该`replacement` 文件
+
+```
+db.collection.replaceOne(
+   <filter>,
+   <replacement>,
+   {
+     upsert: <boolean>,
+     writeConcern: <document>,
+     collation: <document>,
+     hint: <document|string>                   // Available starting in 4.2.1
+   }
+)
+```
+
+
 
 ### update() 方法
 
@@ -254,48 +426,63 @@ db.collection.save(
 
 ## 删除文档(表记录)
 
-**参数说明：**
+### db.inventory.deleteOne()
 
-- **query** :（可选）删除的文档的条件。
-- **justOne** : （可选）如果设为 true 或 1，则只删除一个文档，如果不设置该参数，或使用默认值 false，则删除所有匹配条件的文档。
-- **writeConcern** :（可选）抛出异常的级别。
+> 删除与过滤器匹配的第一个文档。使用作为[唯一索引](https://mongodb.net.cn/manual/reference/glossary/#term-unique-index)一部分的字段，例如`_id` 进行精确删除
 
 ```
-db.collection.remove(
-   <query>,
+db.collection.deleteOne(
+   <filter>,
    {
-     justOne: <boolean>,
-     writeConcern: <document>
+      writeConcern: <document>,
+      collation: <document>
    }
 )
 ```
 
-移除 title 为 'MongoDB 教程' 的文档：
+| 参数           | 类型 | 描述                                                         |
+| :------------- | :--- | :----------------------------------------------------------- |
+| `filter`       | 文献 | 使用[查询运算符](https://mongodb.net.cn/manual/reference/operator/)指定删除条件。指定一个空文档以删除集合中返回的第一个文档。`{ }` |
+| `writeConcern` | 文献 | 可选的。表达[书面关切的](https://mongodb.net.cn/manual/reference/write-concern/)文件。省略使用默认的写关注。如果在事务中运行，则不要为操作明确设置写关注点。要对事务使用写关注，请参见 [事务和写关注](https://mongodb.net.cn/manual/core/transactions/#transactions-write-concern)。 |
+| `collation`    | 文献 | 可选的。指定 用于操作的[排序规则](https://mongodb.net.cn/manual/reference/bson-type-comparison-order/#collation)。[归类](https://mongodb.net.cn/manual/reference/collation/)允许用户为字符串比较指定特定于语言的规则，例如字母大写和重音符号的规则。排序规则选项具有以下语法：`collation: {   locale: <string>,   caseLevel: <boolean>,   caseFirst: <string>,   strength: <int>,   numericOrdering: <boolean>,   alternate: <string>,   maxVariable: <string>,   backwards: <boolean> } `指定排序规则时，该`locale`字段为必填字段；所有其他排序规则字段都是可选的。有关字段的说明，请参见[整理文档](https://mongodb.net.cn/manual/reference/collation/#collation-document-fields)。如果未指定排序规则，但是集合具有默认排序规则（请参阅参考资料[`db.createCollection()`](https://mongodb.net.cn/manual/reference/method/db.createCollection/#db.createCollection)），则该操作将使用为集合指定的排序规则。如果没有为集合或操作指定排序规则，则MongoDB使用先前版本中使用的简单二进制比较进行字符串比较。您不能为一个操作指定多个排序规则。例如，您不能为每个字段指定不同的排序规则，或者如果对排序执行查找，则不能对查找使用一种排序规则，而对排序使用另一种排序规则。3.4版的新功能。 |
+
+**返回值：**
+
+* 一个布尔值acknowledged，就true好像该操作在运行时带有 写关注关系或false是否禁用了写关注关系
+* deletedCount 包含已删除文件的数量
+
+### db.collection.deleteMany()
+
+> 从集合中删除所有与匹配的文档
 
 ```
->db.col.remove({'title':'MongoDB 教程'})
-WriteResult({ "nRemoved" : 2 })           # 删除了两条数据
->db.col.find()
-……                                        # 没有数据
+db.collection.deleteMany(
+   <filter>,
+   {
+      writeConcern: <document>,
+      collation: <document>
+   }
+)
 ```
 
-------
-
-如果你只想删除第一条找到的记录可以设置 justOne 为 1，如下所示：
-
+```javascript
+try {
+   db.orders.deleteMany(
+       { "client" : "Crude Traders Inc." },
+       { w : "majority", wtimeout : 100 }
+   );
+} catch (e) {
+   print (e);
+}
+# 如果确认花费的时间超过`wtimeout`限制，则会引发以下异常：
+WriteConcernError({
+   "code" : 64,
+   "errInfo" : {
+      "wtimeout" : true
+   },
+   "errmsg" : "waiting for replication timed out"
+})
 ```
->db.COLLECTION_NAME.remove(DELETION_CRITERIA,1)
-```
-
-如果你想删除所有数据，可以使用以下方式（类似常规 SQL 的 truncate 命令）：
-
-```
->db.col.remove({})
->db.col.find()
->
-```
-
-**remove() 方法已经过时了，现在官方推荐使用 deleteOne() 和 deleteMany() 方法**。
 
 如删除集合下全部文档：
 
@@ -329,12 +516,18 @@ db.inventory.deleteOne( { status: "D" } )
 
 >  除了 find() 方法之外，还有一个 findOne() 方法，它只返回一个文档。
 
-```
-db.collection.find(query, projection)
-```
+### db.collection.find(query, projection)
 
-- **query** ：可选，使用查询操作符指定查询条件
+- **query** ：可选，使用查询操作符指定查询条件。要返回集合中的所有文档，忽略此参数或传递一个空文档`{}`
+
 - **projection** ：可选，使用投影操作符指定返回的键。查询时返回文档中所有键值， 只需省略该参数即可（默认省略）。
+
+  **该格式：**`{ field1: <value>, field2: <value> ... }`
+
+  `<value>`可以是任何如下：
+
+  - `1`或`true`将该字段包括在返回值中。
+  - `0`或`false`排除该字段。
 
 **如果你需要以易读的方式来读取数据，可以使用 pretty() 方法,pretty() 方法以格式化的方式来显示所有文档:**
 
@@ -353,6 +546,13 @@ db.collection.find(query, projection)
         ],
         "likes" : 100
 }
+
+db.inventory.find( { status: "D" } ); //返回其中statusfield等于"D"的文档
+db.inventory.find( { qty: 0, status: "D" } ); //返回qtyfield等于0并且statusfield等于"D"
+db.inventory.find( { "size.uom": "in" } ); //uom嵌套在size,并等于"in"
+db.inventory.find( { size: { h: 14, w: 21, uom: "cm" }}); //size字段等于文档：{ h: 14, w: 21, uom: "cm" }
+db.inventory.find( { tags: "red" } ) // tags数组包含"red"为其元素之一
+db.inventory.find( { tags: [ "red", "blank" ] } ) //返回该tags字段与指定数组完全匹配的文档，包括顺序
 ```
 
 ###  projection 参数的使用方法
