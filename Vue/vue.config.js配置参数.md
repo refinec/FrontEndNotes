@@ -40,11 +40,26 @@ module.exports = {
 	css:{
         requireModuleExtension:true, // 默认值true，false将所有的 *.(css|scss|sass|less|styl(us)?) 文件视为 CSS Modules 模块
         extract:boolean|Object, // 生产环境下是 true，开发环境下是 false,是否将组件中的 CSS 提取至一个独立的 CSS 文件中
-            
+        sourceMap:false, // 默认值false， 是否为 CSS 开启 source map。    
+        loaderOptions：{// 默认值是空{}，向 CSS 相关的 loader 传递选项
+           css: {
+        	// 这里的选项会传递给 css-loader
+     		},
+           postcss: {
+        	// 这里的选项会传递给 postcss-loader
+     		}
+        },  
+    },
+    devServer:{
+        proxy:'http://localhost:4000', // 可以是一个指向开发环境 API 服务器的字符串
+    },
+	parallel:require('os').cpus().length > 1,// 是否为 Babel 或 TypeScript 使用 thread-loader
+	pwa:{ // 向 PWA 插件传递选项
+        
+    },
+	pluginOptions:{ //用来传递任何第三方插件选项
+        
     }
-
-
-
 }
 ```
 
@@ -234,3 +249,105 @@ Default: 生产环境下是 `true`，开发环境下是 `false`
 * 当作为一个库构建时，你也可以将其设置为 `false` 免得用户自己导入 CSS。
 
 * 提取 CSS 在开发环境模式下是默认不开启的，因为它和 CSS 热重载不兼容。然而，你仍然可以将这个值显性地设置为 `true` 在所有情况下都强制提取。
+
+### sourceMap
+
+- Type: `boolean`
+- Default: `false`
+
+是否为 CSS 开启 source map。设置为 `true` 之后可能会影响构建的性能。
+
+### loaderOptions
+
+- Type: `Object`
+- Default: `{}`
+
+向 CSS 相关的 loader 传递选项。
+
+支持的 loader 有：
+
+- [css-loader](https://github.com/webpack-contrib/css-loader)
+- [postcss-loader](https://github.com/postcss/postcss-loader)
+- [sass-loader](https://github.com/webpack-contrib/sass-loader)
+- [less-loader](https://github.com/webpack-contrib/less-loader)
+- [stylus-loader](https://github.com/shama/stylus-loader)
+
+也可以使用 `scss` 选项，针对 `scss` 语法进行单独配置（区别于 `sass` 语法）
+
+**相比于使用 `chainWebpack` 手动指定 loader 更推荐这种方法，因为这些选项需要应用在使用了相应 loader 的多个地方。**
+
+## devServer
+
+Type: `Object`
+
+[所有 `webpack-dev-server` 的选项](https://webpack.js.org/configuration/dev-server/)都支持。
+
+注意：
+
+- 有些值像 `host`、`port` 和 `https` 可能会被命令行参数覆写。
+- 有些值像 `publicPath` 和 `historyApiFallback` 不应该被修改，因为它们需要和开发服务器的 [publicPath](https://cli.vuejs.org/zh/config/#publicpath) 同步以保障正常的工作。
+
+### proxy
+
+Type: `string | Object`
+
+如果你的前端应用和后端 API 服务器没有运行在同一个主机上，需要在开发环境下将 API 请求代理到 API 服务器
+
+`devServer.proxy` 可以是一个指向开发环境 API 服务器的字符串,这会告诉开发服务器将任何未知请求 (没有匹配到静态文件的请求) 代理到`http://localhost:4000`:
+
+```javascript
+module.exports = {
+  devServer: {
+    proxy: 'http://localhost:4000'
+  }
+}
+```
+
+想要更多的代理控制行为，也可以使用一个 `path: options` 成对的对象,查阅 [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware#proxycontext-config) 
+
+```js
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: '<url>',
+        ws: true,
+        changeOrigin: true
+      },
+      '/foo': {
+        target: '<other_url>'
+      }
+    }
+  }
+}
+```
+
+##  parallel
+
+- Type: `boolean`
+- Default: `require('os').cpus().length > 1`
+
+是否为 Babel 或 TypeScript 使用 `thread-loader`。该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建。
+
+## pwa
+
+Type: `Object`
+
+向 [PWA 插件](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa)传递选项
+
+## pluginOptions
+
+Type: `Object`
+
+这是一个不进行任何 schema 验证的对象，因此它可以用来传递任何第三方插件选项。例如：
+
+```js
+module.exports = {
+  pluginOptions: {
+    foo: {
+      // 插件可以作为 `options.pluginOptions.foo` 访问这些选项。
+    }
+  }
+}
+```
+
