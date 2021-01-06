@@ -511,7 +511,50 @@ Loader 可以通过 `loaderOptions` 配置，包括：
 - [less-loader](https://github.com/webpack-contrib/less-loader)
 - [stylus-loader](https://github.com/shama/stylus-loader)
 
+## webpack相关
 
+### 审查项目的webpack配置
+
+`@vue/cli-service` 对 webpack 配置进行了抽象，所以理解配置中包含的东西会比较困难，尤其是当你打算自行对其调整的时候。所以`vue-cli-service` 暴露了 `inspect` 命令用于审查解析好的 webpack 配置。全局的 `vue` 可执行程序同样提供了 `inspect` 命令，但这个命令只是简单的把 `vue-cli-service inspect` 代理到了项目中。
+
+该命令会将解析出来的 webpack 配置、包括链式访问规则和插件的提示打印到 stdout。
+
+* 可以将其输出重定向到一个文件以便进行查阅，但它输出的并不是一个有效的 webpack 配置文件，而是一个用于审查的被序列化的格式：
+
+  ```sh
+  vue inspect > output.js
+  ```
+
+* 通过指定一个路径来审查配置的一小部分：
+
+  ```sh
+  # 只审查第一条规则
+  vue inspect module.rules.0
+  ```
+
+* 或者指向一个规则或插件的名字：
+
+  ```sh
+  vue inspect --rule vue
+  vue inspect --plugin html
+  ```
+
+* 列出所有规则和插件的名字：
+
+  ```sh
+  vue inspect --rules
+  vue inspect --plugins
+  ```
+
+### 以一个文件的方式使用解析好的配置
+
+有些外部工具可能需要通过一个文件访问解析好的 webpack 配置，比如那些需要提供 webpack 配置路径的 IDE 或 CLI。在这种情况下你可以使用如下路径：
+
+```text
+<projectRoot>/node_modules/@vue/cli-service/webpack.config.js
+```
+
+该文件会动态解析并输出 `vue-cli-service` 命令中使用的相同的 webpack 配置，包括那些来自插件甚至是你自定义的配置。
 
 ## 单元测试
 
