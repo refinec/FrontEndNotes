@@ -556,6 +556,195 @@ Loader 可以通过 `loaderOptions` 配置，包括：
 
 该文件会动态解析并输出 `vue-cli-service` 命令中使用的相同的 webpack 配置，包括那些来自插件甚至是你自定义的配置。
 
+## 模式和环境变量
+
+### 模式
+
+在**package.json**里的**scripts配置项**中添加**--mode xxx**来选择不同环境
+
+一个 Vue CLI 项目有三个模式：
+
+- `development` 模式用于 `vue-cli-service serve`
+- `test` 模式用于 `vue-cli-service test:unit`
+- `production` 模式用于 `vue-cli-service build` 和 `vue-cli-service test:e2e`
+
+可以通过传递 `--mode` 选项参数为命令行覆写默认的模式。例如在构建命令中使用开发环境变量：
+
+```text
+vue-cli-service build --mode development
+```
+
+**注意：** 如果在环境中有默认的 `NODE_ENV`，应该移除它或在运行 `vue-cli-service` 命令的时候明确地设置 `NODE_ENV`。
+
+### 环境变量
+
+可以在项目根目录中放置下列文件来指定环境变量：
+
+```bash
+.env                # 在所有的环境中被载入
+.env.local          # 在所有的环境中被载入，但会被 git 忽略
+.env.[mode]         # 只在指定的模式中被载入
+.env.[mode].local   # 只在指定的模式中被载入，但会被 git 忽略
+```
+
+而一个环境文件只包含环境变量的“键=值”对：
+
+```text
+FOO=bar
+VUE_APP_NOT_SECRET_CODE=some_value
+```
+
+**注意：** 不要在应用程序中存储任何机密信息（例如私有 API 密钥），环境变量会随着构建打包嵌入到输出代码
+
+**注意：** <u>只有 `NODE_ENV`，`BASE_URL` 和以 `VUE_APP_` 开头</u>的变量将通过 `webpack.DefinePlugin` 静态地嵌入到*客户端侧*的代码中，代码中可以通过process.env.VUE_APP_BASE_API访问。这是为了避免意外公开机器上可能具有相同名称的私钥。
+
+要了解解析环境文件规则的细节，参考 [dotenv](https://github.com/motdotla/dotenv#rules)。也可使用 [dotenv-expand](https://github.com/motdotla/dotenv-expand) 来实现变量扩展 (Vue CLI 3.5+ 支持)。例如：
+
+被载入的变量将会对 `vue-cli-service` 的所有命令、插件和依赖可用。
+
+```bash
+FOO=foo
+BAR=bar
+
+CONCAT=$FOO$BAR # CONCAT=foobar
+```
+
+* **.env serve **默认的环境变量
+
+  ```javascript
+  NODE_ENV = "development"
+  BASE_URL = "./"
+  VUE_APP_PUBLIC_PATH = "./"
+  VUE_APP_API = "https://test.staven630.com/api"
+  ```
+
+* **.env.production build**默认的环境变量
+
+  ```javascript
+  NODE_ENV = "production"
+  BASE_URL = "https://prod.staven630.com/"
+  VUE_APP_PUBLIC_PATH = "https://prod.oss.com/staven-blog"
+  VUE_APP_API = "https://prod.staven630.com/api"
+  
+  ACCESS_KEY_ID = "xxxxxxxxxxxxx"
+  ACCESS_KEY_SECRET = "xxxxxxxxxxxxx"
+  REGION = "oss-cn-hangzhou"
+  BUCKET = "staven-prod"
+  PREFIX = "staven-blog"
+  ```
+
+* **.env.crm** 用于自定义 build 环境配置（预发服务器）
+
+  ```javascript
+  NODE_ENV = "production"
+  BASE_URL = "https://crm.staven630.com/"
+  VUE_APP_PUBLIC_PATH = "https://crm.oss.com/staven-blog"
+  VUE_APP_API = "https://crm.staven630.com/api"
+  
+  ACCESS_KEY_ID = "xxxxxxxxxxxxx"
+  ACCESS_KEY_SECRET = "xxxxxxxxxxxxx"
+  REGION = "oss-cn-hangzhou"
+  BUCKET = "staven-crm"
+  PREFIX = "staven-blog"
+  
+  IS_ANALYZE = true;
+  ```
+
+```json
+// package.json
+
+"scripts": {
+  "serve": "vue-cli-service serve",
+  "build": "vue-cli-service build",
+  "crm": "vue-cli-service build --mode crm",
+  "lint": "vue-cli-service lint"
+}
+```
+
+**使用环境变量**
+
+```vue
+<template>
+  <div class="home">
+    <!-- template中使用环境变量 -->
+     API: {{ api }}
+  </div>
+</template>
+
+<script>
+export default {
+  name: "home",
+  data() {
+    return {
+      api: process.env.VUE_APP_API
+    };
+  },
+  mounted() {
+    // js代码中使用环境变量
+    console.log("BASE_URL: ", process.env.BASE_URL);
+    console.log("VUE_APP_API: ", process.env.VUE_APP_API);
+  }
+};
+</script>
+```
+
+### 环境文件加载优先级
+
+* 为一个特定模式准备的环境文件 (如 `.env.production`) 将会比一般的环境文件 (例如 `.env`) 拥有更高的优先级。
+
+* 此外，Vue CLI 启动时已经存在的环境变量拥有最高优先级，并不会被 `.env` 文件覆写。
+* `.env` 环境文件是通过运行 `vue-cli-service` 命令载入的，因此环境文件发生变化，需要重启服务。
+
+### 示例：Staging 模式
+
+假设一个应用包含以下 `.env` 文件：
+
+```text
+VUE_APP_TITLE=My App
+```
+
+和 `.env.staging` 文件：
+
+```text
+NODE_ENV=production
+VUE_APP_TITLE=My App (staging)
+```
+
+- `vue-cli-service build` 会加载可能存在的 `.env`、`.env.production` 和 `.env.production.local` 文件然后构建出生产环境应用。
+- `vue-cli-service build --mode staging` 会在 staging 模式下加载可能存在的 `.env`、`.env.staging` 和 `.env.staging.local` 文件然后构建出生产环境应用。
+
+这两种情况下，根据 `NODE_ENV`，构建出的应用都是生产环境应用，但是在 staging 版本中，`process.env.VUE_APP_TITLE` 被覆写成了另一个值。
+
+### 在客户端侧代码中使用环境变量
+
+* 只有以 `VUE_APP_` 开头的变量会被 `webpack.DefinePlugin` 静态嵌入到客户端侧的包中。在构建过程中，`process.env.VUE_APP_SECRET` 将会被相应的值所取代。在 `VUE_APP_SECRET=secret` 的情况下，它会被替换为 `"secret"`。所以可以在应用的代码中这样访问它们：
+
+  ```javascript
+  console.log(process.env.VUE_APP_SECRET)
+  ```
+
+* 除了 `VUE_APP_*` 变量之外，应用代码中始终可用的还有两个特殊的变量：
+  * `NODE_ENV` - 会是 `"development"`、`"production"` 或 `"test"` 中的一个。具体的值取决于应用运行的[模式](https://cli.vuejs.org/zh/guide/mode-and-env.html#模式)。
+  * `BASE_URL` - 会和 `vue.config.js` 中的 `publicPath` 选项相符，即你的应用会部署到的基础路径。
+
+  所有解析出来的环境变量都可以在 `public/index.html` 中以 [HTML 插值](https://cli.vuejs.org/zh/guide/html-and-static-assets.html#插值)中介绍的方式使用。
+
+* 可以在 `vue.config.js` 文件中计算环境变量，它们仍然需要以 `VUE_APP_` 前缀开头。
+
+  ```js
+  process.env.VUE_APP_VERSION = require('./package.json').version
+  
+  module.exports = {
+    // config
+  }
+  ```
+
+### 只在本地有效的变量
+
+有一些不应该提交到代码仓库中的变量，尤其是项目托管在公共仓库时。这种情况下应该使用一个 `.env.local` 文件取而代之。本地环境文件默认会被忽略，且出现在 `.gitignore` 中。
+
+`.local` 也可以加在指定模式的环境文件上，比如 `.env.development.local` 将会在 development 模式下被载入，且被 git 忽略。
+
 ## 单元测试
 
 ### Jest
