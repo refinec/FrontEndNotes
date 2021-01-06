@@ -35,8 +35,59 @@ module.exports = {
 	productionSourceMap:true, //是否需要生产环境的source map，默认true
 	crossorigin：undefined, // 设置生成的 HTML 中 <link rel="stylesheet"> 和 <script> 标签的 crossorigin 属性
     integrity:false, // 默认false，在生成的 HTML 中的 `<link rel="stylesheet">` 和 `<script>` 标签上启用
-	configureWebpack：Object | Function,
-	chainWebpack:Function, // 对内部的 webpack 配置进行更细粒度的修改。
+	configureWebpack：{ // Object | Function,对象将会被 webpack-merge 合并入最终的 webpack 配置
+        plugins:[
+            new MyAwesomeWebpackPlugin()
+        ]
+    },
+    configureWebpack: config =>{ // Function的形式
+        if (process.env.NODE_ENV === 'production'){
+            // 为生产环境配置...
+        } else {
+            // 为开发环境配置...
+        }
+    },
+	chainWebpack: config =>{ // Function 链式操作,对内部的 webpack 配置进行更细粒度的修改。
+        # 1.修改Loader选项
+        config.module
+        	.rule('vue')
+        	.use('vue-loader')
+        		.tap(optipons =>{
+            		// 修改它的配置项...
+            		return options
+        		})
+        # 或者 2.添加一个新的Loader:GraphQL Loader
+        config.module 
+        	.rule('graphql')
+        	.test(/\.graphql$/)
+        	.use('graphql-tag/loader')
+        		.loader('graphql-tag/loader')
+        		.end()
+        	.use('other-loader') // 还可以再添加一个 loader
+        		.loader('other-loader')
+        		.end()
+        # 或者 3.替换一个规则里的 Loader
+        const svgRule = config.module.rule('svg')
+         // 清除已有的所有loader
+        // 如果不这么做，接下来的loader会附加在该规则现有的 loader 之后
+        svgRule.uses.clear()
+        // 添加要替换的loader
+        svgRule
+        	.use('vue-svg-loader')
+				.loader('vue-svg-loader')
+        # 修改插件选项
+        config.plugin('html')
+        	.tap(args =>{
+            return [/* 传递给 html-webpack-plugin's 构造函数的新参数*/]
+        })
+        //比如将 index.html 默认的路径从 /Users/username/proj/public/index.html 改为 		/Users/username/proj/app/templates/index.html。在下列配置中传入一个新的模板路径来改变它
+        config.plugin('html')
+        	.tap(args =>{
+            	// 通过https://github.com/jantimon/html-webpack-plugin#options可以查看可传入的选项列表
+            	args[0].template = '/Users/username/proj/app/templates/index.html'
+            	return args;
+        	})
+    },
 	css:{
         requireModuleExtension:true, // 默认值true，false将所有的 *.(css|scss|sass|less|styl(us)?) 文件视为 CSS Modules 模块
         extract:boolean|Object, // 生产环境下是 true，开发环境下是 false,是否将组件中的 CSS 提取至一个独立的 CSS 文件中
@@ -237,13 +288,21 @@ module.exports = {
 Type: `Object | Function`
 
 * 值是一个对象，则会通过 [webpack-merge](https://github.com/survivejs/webpack-merge) 合并到最终的配置中
-* 值是一个函数，则会接收被解析的配置作为参数。该函数既可以修改配置并不返回任何东西，也可以返回一个被克隆或合并过的配置版本
+* 值是一个函数，则会接收一个已被解析的配置 config 作为参数。该函数既可以修改配置并不返回任何东西，也可以返回一个被克隆或合并过的配置对象
 
 ## chainWebpack
 
+> 链式操作
+
 Type: `Function`
 
-是一个函数，会接收一个基于 [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain) 的 `ChainableConfig` 实例。允许对内部的 webpack 配置进行更细粒度的修改。
+是一个函数，会接收一个基于 [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain) 的 `ChainableConfig` 实例。允许对内部的 webpack 配置进行更细粒度的修改。<u>使其可以定义具名的 loader 规则和具名插件</u>，并有机会在后期进入这些规则并对它们的选项进行修改。
+
+**注意：** 
+
+* 当需要链式访问特定的 loader 时，[vue inspect](https://cli.vuejs.org/zh/guide/webpack.html#审查项目的-webpack-配置) 会非常有帮助。
+
+* 对于 CSS 相关 loader ，推荐使用 [css.loaderOptions](https://cli.vuejs.org/zh/config/#css-loaderoptions) 而不是直接链式指定 loader。这是因为每种 CSS 文件类型都有多个规则，而 `css.loaderOptions` 可以确保通过一个地方影响所有的规则。
 
 ## css
 
