@@ -192,7 +192,7 @@ module.exports = {
     /* 可供选择的别名语法（点击展示） */    
     alias: [
       {
-        name: "module",
+        name: "module1",
         // 旧的请求
         alias: "new-module",
         // 新的请求
