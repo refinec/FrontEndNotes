@@ -63,9 +63,9 @@ module.exports = {
     // 用于加载分块的 JSONP 函数名
     sourceMapFilename: "[file].map", // string
     sourceMapFilename: "sourcemaps/[file].map", // string
-    // 「source map 位置」的文件名模板
+    // 「source map 位置」的文件名模板，自定义生成 source map 的文件名
     devtoolModuleFilenameTemplate: "webpack:///[resource-path]", // string
-    // 「devtool 中模块」的文件名模板
+    // 「devtool 中模块」的文件名模板， source map 中不包含源代码内容。浏览器通常会尝试从 web 服务器或文件系统加载源代码。确保正确设置以匹配源代码的 url。
     devtoolFallbackModuleFilenameTemplate: "webpack:///[resource-path]?[hash]", // string
     // 「devtool 中模块」的文件名模板（用于冲突）
     umdNamedDefine: true, // boolean
@@ -99,7 +99,7 @@ module.exports = {
         issuer: { test, include, exclude },
         // issuer 条件（导入源）
         enforce: "pre",
-        enforce: "post",
+         enforce: "post",
         // 标识应用这些规则，即使规则覆盖（高级选项）
         loader: "babel-loader",
         // 应该应用的 loader，它相对上下文解析
@@ -591,6 +591,238 @@ module.exports = (env, argv) => {
   return config;
 };
 ```
+
+## 开发环境
+
+### 使用source map找到错误源代码
+
+使用`devtool`选项，来如何生成 source map。另外使用 [`SourceMapDevToolPlugin`](https://v4.webpack.docschina.org/plugins/source-map-dev-tool-plugin) 进行更细粒度的配置，用 [`source-map-loader`](https://v4.webpack.docschina.org/loaders/source-map-loader) 来处理已有的 source map。
+
+**注意：** *可以直接使用* `SourceMapDevToolPlugin`*/*`EvalSourceMapDevToolPlugin` *来替代使用* `devtool` *选项，* 但*切勿同时使用* `devtool` *选项*，`devtool`  *选项在内部添加过这些插件，所以会最终将应用两次插件。*
+
+**devtool的选项：** 关于下面的选项*webpack 仓库中包含一个* [显示所有 `devtool` 变体效果的示例](https://github.com/webpack/webpack/tree/master/examples/source-map)*。*
+
+| **devtool**                    | **构建速度** | **重新构建速度** | **生产环境** | **品质(quality)**      |
+| ------------------------------ | ------------ | ---------------- | ------------ | ---------------------- |
+| (none)                         | +++          | +++              | yes          | 打包后的代码           |
+| eval                           | +++          | +++              | no           | 生成后的代码           |
+| cheap-eval-source-map          | +            | ++               | no           | 转换过的代码（仅限行） |
+| cheap-module-eval-source-map   | o            | ++               | no           | 原始源代码（仅限行）   |
+| eval-source-map                | \--          | +                | no           | 原始源代码             |
+| cheap-source-map               | +            | o                | yes          | 转换过的代码（仅限行） |
+| cheap-module-source-map        | o            | -                | yes          | 原始源代码（仅限行）   |
+| inline-cheap-source-map        | +            | o                | no           | 转换过的代码（仅限行） |
+| inline-cheap-module-source-map | o            | -                | no           | 原始源代码（仅限行）   |
+| source-map                     | \--          | \--              | yes          | 原始源代码             |
+| inline-source-map              | \--          | \--              | no           | 原始源代码             |
+| hidden-source-map              | \--          | \--              | yes          | 原始源代码             |
+| nosources-source-map           | \--          | \--              | yes          | 无源代码内容           |
+
+* **打包后的代码**
+
+  将所有生成的代码视为一大块代码,看不到相互分离的模块
+
+* **生成后的代码**
+
+  每个模块相互分离，并用模块名称进行注释。
+
+  可以看到 webpack 生成的代码。示例：会看到类似 `var module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(42); module__WEBPACK_IMPORTED_MODULE_1__.a();`，而不是 `import {test} from "module"; test();`。
+
+* **转换过的代码**
+
+  每个模块相互分离，并用模块名称进行注释。
+
+  可以看到 webpack 转换前、loader 转译后的代码。示例：你会看到类似 `import {test} from "module"; var A = function(_test) { ... }(test);`，而不是 `import {test} from "module"; class A extends test {}`。
+
+* **原始源代码**
+
+  每个模块相互分离，并用模块名称进行注释。
+
+  会看到转译之前的代码，正如编写它时。取决于 loader 支持。
+
+* **无源代码内容**
+
+  source map 中不包含源代码内容。
+
+  浏览器通常会尝试从 web 服务器或文件系统加载源代码。所以必须确保正确设置 [`output.devtoolModuleFilenameTemplate`](https://v4.webpack.docschina.org/configuration/output/#output-devtoolmodulefilenametemplate)，以匹配源代码的 url。
+
+* **（仅限行）**
+
+  source map 被简化为每行一个映射。这通常意味着每个语句只有一个映射（假设你使用这种方式）。这会妨碍你在语句级别上调试执行，也会妨碍你在每行的一些列上设置断点。与压缩后的代码组合后，映射关系是不可能实现的，因为压缩工具通常只会输出一行。
+
+#### 适合开发环境的devtool选项
+
+* **eval**
+
+  每个模块都使用 `eval()` 执行，并且都有 `//@ sourceURL`。此选项会非常快地构建。
+
+  缺点是，由于会映射到转换后的代码，而不是映射到原始代码（没有从 loader 中获取 source map），所以不能正确的显示行数。
+
+* **eval-source-map**
+
+  每个模块使用 `eval()` 执行，并且 source map 转换为 DataUrl 后添加到 `eval()` 中。初始化 source map 时比较慢，但是会在重新构建时提供比较快的速度，并且生成实际的文件。行数能够正确映射，因为会映射到原始代码中。<u>它会生成用于开发环境的最佳品质的 source map</u>。
+
+* **cheap-eval-source-map**
+
+  类似 `eval-source-map`，每个模块使用 `eval()` 执行。这是 "cheap(低开销)" 的 source map，因为它没有生成列映射(column mapping)，只是映射行数。它会忽略源自 loader 的 source map，并且仅显示转译后的代码，就像 `eval` devtool。
+
+* **cheap-module-eval-source-map**
+
+  类似 `cheap-eval-source-map`，并且，在这种情况下，源自 loader 的 source map 会得到更好的处理结果。然而，loader source map 会被简化为每行一个映射(mapping)。
+
+#### 适合生产环境的devtool选项
+
+* **none**
+
+  省略 `devtool` 选项。不生成 source map
+
+* **source-map**
+
+   整个 source map 作为一个单独的文件生成。它为 bundle 添加了一个引用注释，以便开发工具知道在哪里可以找到它。
+
+  注意*应该将服务器配置为，不允许普通用户访问 source map 文件！*
+
+* **hidden-source-map**
+
+  与 `source-map` 相同，但不会为 bundle 添加引用注释。
+
+  如果只想 source map 映射那些源自错误报告的错误堆栈跟踪信息，但不想为浏览器开发工具暴露 source map，这个选项会很有用。
+
+  注意*不应将 source map 文件部署到 web 服务器。而是只将其用于错误报告工具。*
+
+* **nosources-source-map**
+
+  创建的 source map 不包含 `sourcesContent(源代码内容)`。它可以用来映射客户端上的堆栈跟踪，而无须暴露所有的源代码。
+
+  可以将 source map 文件部署到 web 服务器。*这仍然会暴露反编译后的文件名和结构，但它不会暴露原始代码。*
+
+**注意：** *在使用* `terser-webpack-plugin` *时，你必须提供* `sourceMap：true` *选项来启用 source map 支持。*
+
+#### 特定场景
+
+以下选项对于开发环境和生产环境并不理想。他们是一些特定场景下需要的，例如，针对一些第三方工具。
+
+* **inline-source-map**
+
+  source map 转换为 DataUrl 后添加到 bundle 中
+
+* **cheap-source-map**
+
+  没有列映射(column mapping)的 source map，忽略 loader source map。
+
+* **inline-cheap-source-map**
+
+  类似 `cheap-source-map`，但是 source map 转换为 DataUrl 后添加到 bundle 中。
+
+* **cheap-module-source-map**
+
+  没有列映射(column mapping)的 source map，将 loader source map 简化为每行一个映射(mapping)。
+
+* **inline-cheap-module-source-map**
+
+   类似 `cheap-module-source-map`，但是 source map 转换为 DataUrl 添加到 bundle 中。
+
+### 解决手动输入`npm run xxx`的麻烦
+
+webpack 提供几种可选方式，帮助在代码发生变化后自动编译代码：
+
+#### webpack watch mode(webpack 观察模式)
+
+```javascript
+ # package.json
+"scripts": {
+    "watch":"webpack --watch"
+  },
+```
+
+在命令行中运行 `npm run watch`，每次修改会自动编译代码。
+
+唯一的缺点是，为了看到修改后的实际效果，需要刷新浏览器。
+
+#### webpack-dev-server
+
+***配置文档：*** https://v4.webpack.docschina.org/configuration/dev-server
+
+`webpack-dev-server` 为你提供了一个简单的 web server，并且具有 live reloading(实时重新加载) 功能。
+
+`npm install --save-dev webpack-dev-server`
+
+```javascript
+# webpack.config.js
+module.exports = {
+    devServer:{
+      contentBase: './dist', // 告知 webpack-dev-server，将 dist 目录下的文件 serve 到 localhost:8080 下
+    }
+}
+```
+
+*webpack-dev-server 在编译之后不会写入到任何输出文件。而是将 bundle 文件保留在内存中，然后将它们 serve 到 server 中，就好像它们是挂载在 server 根路径上的真实文件一样。如果希望页面在其他不同路径中找到 bundle 文件，则可以通过 dev server 配置中的* [`publicPath`](https://v4.webpack.docschina.org/configuration/dev-server/#devserver-publicpath-) *选项进行修改。*
+
+```json
+# package.json  
+"scripts": {
+    "start": "webpack-dev-server --open"
+},
+```
+
+运行 `npm start`，浏览器自动加载页面,更改任何源文件并保存它们，web server 将在编译代码后自动重新加载。
+
+#### webpack-dev-middleware
+
+`webpack-dev-middleware` 是一个封装器(wrapper)，它可以把 webpack 处理过的文件发送到一个 server。`webpack-dev-server` 在内部使用了它，然而它也可以作为一个单独的 package 来使用，以便根据需求进行更多自定义设置。
+
+下面是一个 webpack-dev-middleware 配合 express server 的示例:
+
+​	安装：`npm install --save-dev express webpack-dev-middleware`
+
+```javascript
+# webpack.config.js
+  module.exports = {
+    mode: 'development',
+    output: {
+      filename: '[name].bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+      publicPath: '/', // 在 server 脚本使用 publicPath，以确保文件资源能够正确地 serve 在 http://localhost:3000 下
+    }
+  };
+```
+
+```javascript
+# server.js
+const express = require('express');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+
+const app = express();
+const config = require('./webpack.config.js');
+const compiler = webpack(config);
+
+// 告诉 express 使用 webpack-dev-middleware，
+// 以及将 webpack.config.js 配置文件作为基础配置
+app.use(webpackDevMiddleware(compiler, {
+  publicPath: config.output.publicPath
+}));
+
+// 将文件 serve 到 port 3000。
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!\n');
+});
+```
+
+```javascript
+# package.json
+{
+    "scripts": {
+        "server": "node server.js",
+    },
+}
+```
+
+**注意：**某些编辑器具有 "safe write(安全写入)" 功能，会影响重新编译：
+
+- **Sublime Text 3**：在用户首选项(user preferences)中添加 `atomic_save: 'false'`。
+- **JetBrains IDEs (e.g. WebStorm)**：在 `Preferences > Appearance & Behavior > System Settings` 中取消选中 "Use safe write"。
+- **Vim**：在设置(settings)中增加 `:set backupcopy=yes`。
 
 ## 部署目标
 
