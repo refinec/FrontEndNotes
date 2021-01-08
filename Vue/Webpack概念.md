@@ -978,6 +978,73 @@ module.exports = {
 * 在项目 `package.json` 文件中，添加一个 "sideEffects" 属性。
 * 通过将 `mode` 选项设置为 [`production`](https://v4.webpack.docschina.org/concepts/mode/#mode-production)，启用 minification(代码压缩) 和 tree shaking。
 
+## 生产环境
+
+*development(开发环境)* 和 *production(生产环境)* 这两个环境下的构建目标存在着巨大差异。所以建议为每个环境编写**彼此独立的 webpack 配置**，并把它们之间公共通用的配置保留出来，使用一个名为 [`webpack-merge`](https://github.com/survivejs/webpack-merge) 的工具来合并配置。
+
+1. 安装：`npm install --save-dev webpack-merge`
+
+2. 添加`webpack.common.js`、`webpack.dev.js`、`webpack.prod.js`三个文件
+
+   ```javascript
+   # webpack.common.js
+   const path = require('path')
+   const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+   const HtmlWebpackPlugin = require('html-webpack-plugin')
+   
+   module.exports={
+       entry:{
+           app: './src/index.js'
+       },
+       plugins:[
+           new CleanWebpackPlugin(),
+           new HtmlWebpackPlugin({
+               title:'管理输出'
+           })
+       ],
+       output:{
+           filename: '[name].bundle.js',
+           path: path.resolve(__dirname, 'dist')
+       }
+   }
+   ```
+
+   ```javascript
+   # webpack.dev.js
+   const merge = require('webpack-merge')
+   const common = require('./webpack.common')
+   
+   module.exports = merge(common, {
+       mode:'development',
+       devtool:'inline-source-map',
+       devServer:{
+           contentBase:'./dist'
+       }
+   })
+   ```
+
+   ```javascript
+   # webpack.prod.js
+   const merge = require('webpack-merge')
+   const common = require('./webpack.common')
+   
+   module.exports = merge(common, {
+       mode:'production'
+   })
+   ```
+
+3. ```json
+   # package.json
+       "scripts": {
+        "start": "webpack-dev-server --open --config webpack.dev.js",
+        "build": "webpack --config webpack.prod.js"
+       },
+   ```
+
+4. 
+
+
+
 ## 部署目标
 
 > 因为服务器和浏览器代码都可以用 JavaScript 编写，所以 webpack 提供了多种部署 target(目标)
