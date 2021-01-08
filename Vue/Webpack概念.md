@@ -767,6 +767,97 @@ module.exports = {
 
 运行 `npm start`，浏览器自动加载页面,更改任何源文件并保存它们，web server 将在编译代码后自动重新加载。
 
+##### 启用热模块更新HMR
+
+更新 webpack-dev-server 配置，然后使用 webpack 内置的 HMR 插件。*如果你在技术选型中使用了* `webpack-dev-middleware` *而没有使用* `webpack-dev-server`*，请使用* [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) *package，以在你的自定义 server 或应用程序上启用 HMR。*
+
+```javascript
+# webpack.config.js
+const webpack = require('webpack');
+module.exports={
+    devServer: {
+        contentBase: './dist',
+        hot: true
+    },
+    plugins:[
+        new webpack.HotModuleReplacementPlugin()
+    ]
+}
+```
+
+```json
+# package.json
+{
+  "scripts": {
+    "start": "webpack-dev-server --hotOnly"
+  },
+}
+```
+
+修改 `index.js` 文件，以便在 `print.js` 内部发生变更时，告诉 webpack 接受 updated module
+
+```javascript
+  if (module.hot) {
+    // 在 print.js 内部发生变更时，告诉 webpack 接受 updated module
+    module.hot.accept('./print.js',function () {
+      console.log('Accepting the updated printMe module!');
+      printMe();
+    })
+  }
+```
+
+**通过 Node.js API **
+
+在 Node.js API 中使用 webpack dev server 时，不要将 dev server 选项放在 webpack 配置对象(webpack config object)中。而是，在创建时，将其作为第二个参数传递。例如：
+
+```
+new WebpackDevServer(compiler, options)
+```
+
+想要启用 HMR，还需要修改 webpack 配置对象，使其包含 HMR 入口起点。webpack-dev-server的`addDevServerEntrypoints` 的方法可以通过使用这个方法来实现。
+
+```javascript
+# dev-server.js
+const webpackDevServer = require('webpack-dev-server');
+const webpack = require('webpack');
+
+const config = require('./webpack.config.js');
+const options = {
+  contentBase: './dist',
+  hot: true,
+  host: 'localhost'
+};
+
+webpackDevServer.addDevServerEntrypoints(config, options);
+const compiler = webpack(config);
+const server = new webpackDevServer(compiler, options);
+
+server.listen(5000, 'localhost', () => {
+  console.log('dev server listening on port 5000');
+});
+```
+
+借助于 `style-loader`，使用模块热替换来加载 CSS 实际上极其简单。此 loader 在幕后使用了 `module.hot.accept`，在 CSS 依赖模块更新之后，会将其 patch(修补) 到 `<style>` 标签中
+
+```javascript
+# webpack.config.js
+module: {
+    rules: [
+        {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader']
+        }
+    ]
+},
+```
+
+社区还提供许多其他 loader 和示例，可以使 HMR 与各种框架和库平滑地进行交互……
+
+- [React Hot Loader](https://github.com/gaearon/react-hot-loader)：实时调整 react 组件。
+- [Vue Loader](https://github.com/vuejs/vue-loader)：此 loader 支持 vue 组件的 HMR，提供开箱即用体验。
+- [Elm Hot Loader](https://github.com/fluxxu/elm-hot-loader)：支持 Elm 编程语言的 HMR。
+- [Angular HMR](https://github.com/gdi2290/angular-hmr)：没有必要使用 loader！直接修改 NgModule 主文件就够了，它可以完全控制 HMR API。
+
 #### webpack-dev-middleware
 
 `webpack-dev-middleware` 是一个封装器(wrapper)，它可以把 webpack 处理过的文件发送到一个 server。`webpack-dev-server` 在内部使用了它，然而它也可以作为一个单独的 package 来使用，以便根据需求进行更多自定义设置。
@@ -823,6 +914,69 @@ app.listen(3000, function () {
 - **Sublime Text 3**：在用户首选项(user preferences)中添加 `atomic_save: 'false'`。
 - **JetBrains IDEs (e.g. WebStorm)**：在 `Preferences > Appearance & Behavior > System Settings` 中取消选中 "Use safe write"。
 - **Vim**：在设置(settings)中增加 `:set backupcopy=yes`。
+
+## tree shaking
+
+>  移除 JavaScript 上下文中的未引用代码(dead-code)。
+
+```javascript
+# webpack.config.js
+module.exports = {
+     mode: 'development', // 要删除无用的代码需要设置为"production"，并删除optimization属性
+    optimization: { // 找出需要删除的“未引用代码(dead code)”
+        usedExports: true
+    }
+}
+```
+
+### 将文件标记为 side-effect-free(无副作用)
+
+可以在 [`module.rules` 配置选项](https://v4.webpack.docschina.org/configuration/module/#module-rules) 中设置 `"sideEffects"`。
+
+也可通过 package.json 的 `"sideEffects"` 属性，来实现这种方式。
+
+* 如果所有代码都不包含 side effect，就可以简单地将该属性标记为 `false`，来告知 webpack，它可以安全地删除未用到的 export。
+
+  ```json
+  {
+    "name": "your-project",
+    "sideEffects": false
+  }
+  ```
+
+* 如果代码确实有一些副作用，可以改为提供一个数组，数组方式支持相对路径、绝对路径和 glob 模式匹配相关文件。这些文件将不会进行tree shaking。
+
+  ```json
+  {
+    "name": "your-project",
+    "sideEffects": [
+      "./src/some-side-effectful-file.js"
+    ]
+  }
+  ```
+
+* *所有导入文件都会受到 tree shaking 的影响。这意味着，如果在项目中使用类似* `css-loader` *并 import 一个 CSS 文件，则需要将其添加到 side effect 列表中，以免在生产模式中无意中将它删除：*
+
+  ```json
+  {
+    "name": "your-project",
+    "sideEffects": [
+      "./src/some-side-effectful-file.js",
+      "*.css"
+    ]
+  }
+  ```
+
+通过 `import` 和 `export` 语法，上面的操作已经找出需要删除的“未引用代码(dead code)”，然而，不仅仅是要找出，还要在 bundle 中删除它们。为此，我们需要将 `mode` 配置选项设置为 [`production`](https://v4.webpack.docschina.org/concepts/mode/#mode-production)。*运行 tree shaking 需要* [ModuleConcatenationPlugin](https://v4.webpack.docschina.org/plugins/module-concatenation-plugin)*。通过* `mode: "production"` *可以添加此插件。如果没有使用 mode 设置，记得手动添加* [ModuleConcatenationPlugin](https://v4.webpack.docschina.org/plugins/module-concatenation-plugin)*。*
+
+### 结论
+
+使用 *tree shaking* 必须注意以下：
+
+* 使用 ES2015 模块语法（即 `import` 和 `export`）
+* 确保没有 compiler 将 ES2015 模块语法转换为 CommonJS 模块（这也是流行的 Babel preset 中 @babel/preset-env 的默认行为 - 更多详细信息请查看 [文档](https://babel.docschina.org/docs/en/babel-preset-env#modules)）。
+* 在项目 `package.json` 文件中，添加一个 "sideEffects" 属性。
+* 通过将 `mode` 选项设置为 [`production`](https://v4.webpack.docschina.org/concepts/mode/#mode-production)，启用 minification(代码压缩) 和 tree shaking。
 
 ## 部署目标
 
