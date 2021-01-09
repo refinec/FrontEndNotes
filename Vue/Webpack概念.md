@@ -1029,11 +1029,12 @@ module.exports = {
    const common = require('./webpack.common')
    
    module.exports = merge(common, {
-       mode:'production'
+       mode:'production',
+       devtool: 'source-map', // 避免在生产中使用 inline-*** 和 eval-***，因为它们会增加 bundle 体积大小，并降低整体性能
    })
    ```
 
-3. ```json
+   ```json
    # package.json
        "scripts": {
         "start": "webpack-dev-server --open --config webpack.dev.js",
@@ -1041,7 +1042,8 @@ module.exports = {
        },
    ```
 
-4. 
+
+**注意：** 从 webpack v4 开始, 指定 [`mode`](https://v4.webpack.docschina.org/concepts/mode/) 会自动地配置 [`DefinePlugin`](https://v4.webpack.docschina.org/plugins/define-plugin)；还要注意，任何位于 `/src` 的本地代码都可以使用到 process.env.NODE_ENV 环境变量。
 
 
 
