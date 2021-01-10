@@ -1296,7 +1296,172 @@ module.exports = {
    
    ```
 
-   
+## shim预置依赖
+
+> *shim 是一个库(library)，它将一个新的 API 引入到一个旧的环境中，而且仅靠旧的环境中已有的手段实现。polyfill 就是一个用在浏览器 API 上的 shim。我们通常的做法是先检查当前浏览器是否支持某个 API，如果不支持的话就按需加载对应的 polyfill。然后新旧浏览器就都可以使用这个 API 了。*
+
+### shim 预置全局变量(提取第三方库提供的全局变量)
+
+使用 [`ProvidePlugin`](https://v4.webpack.docschina.org/plugins/provide-plugin) 插件，在 webpack 编译的每个模块中，通过访问一个变量来获取一个 package。
+
+```javascript
+# webpack.config.js
+const webpack = require('webpack');
+module.exports = {
+    plugins:[
+        // 该插件告诉webpack遇到了至少一处用到 _ 变量的模块实例，
+        // 那将 lodash package 引入进来，并将其提供给需要用到它的模块。舍去了 import _ from 'lodash'
+        new webpack.ProvidePlugin({
+            _:'lodash',
+            join: ['lodash', 'join'] // 还可以使用 ProvidePlugin 暴露出某个模块中单个导出，通过配置一个“数组路径”（例如 [module, child, ...children?]）实现此功能。这样就能很好的与 tree shaking 配合，将 lodash library 中的其余没有用到的导出去除
+        })
+    ]
+}
+```
+
+### 细粒度 shim(模块中this的指向)
+
+一些遗留模块依赖的 `this` 指向的是 `window` 对象。
+
+```javascript
+# index.js
+  function component() {
+   // 假设处于 `window` 上下文
+   this.alert('Hmmm, this probably isn\'t a great idea...')
+  }
+```
+
+当模块运行在 CommonJS 上下文中，这将会变成一个问题，也就是说此时的 `this` 指向的是 `module.exports`。在这种情况下，你可以通过使用 [`imports-loader`](https://v4.webpack.docschina.org/loaders/imports-loader/) 覆盖 `this` 指向：
+
+```javascript
+# webpack.config.js
+module.exports = {
+    module: {
+        rules: [
+            {
+                test: require.resolve('index.js'),
+                use: 'imports-loader?this=>window'
+            }
+        ]
+    },
+}
+```
+
+### 全局 export
+
+```javascript
+# globals.js
+var file = 'blah.txt';
+var helpers = {
+  test: function() { console.log('test something'); },
+  parse: function() { console.log('parse something'); }
+};
+```
+
+使用 [`exports-loader`](https://v4.webpack.docschina.org/loaders/exports-loader/)，将一个全局变量作为一个普通的模块来导出。例如，为了将 `file` 导出为 `file` 以及将 `helpers.parse` 导出为 `parse`，做如下调整：
+
+```javascript
+# webpack.config.js
+module.exports = {
+    module: {
+        rules: [
+            {
+                test: require.resolve('globals.js'),
+                use: 'exports-loader?file,parse=helpers.parse'
+            }
+        ]
+    },
+}
+```
+
+现在在 entry 入口文件中（即 `src/index.js`），能 `import { file, parse } from './globals.js';` ，一切将顺利运行。
+
+### 加载 polyfill
+
+安装`npm install --save babel-polyfill`
+
+使用 `import` 将其引入到的主 bundle 文件:
+
+```javascript
+# index.js
+import 'babel-polyfill';
+...
+```
+
+**注意：** *没有将* `import` *绑定到某个变量是因为 polyfill 直接基于自身执行，并且是在基础代码执行之前，这样通过这些预置就可以假定已经具有某些原生功能。*这种方式优先考虑正确性，而不考虑 bundle 体积大小。为了安全和可靠，polyfill/shim 必须**运行于所有其他代码之前**，而且需要同步加载，或者说，需要在所有 polyfill/shim 加载之后，再去加载所有应用程序代码。 
+
+如果决定承受损坏的风险，则加入 [`whatwg-fetch`](https://github.com/github/fetch) polyfill：
+
+安装`npm install --save whatwg-fetch`
+
+```javascript
+# polyfills.js
+import 'babel-polyfill';
+import 'whatwg-fetch';
+
+# webpack.config.js
+module.exports = {
+    entry: {
+        polyfills: './src/polyfills.js',
+        index: './src/index.js'
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+}
+```
+
+如上配置之后，可以在代码中添加一些逻辑，条件地加载新的 `polyfills.bundle.js` 文件。根据需要支持的技术和浏览器来决定是否加载。
+
+```html
+# index.html
+<head>
+    <title>Getting Started</title>
+    <script>
+        var modernBrowser = (
+            'fetch' in window &&
+            'assign' in Object
+        );
+        if ( !modernBrowser ) { // 如果这些属性不存在，则使用polyfill
+            var scriptElement = document.createElement('script');
+            scriptElement.async = false;
+            scriptElement.src = '/polyfills.bundle.js';
+            document.head.appendChild(scriptElement);
+        }
+    </script>
+</head>
+```
+
+```javascript
+# index.js
+fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => response.json())
+    .then(json => {
+    console.log('We retrieved some data! AND we\'re confident it will work on a variety of browser distributions.')
+    console.log(json)
+}).catch(error => console.error('Something went wrong when fetching this data: ', error))
+```
+
+**`babel-preset-env`** package 通过 [browserslist](https://github.com/browserslist/browserslist) 来转译那些你浏览器中不支持的特性。这个 preset 使用 [`useBuiltIns`](https://babel.docschina.org/docs/en/babel-preset-env#usebuiltins) 选项，默认值是 `false`，这种方式可以将全局 `babel-polyfill` 导入，改进为更细粒度的 `import` 格式：
+
+查看 [仓库](https://github.com/babel/babel-preset-env) 以获取更多信息。
+
+```js
+import 'core-js/modules/es7.string.pad-start';
+import 'core-js/modules/es7.string.pad-end';
+import 'core-js/modules/web.timers';
+import 'core-js/modules/web.immediate';
+import 'core-js/modules/web.dom.iterable';
+```
+
+### 处理遗留模块的工具
+
+[`script-loader`](https://v4.webpack.docschina.org/loaders/script-loader/) 会在 global context(全局上下文) 中对代码进行 eval 取值，这类似于通过一个 `script` 标签引入脚本。在这种模式下，每个正常的 library 都应该能运行。对 `require`, `module` 等取值是 undefined。*在使用* `script-loader` *时，模块将转为一个字符串，然后添加到 bundle 中。它不会被* `webpack` *压缩，所以你应该选择一个 min 版本。而且，使用此 loader 添加的 library 也没有* `devtool` *支持。*
+
+这些遗留模块如果没有 AMD/CommonJS 版本，但你也想将他们加入 `dist` 文件，则可以使用 [`noParse`](https://v4.webpack.docschina.org/configuration/module/#module-noparse) 来标识出这个模块。这样就能使 webpack 将引入这些模块，但是不进行转化(parse)，以及不解析(resolve) `require()` 和 `import` 语句。这种用法还会提高构建性能。*任何需要 AST 的功能（例如* `ProvidePlugin`*）都不起作用。*
+
+最后，一些模块支持多种 [模块格式](https://v4.webpack.docschina.org/concepts/modules)，例如一个混合有 AMD、CommonJS 和 legacy(遗留) 的模块。在大多数这样的模块中，会首先检查 `define`，然后使用一些怪异代码导出一些属性。在这些情况下，可以通过 [`imports-loader`](https://v4.webpack.docschina.org/loaders/imports-loader/) 设置 `define=>false` 来强制 CommonJS 路径。
 
 ## 部署目标
 
