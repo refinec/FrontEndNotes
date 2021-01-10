@@ -1218,6 +1218,86 @@ document.body.appendChild(component());
 - Vue: [Lazy Load in Vue using Webpack's code splitting](https://alexjoverm.github.io/2017/07/16/Lazy-load-in-Vue-using-Webpack-s-code-splitting/)
 - AngularJS: [AngularJS + Webpack = lazyLoad](https://medium.com/@var_bin/angularjs-webpack-lazyload-bb7977f390dd) by [@var_bincom](https://twitter.com/var_bincom)
 
+## 缓存
+
+### 输出文件名contenthash
+
+```javascript
+# webpack.config.js
+module.exports = {
+    output: {
+        filename:'[name].[contenthash].js', // 当资源内容发生变化时，[contenthash] 也会发生变化。
+    }
+}
+```
+
+### 提取引导模板 extracting boilerplate(提取第三方库)
+
+[`SplitChunksPlugin`](https://v4.webpack.docschina.org/plugins/split-chunks-plugin/) 可以用于将模块分离到单独的 bundle 中。
+
+使用 [`optimization.runtimeChunk`](https://v4.webpack.docschina.org/configuration/optimization/#optimization-runtimechunk) 选项将 runtime 代码拆分为一个单独的 chunk。将其设置为 `single` 来为所有 chunk 创建一个 runtime bundle，另外**将第三方库(library)（例如 `lodash` 或 `react`）提取到单独的 `vendor` chunk 文件中，是比较推荐的做法**：
+
+```javascript
+# webpack.config.js
+module.exports = {
+    optimization: {
+        runtimeChunk: 'single', // 将 runtime 代码拆分为一个单独的 chunk
+        splitChunks:{ // 将第三方库library提取到单独的vendor chunk文件中
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name:'vendors',
+                    chunks: 'all'
+                }
+            }
+        }
+    }
+}
+```
+
+**注意：** 每次打包时，如果修改了某个文件的代码，则所有文件的contenhash都发生变化。这是因为每个 [`module.id`](https://v4.webpack.docschina.org/api/module-variables#module-id-commonjs-) 会默认地基于解析顺序(resolve order)进行增量。也就是说，当解析顺序发生变化，ID 也会随之改变。
+
+```bash
+...
+                           Asset       Size  Chunks                    Chunk Names
+  runtime.1400d5af64fc1b7b3a45.js    5.85 kB      0  [emitted]         runtime
+  vendor.a7561fb0e9a071baadb9.js     541 kB       1  [emitted]  [big]  vendor
+    main.b746e3eb72875af2caa9.js    1.22 kB       2  [emitted]         main
+                      index.html  352 bytes          [emitted]
+...
+```
+
+因此，简要概括：
+
+- `main` bundle 会随着自身的新增内容的修改，而发生变化。
+- `vendor` bundle 会随着自身的 `module.id` 的变化，而发生变化。
+- `manifest` bundle 会因为现在包含一个新模块的引用，而发生变化。
+
+但是，第三方库的vender hash不应该发生变化(个人测试这个问题在webpack4不存在，不用插件)。可用2个插件修复，使得该hash不变。
+
+1. **NamedModulesPlugin**
+
+   使用模块的路径，而不是一个数字 identifier。此插件有助于在开发环境下产生更加可读的输出结果，然而其执行时间会有些长。
+
+2. **[`HashedModuleIdsPlugin`](https://v4.webpack.docschina.org/plugins/hashed-module-ids-plugin)**
+
+   推荐用于生产环境构建
+
+   ```javascript
+   # webpack.config.js
+   const webpack = require('webpack');
+   module.exports = {
+       plugins:[
+           ...
+   new webpack.HashedModuleIdsPlugin() // 生产环境插件。启用contenthash修复，vendor第三方chunk hash不变
+   
+       ]
+   }
+   
+   ```
+
+   
+
 ## 部署目标
 
 > 因为服务器和浏览器代码都可以用 JavaScript 编写，所以 webpack 提供了多种部署 target(目标)
