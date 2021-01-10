@@ -1045,7 +1045,7 @@ module.exports = {
 
 **注意：** 从 webpack v4 开始, 指定 [`mode`](https://v4.webpack.docschina.org/concepts/mode/) 会自动地配置 [`DefinePlugin`](https://v4.webpack.docschina.org/plugins/define-plugin)；还要注意，任何位于 `/src` 的本地代码都可以使用到 process.env.NODE_ENV 环境变量。
 
-## 代码分离
+## (重要)代码分离
 
 > 把代码分离到不同的 bundle 中，然后可以按需加载或并行加载这些文件。代码分离可以用于获取更小的 bundle，以及控制资源加载优先级，如果使用合理，会极大影响加载时间。
 
@@ -1185,6 +1185,38 @@ getComponent().then(component => {
 - [webpack-visualizer](https://chrisbateman.github.io/webpack-visualizer/)：可视化并分析你的 bundle，检查哪些模块占用空间，哪些可能是重复使用的。
 - [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)：一个 plugin 和 CLI 工具，它将 bundle 内容展示为便捷的、交互式、可缩放的树状图形式。
 - [webpack bundle optimize helper](https://webpack.jakoblind.no/optimize)：此工具会分析你的 bundle，并为你提供可操作的改进措施建议，以减少 bundle 体积大小。
+
+## (重要)懒加载
+
+> 在用户点击交互的时候，再加载那个代码块
+
+```javascript
+# lazyLoading.js
+import _ from 'lodash'
+function component(){
+    let element = document.createElement('div');
+    let button = document.createElement('button');
+    let br = document.createElement('br');
+    button.innerHTML = 'Click me and at the console.';
+    element.appendChild(br);
+    element.appendChild(button);
+    // 请注意，由于涉及网络请求，因此需要在生产级站点/应用程序中显示一些加载指示。
+    button.onclick = e => import(/* webpackChunkName: "lazyLoading" */ './print').then( module =>{
+        let printMe =  module.default;
+        printMe();
+    })
+    return element;
+}
+document.body.appendChild(component());
+```
+
+**注意：**  当调用 ES6 模块的 import() 方法（引入模块）时，必须指向模块的 .default 值，因为它才是 promise 被处理后返回的实际的 module 对象。
+
+许多框架和类库对于如何用它们自己的方式来实现（懒加载）都有自己的建议。这里有一些例子：
+
+- React: [Code Splitting and Lazy Loading](https://reacttraining.com/react-router/web/guides/code-splitting)
+- Vue: [Lazy Load in Vue using Webpack's code splitting](https://alexjoverm.github.io/2017/07/16/Lazy-load-in-Vue-using-Webpack-s-code-splitting/)
+- AngularJS: [AngularJS + Webpack = lazyLoad](https://medium.com/@var_bin/angularjs-webpack-lazyload-bb7977f390dd) by [@var_bincom](https://twitter.com/var_bincom)
 
 ## 部署目标
 
