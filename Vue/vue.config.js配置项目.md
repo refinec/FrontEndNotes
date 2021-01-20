@@ -368,6 +368,26 @@ module.exports = {
 }
 ```
 
+### 修复开发环境下的source map
+
+```javascript
+configureWebpack: config =>{
+    // 开发环境下的source map
+    if (process.env.NODE_ENV === "development") {
+        config.devtool = "source-map"
+    }
+},
+# 或者
+chainWebpack(config) {
+    config.when(process.env.NODE_ENV === 'development', // 开发环境
+                // config => config.devtool('cheap-source-map') // 转换过的源码-快
+                config => config.devtool('source-map') // 源码-慢
+               )
+}
+```
+
+
+
 ### 修复 Lazy loading routes Error： [Cyclic dependency ](https://github.com/vuejs/vue-cli/issues/1669)
 
 ```javascript

@@ -5,7 +5,10 @@
 ###  1.block 子元素定宽 + margin
 
 ```html
-<style>
+position: absolute;
+    z-index: 20;
+    width: 50px;
+    height: 20px;<style>
     .parent {
         height: 200px;
     }
