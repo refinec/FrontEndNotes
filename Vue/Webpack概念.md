@@ -1463,6 +1463,82 @@ import 'core-js/modules/web.dom.iterable';
 
 最后，一些模块支持多种 [模块格式](https://v4.webpack.docschina.org/concepts/modules)，例如一个混合有 AMD、CommonJS 和 legacy(遗留) 的模块。在大多数这样的模块中，会首先检查 `define`，然后使用一些怪异代码导出一些属性。在这些情况下，可以通过 [`imports-loader`](https://v4.webpack.docschina.org/loaders/imports-loader/) 设置 `define=>false` 来强制 CommonJS 路径。
 
+## PWA渐进式网络应用程序
+
+1. 安装：
+
+   使用[http-server](https://www.npmjs.com/package/http-server) package(`npm install http-server -D`)
+
+   使用名为 [Workbox](https://github.com/GoogleChrome/workbox) 的 Google 项目为应用程序添加离线体验(`npm install workbox-webpack-plugin -D`)
+
+2. 使用
+
+   ```json
+   # package.json
+   {
+     "scripts": {
+       "build": "webpack",
+       "start": "http-server dist"
+     }
+   }
+   ```
+
+   ```javascript
+   # webpack.config.js
+     const path = require('path');
+     const HtmlWebpackPlugin = require('html-webpack-plugin');
+     const CleanWebpackPlugin = require('clean-webpack-plugin');
+     const WorkboxPlugin = require('workbox-webpack-plugin');
+   
+     module.exports = {
+       entry: {
+         app: './src/index.js',
+         print: './src/print.js'
+       },
+       plugins: [
+         new CleanWebpackPlugin(['dist']),
+         new HtmlWebpackPlugin({
+          title: '渐进式网络应用程序'
+        })
+        }),
+        new WorkboxPlugin.GenerateSW({
+          // 这些选项帮助快速启用 ServiceWorkers
+          // 不允许遗留任何“旧的” ServiceWorkers
+          clientsClaim: true,
+          skipWaiting: true
+        })
+       ],
+       output: {
+         filename: '[name].bundle.js',
+         path: path.resolve(__dirname, 'dist')
+       }
+     };
+   ```
+
+   ```javascript
+   # index.js
+     import _ from 'lodash';
+     import printMe from './print.js';
+   // 注册 Service Worker，使其出场并开始表演
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+          console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+         console.log('SW registration failed: ', registrationError);
+        });
+      });
+    }
+   ```
+
+3. 运行
+
+   * 执行`npm run build`来构建包含注册代码版本的应用程序。
+
+     会生成`service-worker.js`和`workbox-xxxxx.js`的两个文件。`ervice-worker.js` 是 Service Worker 文件，`workbox-xxxxx.js` 是 `service-worker.js` 引用的文件，所以它也可以运行。
+
+   * 执行`npm start`将构建结果 serve 到服务下，停止 server 并刷新页面。如果浏览器能够支持 Service Worker，可以看到应用程序还在正常运行。然而，server 已经**停止** serve 整个 dist 文件夹，此刻是 Service Worker 在进行 serve。
+
 ## 部署目标
 
 > 因为服务器和浏览器代码都可以用 JavaScript 编写，所以 webpack 提供了多种部署 target(目标)
