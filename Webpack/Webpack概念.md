@@ -1539,6 +1539,112 @@ import 'core-js/modules/web.dom.iterable';
 
    * 执行`npm start`将构建结果 serve 到服务下，停止 server 并刷新页面。如果浏览器能够支持 Service Worker，可以看到应用程序还在正常运行。然而，server 已经**停止** serve 整个 dist 文件夹，此刻是 Service Worker 在进行 serve。
 
+## TypeScript
+
+1. 安装 TypeScript compiler 和 loader：
+
+   `npm install --save-dev typescript ts-loader`
+
+2. 配置文件
+
+   查看 [TypeScript 官方文档](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) 了解更多关于 `tsconfig.json` 的配置选项
+
+   ```json
+   # tsconfig.json
+   {
+       // 设置一个基本的配置，来支持 JSX，并将 TypeScript 编译到 ES5
+       "compilerOptions":{
+           "outDir": "./dist/",
+           "sourceMap": true, // 启用 source map,将内联的 source map 输出到编译后的 JavaScript 文件中
+           "noImplicitAny": true,
+           "module": "es6",
+           "target": "es5",
+           "jsx": "react",
+           "allowJs":true
+       }
+   }
+   ```
+
+   ```javascript
+   # webpack.config.js
+   const path = require('path');
+   
+   module.exports = {
+     entry: './src/index.ts',
+     devtool: 'inline-source-map', // 告诉 webpack 提取这些typescript的 source map，并内联到最终的 bundle 中
+     module: {
+       rules: [
+         {
+           test: /\.tsx?$/,
+           use: 'ts-loader',
+           exclude: /node_modules/
+         }
+       ]
+     },
+     resolve: {
+       extensions: [ '.tsx', '.ts', '.js' ]
+     },
+     output: {
+       filename: 'bundle.js',
+       path: path.resolve(__dirname, 'dist')
+     }
+   };
+   ```
+
+### 使用第三方库
+
+在从 npm 安装 third party library(第三方库) 时，一定要同时安装此 library 的类型声明文件(typing definition)。可以从 [TypeSearch](http://microsoft.github.io/TypeSearch/) 中找到并安装这些第三方库的类型声明文件。
+
+如安装 lodash 类型声明文件：`npm install --save-dev @types/lodash`
+
+### 导入其他资源
+
+在 TypeScript 中使用非代码资源(non-code asset)，需要告诉 TypeScript 推断导入资源的类型。
+
+```javascript
+# custom.d.ts 该文件用来表示项目中 TypeScript 的自定义类型声明
+declare module "*.svg" { // 为 .svg 文件设置一个声明
+  const content: any;
+  export default content;
+}
+```
+
+通过指定任何以 `.svg` 结尾的导入(import)，将 SVG 声明(declare) 为一个新的模块(module)，并将模块的 `content` 定义为 `any`。我们可以通过将类型定义为字符串，来更加显式地将它声明为一个 url。同样的概念适用于其他资源，包括 CSS, SCSS, JSON 等
+
+## 生成环境变量
+
+在 `webpack.config.js` 中可以访问到在 webpack 命令行 [环境配置](https://v4.webpack.docschina.org/api/cli/#environment-options) 的 `--env` 参数中传入的任意数量的环境变量。
+
+```sh
+# 如果设置 env 变量，却没有赋值，--env.production 默认表示将 --env.production 设置为 true。
+webpack --env.NODE_ENV=local --env.production --progress
+```
+
+通常，`module.exports` 指向配置对象。要使用 `env` 变量，必须将 `module.exports` 转换成一个函数：
+
+```javascript
+# webpack.config.js
+const path = require('path');
+
+module.exports = env => {
+  // Use env.<YOUR VARIABLE> here:
+  console.log('NODE_ENV: ', env.NODE_ENV); // 'local'
+  console.log('Production: ', env.production); // true
+
+  return {
+    entry: './src/index.js',
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist')
+    }
+  };
+};
+```
+
+
+
+
+
 ## 部署目标
 
 > 因为服务器和浏览器代码都可以用 JavaScript 编写，所以 webpack 提供了多种部署 target(目标)
