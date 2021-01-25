@@ -81,13 +81,13 @@ sass --watch app/sass:public/stylesheets
 
 ## 计算功能
 
-      ```scss
+```scss
 body {
     margin: (14px/2);
     top: 50px + 100px;
     right: $var * 10%;
 }
-      ```
+```
 
 ## 选择器嵌套(&)
 
