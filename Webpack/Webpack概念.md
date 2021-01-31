@@ -1856,20 +1856,115 @@ __webpack_nonce__ = 'c29tZSBjb29sIHN0cmluZyB3aWxsIHBvcCB1cCAxMjM=';
 // ...
 ```
 
+`nonce`属性使得可以将某些内联`script`和`style`元素“白名单” ，同时避免使用CSP`unsafe-inline`指令（这将允许*所有*内联`script`/ `style`），因此，您仍然保留了CSP的关键特性，即通常不允许内联script/style。该`nonce`属性是一种告诉浏览器的方式，即某个（恶意）第三方没有将特定脚本或样式元素的内联内容注入到文档中，而是由控制文件提供服务的服务器的人有意地放入了文档中。
+
+该属性包括以下步骤：
+
+1. 对于您的Web服务器收到的针对特定文档的每个请求，请让您的后端从加密安全的随机数生成器中生成至少128位数据的随机base64编码的字符串；例如`EDNnf03nceIOfn39fn3e9h3sdfa`。那是你的现时
+
+2. 以步骤1中生成的随机数为例，对于要内联`script`/的`style`“白名单”，让您的后端代码`nonce`在通过网络发送文档之前将属性插入文档中，并以该随机数为值：
+
+   ```javascript
+    <script nonce="EDNnf03nceIOfn39fn3e9h3sdfa">…</script>
+   ```
+
+3. 将步骤1中生成的随机数添加`nonce-`到它的前面，并使您的后端生成一个CSP标头，其中包含`script-src`或的源列表中的值`style-src`：
+
+   ```http
+    Content-Security-Policy: script-src 'nonce-EDNnf03nceIOfn39fn3e9h3sdfa'
+   ```
+
+因此，使用随机数的机制是一种替代方法，而不是让您的后端生成内联`script`或`style`您要允许的内联内容的哈希，然后在CSP标头中的适当源列表中指定该哈希。
+
+请注意，由于浏览器无法（无法）检查在两次页面请求之间发送的现时值是否发生了变化，因此尽管不建议这样做，但有可能跳过上面的1并且后端不对现时值进行动态处理，在这种情况下，可以仅将`nonce`具有静态值的属性放入文档的HTML源中，并发送具有相同随机数值的静态CSP标头。
+
+但是，您不希望以这种方式使用静态随机数的原因是，它完全违背了使用随机数的全部目的，因为如果您要使用这样的静态随机数，到那时，您不妨使用`unsafe-inline`。
+
 默认情况下不启用 CSP。需要与文档(document)一起发送相应的 `CSP` header 或 meta 标签 `<meta http-equiv="Content-Security-Policy" ...>`，以告知浏览器启用 CSP。以下是一个包含 CDN 白名单 URL 的 CSP header 的示例：
 
 ```http
 Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted.cdn.com;
+
+Content-Security-Policy: script-src https://host1.com https://host2.com #将这两个来源指定为有效来源
+
+Content-Security-Policy: script-src 'self' https://apis.google.com
+
+若有一个从内容交付网络（如https://cdn.example.net）加载所有资源的应用，并清楚您不需要任何帧内容或插件，则政策可能类似如下：
+Content-Security-Policy: default-src https://cdn.example.net; child-src 'none'; object-src 'none'
+```
+
+`script-src` 是一条指令，其用于控制脚本对于某个特定页面所享有的一组权限。 我们已指定 `'self'` 作为一个有效的脚本来源，指定 `https://apis.google.com` 作为另一个有效的脚本来源。浏览器通过 HTTPS 以及当前页面的来源从 `apis.google.com` 尽职地下载和执行 JavaScript。定义此政策后，浏览器只会引发一个错误，而不会加载来自任何其他来源的脚本。 当狡猾的攻击者设法将代码注入您的网站时，他们只会看到一条错误消息，而不是他们期待的成功。
+
+其余资源指令：(针对特定应用使用任意数量的指令，只需在 HTTP 标头中列出每条指令，并使用分号将它们隔开。)
+
+- **`base-uri`** 用于限制可在页面的 `<base>` 元素中显示的网址。
+- **`child-src`** 用于列出适用于工作线程和嵌入的帧内容的网址。例如：`child-src https://youtube.com` 将启用来自 YouTube（而非其他来源）的嵌入视频。 使用此指令替代已弃用的 **`frame-src`** 指令。
+- **`connect-src`** 用于限制可（通过 XHR、WebSockets 和 EventSource）连接的来源。
+- **`font-src`** 用于指定可提供网页字体的来源。Google 的网页字体可通过 `font-src https://themes.googleusercontent.com` 启用。
+- **`form-action`** 用于列出可从 `<form>` 标记提交的有效端点。
+- **`frame-ancestors`** 用于指定可嵌入当前页面的来源。此指令适用于 `<frame>`、`<iframe>`、`<embed>` 和 `<applet>` 标记。此指令不能在 `<meta>` 标记中使用，并仅适用于非 HTML 资源。
+- **`frame-src`** 已弃用。请改用 **`child-src`**。
+- **`img-src`** 用于定义可从中加载图像的来源。
+- **`media-src`** 用于限制允许传输视频和音频的来源。
+- **`object-src`** 可对 Flash 和其他插件进行控制。
+- **`plugin-types`** 用于限制页面可以调用的插件种类。
+- **`report-uri`** 用于指定在违反内容安全政策时浏览器向其发送报告的网址。此指令不能用于 `<meta>` 标记。
+- **`style-src`** 是 `script-src` 版的样式表。
+- **`upgrade-insecure-requests`** 指示 User Agent 将 HTTP 更改为 HTTPS，重写网址架构。 该指令适用于具有大量旧网址（需要重写）的网站。
+
+**注意：**默认情况下指令在运行时假定 `*` 作为有效来源（可以从任意位置加载，没有任何限制）。可以通过指定一个 **`default-src`** 指令替换此默认行为。 此指令用于定义您未指定的大多数指令的默认值。 一般情况下，这适用于以 `-src` 结尾的任意指令。 如果将 `default-src` 设为 `https://example.com`，并且您未能指定一个 `font-src` 指令，那么，您可以从 `https://example.com` 加载字体，而不能从任何其他地方加载。
+
+策略需要包含 [`default-src`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/default-src)或[`script-src`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src)指令，以防止运行内联脚本以及阻止使用`eval()`。策略需要包含 [`default-src`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/default-src)或[`style-src`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src)指令，以限制从style元素或元素中应用内联样式。`style`属性。有针对各种项目类型的特定指令，因此每种类型都可以有自己的策略，包括字体，框架，图像，音频和视频媒体，脚本和工作程序。
+
+以下指令不使用 `default-src` 作为回退指令。请记住，如果不对其进行设置，则等同于允许加载任何内容。
+
+- `base-uri`
+- `form-action`
+- `frame-ancestors`
+- `plugin-types`
+- `report-uri`
+- `sandbox`
+
+要启用CSP，您需要配置Web服务器以返回 [`Content-Security-Policy`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)HTTP标头。
+
+或者
+
+CSP 首选的传输机制是一个 HTTP 标头。在标记中直接设置一个页面政策会非常有用。 使用一个 `http-equiv` 属性通过 `<meta>` 标记进行此设置：
+
+```html
+<meta http-equiv="Content-Security-Policy" content="default-src https://cdn.example.net; child-src 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src https://*; child-src 'none';">
+```
+
+该政策不能用于 frame-ancestors、report-uri 或 sandbox。
+
+### 示例
+
+```http
+# 网站管理员希望所有内容都来自网站本身的来源（不包括子域）
+Content-Security-Policy: default-src 'self'
+# 网站管理员希望允许来自受信任域及其所有子域的内容（不必与设置CSP的域相同）
+Content-Security-Policy: default-src 'self' trusted.com *.trusted.com
+# 网站管理员希望允许Web应用程序的用户在其自己的内容中包括来自任何来源的图像，但将音频或视频媒体限制为受信任的提供程序，并且将所有脚本仅限制为承载受信任代码的特定服务.默认情况下，仅允许从文档的原始内容开始，但以下情况除外：
+1.图像可以从任何位置加载（请注意通配符“ *”）。
+2.仅允许来自media1.com和media2.com的媒体（不允许来自这些站点的子域）。
+3.可执行脚本只允许来自userscripts.example.com。
+Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com
+# 在线银行网站的网站管理员希望确保使用TLS加载其所有内容，以防止攻击者窃听请求。该服务器仅允许访问通过单一来源onlinebanking.jumbobank.com通过HTTPS专门加载的文档。
+Content-Security-Policy: default-src https://onlinebanking.jumbobank.com
+# 网站站点的网站管理员希望允许电子邮件中的HTML以及从任何地方加载的图像，但不允许JavaScript或其他潜在危险的内容。请注意，此示例未指定script-src，该站点使用default-src伪指令指定的设置，这意味着只能从原始服务器加载脚本。
+Content-Security-Policy: default-src 'self' *.mailsite.com; img-src *
 ```
 
 ### 进一步阅读
 
+- [Google developers中的CSP解释](https://developers.google.com/web/fundamentals/security/csp/)
 - [nonce 设计目的解释](https://stackoverflow.com/questions/42922784/what-s-the-purpose-of-the-html-nonce-attribute-for-script-and-style-elements)
 - [白名单的不安全性和内容安全政策的未来](https://research.google.com/pubs/pub45542.html)
 - [使用 CSP, Hash, Nonce 和 Report URI 锁定你的网站脚本](https://www.troyhunt.com/locking-down-your-website-scripts-with-csp-hashes-nonces-and-report-uri/)
 - [MDN 的 CSP 文档](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 
-### 开发 - Vagrant
+## 开发 - Vagrant
 
 如果你在开发一个更加高级的项目，并且使用 [Vagrant](https://www.vagrantup.com/) 来实现在虚拟机(Virtual Machine)上运行你的开发环境，那你可能会需要在虚拟机中运行 webpack。
 

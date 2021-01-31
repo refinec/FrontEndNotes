@@ -81,13 +81,13 @@ sass --watch app/sass:public/stylesheets
 
 ## 计算功能
 
-      ```scss
+```scss
 body {
     margin: (14px/2);
     top: 50px + 100px;
     right: $var * 10%;
 }
-      ```
+```
 
 ## 选择器嵌套(&)
 
@@ -184,14 +184,14 @@ Mixin有点像C语言的宏（macro），**是可以重用的代码块**。
 * **下面是一个mixin的实例，用来生成浏览器前缀**
 
   ```scss
-  	@mixin rounded($vert, $horz, $radius: 10px) {
+  @mixin rounded($vert, $horz, $radius: 10px) {
            border-#{$vert}-#{$horz}-radius: $radius;
            -moz-border-radius-#{$vert}#{$horz}: $radius;
            -webkit-border-#{$vert}-#{$horz}-radius: $radius;
   }
-  	使用的时候，可以像下面这样调用：
-  	         #navbar li { @include rounded(top, left); }
-           #footer { @include rounded(top, left, 5px); }
+  // 使用的时候，可以像下面这样调用：
+  #navbar li { @include rounded(top, left); }
+  #footer { @include rounded(top, left, 5px); }
   
   ```
 
