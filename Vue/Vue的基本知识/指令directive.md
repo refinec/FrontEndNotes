@@ -696,3 +696,12 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
   在 v-mydirective:[argument]="value" 中，argument 参数可以根据组件实例数据进行更新！这使得自定义指令可以在应用中被灵活使用
 
   ![image-20201121204920021](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121204920021.png)
+
+#### 私有指令中调用 method 中的方法
+
+```
+bind(el, binding, vnode, oldVnode){
+	vnode.context.method中的方法名
+}
+```
+

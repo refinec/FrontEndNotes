@@ -29,3 +29,73 @@
 }
 ```
 
+## 修改input的placeholder
+
+```css
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #909;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #909;
+   opacity:  1;
+}
+:-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #909;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #909;
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+   color:    #909;
+}
+```
+
+## 去掉*input[type="number"]*的默认样式
+
+```css
+// &::-webkit-outer-spin-button,
+// &::-webkit-inner-spin-button {
+    //   -webkit-appearance: none !important;
+    // }
+
+// input[type="number"] {
+    //   -moz-appearance: textfield;
+    // }
+```
+
+## 修改checkbox默认样式
+
+```html
+<input type="checkbox" id="checkbox_sel" class="selectBetting" />
+<label for="checkbox_sel" class=""></label>
+```
+
+```css
+.selectBetting{ 
+  display: none; 
+} 
+.selectBetting + label { 
+  background: url(../images/checkbox.png) no-repeat;
+  width: 64px;
+  height: 64px;
+  display: inline-block; 
+  float: left;
+  cursor: pointer;
+}  
+.selectBetting:checked + label { 
+  background: url(../images/checkbox.png) no-repeat;
+} 
+.selectBetting:checked + label::after { 
+  content: '√';  
+  float: left;
+  font-family: "customfont";
+  color: #6be9ff; 
+  width: 100%; 
+  text-align: center; 
+  font-size: 32px;
+  padding: 10px 0 0 0px;
+  vertical-align: text-top; 
+}
+```
+
