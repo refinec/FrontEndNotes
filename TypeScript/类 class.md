@@ -309,6 +309,108 @@ department = new Department(); // 错误: 不能创建一个抽象类的实例
 department = new AccountingDepartment(); // 允许对一个抽象子类进行实例化和赋值
 department.printName();
 department.printMeeting();
-department.generateReports(); // 错误: 方法在声明的抽象类中不存在
+department.generateReports(); // 错误: 方法在声明的抽象类中不存在。因为department是对对抽象类型的引用，声明为 AccountingDepartment类型便可
 ```
 
+## 构造函数
+
+```ts
+class Greeter {
+    static standardGreeting = "Hello, there";
+    greeting: string;
+    greet() {
+        if (this.greeting) {
+            return "Hello, " + this.greeting;
+        }
+        else {
+            return Greeter.standardGreeting;
+        }
+    }
+}
+
+let greeter1: Greeter;
+greeter1 = new Greeter(); // 实例化 Greeter类，并使用这个对象
+console.log(greeter1.greet());
+
+// greeterMaker变量保存了这个类或者说保存了类构造函数
+// 使用 typeof Greeter，意思是取Greeter类的类型，而不是实例的类型。 或者更确切的说，"告诉我 
+// Greeter标识符的类型"，也就是构造函数的类型。 这个类型包含了类的所有静态成员和构造函数。
+let greeterMaker: typeof Greeter = Greeter;
+greeterMaker.standardGreeting = "Hey there!";
+
+let greeter2: Greeter = new greeterMaker(); // 在 greeterMaker上使用 new，创建 Greeter的实例
+console.log(greeter2.greet());
+```
+
+## 把类当做接口使用
+
+> 类定义会创建两个东西：类的实例类型和一个构造函数。
+
+**因为类可以创建出类型，所以你能够在允许使用接口的地方使用类。**
+
+```tsx
+class Point {
+    x: number;
+    y: number;
+}
+
+interface Point3d extends Point {
+    z: number;
+}
+
+let point3d: Point3d = {x: 1, y: 2, z: 3};
+```
+
+## 小结
+
+- ***静态属性*** **存在于类本身上面而不是类的实例上，通过类名访问**
+- **类具有 *实例部分*与 *静态部分*这两个部分。**
+- **因为类可以创建出类型，所以可以在允许使用接口的地方使用类。**
+
+### 继承
+
+1. **子类从父类继承 属性 和 方法**
+2. **子类继承父类时，子类的 constructor构造函数内 必须先调用 super()执行父类的构造函数。并且在构造函数里访问 this的属性之前，一定要调用 super()，super函数可传参数**
+
+3. **子类的方法内，可通过super关键字调用父类的方法**
+
+### 修饰符
+
+*  **公共** ***public*** **默认**
+
+*  **私有** ***private*** 
+
+  不能在声明它的类的外部访问
+
+* **受保护** ***protected***
+
+  在子类中仍然可以访问，但在类外不能访问。
+
+  构造函数被标记成 ***protected*** 时，该类不能被实例化，但可以被子类继承使用
+
+* **只读** **readonly**
+
+  只读属性必须在 **声明时 ** 或 **构造函数里** 被初始化
+
+最后，通过以上修饰符在**构造函数constructor**的参数前添加，实现***参数属性***。参数属性可以方便地定义并初始化一个成员
+
+```ts
+constructor(readonly name: string) 
+即是 
+readonly name: string;
+constructor(name: string) {}
+```
+
+### 存取器
+
+通过**getters/setters**来截取对对象成员的访问，有效的控制对对象成员的访问。**只带有 `get`不带有 `set`的存取器自动被推断为 `readonly`。 **
+
+### 抽象类
+
+* `abstract`关键字是用于定义抽象类和在抽象类内部定义抽象方法
+
+* **抽象类做为其它派生类的基类使用。一般不会直接被实例化。**
+
+*  **抽象方法的语法与接口方法相似，两者都是定义方法签名但不包含方法体。**
+
+  抽象类可以**包含或不包含**成员的实现细节，**在有`abstract`关键字修饰的属性上，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现。在没有abstract修饰符的方法上要有具体实现细节**
