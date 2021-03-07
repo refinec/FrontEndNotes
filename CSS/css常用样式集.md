@@ -1,6 +1,6 @@
 # css常用样式集
 
-## 滚动条修改
+## 1.滚动条修改
 
 ```css
 /*滚动条宽 长,滚动条整体部分，其中的属性有width,height,background,border等。*/
@@ -29,7 +29,7 @@
 }
 ```
 
-## 修改input的placeholder
+## 2.修改input的placeholder
 
 ```css
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
@@ -51,7 +51,7 @@
 }
 ```
 
-## 去掉*input[type="number"]*的默认样式
+## 3.去掉*input[type="number"]*的默认样式
 
 ```css
 // &::-webkit-outer-spin-button,
@@ -64,7 +64,7 @@
     // }
 ```
 
-## 修改checkbox默认样式
+## 4.修改checkbox默认样式
 
 ```html
 <input type="checkbox" id="checkbox_sel" class="selectBetting" />
@@ -98,4 +98,28 @@
   vertical-align: text-top; 
 }
 ```
+
+## 5.文本超长
+
+### 单行文本 使用单行省略
+
+```css
+width: 200px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+```
+
+### 多行文本的超长省略
+
+```css
+width: 200px;
+overflow : hidden;
+text-overflow: ellipsis;
+display: -webkit-box;
+-webkit-line-clamp: 2; /*两行*/
+-webkit-box-orient: vertical;
+```
+
+## 6.
 
