@@ -4,10 +4,10 @@
 
 ***<u>Buffer类的类方法 :</u>***
 
-	* `Buffer.isBuffer(obj)` 判断是否是一个buffer对象
-	* `Buffer.byteLength(string,[encoding]) ` 判断string转为buffer的长度
-	* `Buffer.concat(list,[totalLength]) ` list是一个数组，将几个buffer合为一个的orgin方法
-	* `Buffer.isEncoding(encoding)` 判断当前是否是一个有效的编码格式
+* `Buffer.isBuffer(obj)` 判断是否是一个buffer对象
+* `Buffer.byteLength(string,[encoding]) ` 判断string转为buffer的长度
+* `Buffer.concat(list,[totalLength]) ` list是一个数组，将几个buffer合为一个的orgin方法
+* `Buffer.isEncoding(encoding)` 判断当前是否是一个有效的编码格式
 
 ### 1. 创建Buffer对象
 
@@ -22,8 +22,8 @@
 
 ***注意：***  我们通常会切割或者分开生产buffer，那么一段话就会被切开，这样的话使用buffer->string则会生成乱码，所以使用Stringdecoder类的`decoder.write(buf);`则会避免这个问题
 
- 	1. `buf.toString([encoding],[start],[end]);` buffer转换为字符串
- 	2. `buf.write(string,[offset],[length],[encoding]);` buffer将string转换为buf并且写入现有的buffer中（这里wirte实际功能是替换！！）
+1. `buf.toString([encoding],[start],[end]);` buffer转换为字符串
+2. `buf.write(string,[offset],[length],[encoding]);` buffer将string转换为buf并且写入现有的buffer中（这里wirte实际功能是替换！！）
 
 ### 3. Buffer⇦⇨Int的相互转换
 
