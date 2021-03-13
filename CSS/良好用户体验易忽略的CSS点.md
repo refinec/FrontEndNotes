@@ -39,6 +39,17 @@ img {
 
 * `object-position`控制图片在其内容框中的位置，类似于 `background-position`。默认是 `object-position: 50% 50%`居中显示
 
+  可以将以上内容包装在@supports中，以避免在不支持对象适配的浏览器中拉伸徽标图像。
+
+  ```
+  @supports (object-fit: contain) {
+    img {
+      object-fit: contain;
+      height: 75px;
+    }
+  }
+  ```
+
 ### 考虑屏幕 `dpr `-- 响应式图片
 
 > 不同的屏幕有不同的`dpr`，这种时候需要考虑利用多倍图去适配不同 `dpr` 的屏幕。

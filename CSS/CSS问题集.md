@@ -1,4 +1,4 @@
-### 使用CSS3 transform动画导致页面抖动模糊
+## 1.使用CSS3 transform动画导致页面抖动模糊
 
 **解决方案：**
 
@@ -46,4 +46,13 @@
    }
    ```
 
-   
+## 2. 防止背景裁剪
+
+```css
+.element {
+    background-size: contain;
+    background-repeat: round;
+}
+```
+
+![](../assets/css/background-round.jpg)

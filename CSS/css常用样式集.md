@@ -121,5 +121,24 @@ display: -webkit-box;
 -webkit-box-orient: vertical;
 ```
 
-## 6.
+## 6. 将文本内容分为多列并添加边框
+
+```css
+p {
+    columns: 3;
+    column-rule: solid 2px #222; /*类似border-right作用*/
+}
+```
+
+![](../assets/css/columns.jpg)
+
+## 7. `li`项旁边的默认小圆圈称为**marker**
+
+```css
+li::marker {
+    color: #ccc;
+}
+```
+
+
 
