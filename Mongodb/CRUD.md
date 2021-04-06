@@ -18,7 +18,7 @@ db.collection.insertOne(
 ```
 
 ```javascript
-db.inventory.insertOne(
+const result = await db.inventory.insertOne(
    { 
        item: "canvas", 
        qty: 100, 
@@ -32,6 +32,8 @@ db.inventory.insertOne(
         "acknowledged" : true,
         "insertedId" : ObjectId("571a218011a82a1d94c02333")
 }
+
+console.dir(result.insertedCount); // 插入数量1条
 ```
 
 ### db.collection.insertMany()
@@ -51,7 +53,7 @@ db.collection.insertMany(
 ```
 
 ```javascript
-db.inventory.insertMany([
+const result = await db.inventory.insertMany([
     { 
         item: "journal", 
         qty: 25, status: "A", 
@@ -73,7 +75,7 @@ db.inventory.insertMany([
                 ObjectId("571a22a911a82a1d94c02338")
         ]
 }
-
+console.dir(result.insertedCount); // 插入数量2条
 ```
 
 **插入多个指定`_id`字段的文档**
@@ -514,7 +516,7 @@ db.inventory.deleteOne( { status: "D" } )
 
 ## 查询文档(表记录)
 
->  除了 find() 方法之外，还有一个 findOne() 方法，它只返回一个文档。
+### db.collection.findOne(query, projection)
 
 ### db.collection.find(query, projection)
 

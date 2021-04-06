@@ -10,7 +10,7 @@
 
   `git tag`
 
-* **查看某些tag**
+* **列出满足条件的 tag **
 
   `git tag -l v1.*`
 
@@ -24,11 +24,15 @@
 
   -m后面带的就是注释信息，这样在日后查看的时候会很有用
 
-  `git tag -a v1.0-m "first version"` 
+  `git tag -a v1.0 -m "first version"` 
+
+  `git show tagName`  查看 tag 相关信息
 
 * **创建带签名的tag**(前提得有GPG私钥)
 
-  `git tag -s v1.0-m "first version"`
+  `git tag -s v1.0 -m "first version"`
+
+  `git tag -v tagName `  验证签署标签
 
 * **为以前的commit添加tag**
 
@@ -42,6 +46,13 @@
 
      `git tag -a v1.18a5cbc2`
 
+  3. **后期补标签**
+
+  ```sql
+  git log --pretty=oneline  #查看提交记录
+  git tag -a tagName  SHA-1 # 在指定的提交指针处添加 标签
+  ```
+
 ## 删除tag
 
 `git tag -d v1.0`
@@ -52,4 +63,7 @@
 
 ## 共享tag
 
-在执行git push的时候，tag是不会上传到服务器的，比如创建tag后git push，在github网页上是看不到tag的，为了共享这些tag，必须这样：`git push origin --tags`
+在执行git push的时候，tag是不会上传到服务器的，比如创建tag后git push，在github网页上是看不到tag的，为了共享这些tag:
+
+* **git push origin v1.0`**   提交指定 tag
+* **git push origin --tags**  提交所有未提交的 tag

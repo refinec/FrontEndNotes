@@ -8,10 +8,15 @@
 app.use(session({
     // 配置加密字符串，它会在原有加密基础上和资格字符串拼起来去加密
     // 目的是为了增加安全性，防止客户端恶意伪造
-    secret: 'keyboard cat',
+    secret: 'keyboard cat', // 作为服务端生成session的签名
+    name:'key', // 返回客户端的key的名称，默认未connect.sid，也可自己设置
     resave: false,
     saveUninitialized: true, //无论是否使用session，都默认直接分配一把钥匙
-	cookie: {maxAge: 66666}
+	cookie: { // 返回给前端key的属性，默认值为{ path:'/', httpOnly:true,secure:false,maxAge:null}
+        maxAge: 66666,
+        secure: true // https这样的情况才可以访问cookie
+    }
+    rolling:false, //在每次请求时强行设置cookie，这将重置cookie过期时间，默认false
 }));
 
 // 1.配置好后，通过 req.session 来访问和设置 Session 成员

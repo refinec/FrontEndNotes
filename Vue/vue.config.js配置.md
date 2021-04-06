@@ -458,6 +458,73 @@ module.exports = {
 }
 ```
 
+### prefetch、preload和路由懒加载
+
+项目打包之后会出现很多 link 标签， 将你的所有打包好的文件都 预加载进来，导致路由懒加载失效。
+
+```html
+<link href=js/chunk-cdfd6c6c.25e21cb5.js rel=prefetch>
+<link href=css/app.b2839875.css rel=preload as=style>
+<link href=css/chunk-vendors.779f7d1d.css rel=preload as=style>
+<link href=js/app.1a2f81ff.js rel=preload as=script>
+<link href=js/chunk-vendors.3a58506f.js rel=preload as=script>
+```
+
+通过配置webpack去掉这一行为
+
+```js
+chainWebpack(config) {
+    config.plugins.delete('preload') 
+    config.plugins.delete('prefetch')  
+}
+```
+
+#### prefetching
+
+> prefetch 是一种 resource hint，用来告诉浏览器在页面加载完成后，利用空闲时间提前获取用户未来可能会访问的内容。这和路由懒加载的理念冲突
+
+```js
+// vue.config.js
+module.exports = {
+  chainWebpack: config => {
+    // 移除 prefetch 插件
+    config.plugins.delete('prefetch')
+
+    // 或者
+    // 修改它的选项：
+    config.plugin('prefetch').tap(options => {
+      options[0].fileBlacklist = options[0].fileBlacklist || []
+      options[0].fileBlacklist.push(/myasyncRoute(.)+?\.js$/)
+      return options
+    })
+  }
+}
+
+```
+
+***这样就解决了路由无法懒加载的问题***
+
+**但是**！！！ 这个预加载是不会影响当前页面的加载性能的，因此预加载是可以被保留的，那在什么情况下我们需要禁用预加载呢？当然是对流量损耗敏感（移动端）的应用场景，在首页对子页面进行全面的预加载，而用户可能只需要跳转其中的一两个子页面甚至停留在首页，造成大量的流量浪费。因此，需要做到控制特定的路由预加载。首先，先移除prefetch插件，然后按需添加预加载。
+
+```javascript
+import(/* webpackPrefetch: true */ './someAsyncComponent.vue')
+```
+
+#### preloading
+
+> preloading是一种 resource hint，用来指定页面加载后很快会被用到的资源，所以在页面加载的过程中，我们希望在浏览器开始主体渲染之前尽早 preload。
+
+preloading用于提高资源加载的优先级，当页面开始加载时，我们总是想核心的代码或资源得到优先处理，因此可以通过preloading提高优先级。
+
+```javascript
+import(/* webpackPreload: true */ 'ChartingLibrary');
+```
+
+**总结**
+
+* 懒加载优化了首屏加载的速率
+* prefetch预加载优化了子页面加载的速率
+
 ### 修复 Lazy loading routes Error： [Cyclic dependency ](https://github.com/vuejs/vue-cli/issues/1669)
 
 ```javascript
@@ -581,11 +648,13 @@ module.exports = {
         .use("image-webpack-loader")
         .loader("image-webpack-loader")
         .options({
+          bypassOnDebug: true
+          // 或
           mozjpeg: { progressive: true, quality: 65 },
           optipng: { enabled: false },
           pngquant: { quality: [0.65, 0.9], speed: 4 },
           gifsicle: { interlaced: false }
-          // webp: { quality: 75 }
+          // webp: { quality: 75 } //ios不支持
         });
     }
   }
