@@ -140,5 +140,45 @@ li::marker {
 }
 ```
 
+## 8.input输入框聚焦时，输入框占位符内容以动画形式移动到左上角作为标题
 
+```html
+<div class="input-box"> 
+    <input class="input-control input-outline" placeholder="账号">
+    <label class="input-label">账号</label>
+</div>
+```
+
+1. 首先让浏览器默认的`placeholder`效果不可见 
+
+   ```css
+   .input-control:placeholder-shown::placeholder { 
+       color: transparent; 
+   }
+   ```
+
+2. 使用`.input-label`元素代替input 的占位符
+
+   ```css
+   .input-box{
+     position: relative;
+   }
+   .input-label {
+     position: absolute;
+     left: 16px; top: 14px;
+     pointer-events: none;
+   }
+   ```
+
+3. 最后在输入框聚焦以及占位符不显示的时候对`<label>`元素进行重定位，效果是缩小并移动到上方
+
+   ```css
+   .input-control:not(:placeholder-shown) ~ .input-label,
+   .input-control:focus ~ .input-label {
+     color: #2486ff;
+     transform: scale(0.75) translate(-2px, -32px);
+   }
+   ```
+
+   
 
