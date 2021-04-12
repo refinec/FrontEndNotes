@@ -88,7 +88,7 @@ module.exports = {
 
 > 更多的静态资源的打包配置，可以看官网是如何使用的，👉（[静态loader管理资源](https://juejin.cn/post/6859888538004783118)）
 
-webpack是默认知道如何打包js文件的，但是对于一些，比如图片，字体图标的模块，webpack就不知道如何打包了,那就去配置文件webpack.config.js配置module：
+webpack是默认知道如何打包js文件的，但是对于一些，比如**图片**，**字体图标**的模块，webpack就不知道如何打包了,那就去配置文件webpack.config.js配置module：
 
 ```javascript
 npm install file-loader -D
@@ -1043,7 +1043,7 @@ module.exports = merge(commonConfig, prodConfig)
 
     对于webpack，旧版本而言，即便每次你npm run build，**内容不做修改的话，contenthash值还是会有所改变**，这个是因为，当你在模块之间存在相互之间的引用关系，有一个**manifest文件**
 
-> manifest文件是用来引导所以模块的交互，manifest文件包含了加载和处理模块的逻辑，举个例子，你的第三方库打包后的文件，我们称之为vendors，你的逻辑代码称为main，当你webpack生成一个bundle时，它同时会去维护一个manifest文件，你可以理解成每个bundle文件存在这里信息，所以每个bundle之间的manifest信息有不同，这样子我们就需要将manifest文件给提取出来。
+> manifest文件是用来引导所以模块的交互，manifest文件包含了加载和处理模块的逻辑，举个例子，你的**第三方库打包后的文件，我们称之为vendors**，你的逻辑代码称为main，当你webpack生成一个bundle时，它同时会去维护一个manifest文件，你可以理解成每个bundle文件存在这里信息，所以每个bundle之间的manifest信息有不同，这样子我们就需要将manifest文件给提取出来。
 
 这个时候，需要在**optimization**中增加一个配置:
 
