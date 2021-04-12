@@ -44,7 +44,7 @@ asyncPrint('hello world', 50);
 
   另一种情况是，await命令后面是一个thenable对象（即定义then方法的对象），那么await会将其等同于 Promise 对象。
 
-* 借助await命令就可以让程序停顿指定的时间
+* **借助await命令就可以让程序停顿指定的时间**
 
   ```javascript
   function sleep(interval) {
@@ -68,7 +68,7 @@ asyncPrint('hello world', 50);
 
   另一种方法是**await后面的 Promise 对象再跟一个catch方法 **，处理前面可能出现的错误
 
-* 多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发
+* **多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发**
 
 * await命令只能用在async函数之中，如果用在普通函数，就会报错
 
@@ -100,7 +100,7 @@ asyncPrint('hello world', 50);
   }
   ```
 
-* 希望多个请求并发执行，可以使用Promise.all方法。当三个请求都会resolved时，下面两种写法效果相同
+* **希望多个请求并发执行，可以使用Promise.all方法**。当三个请求都会resolved时，下面两种写法效果相同
 
   ```javascript
   async function dbFuc(db) {

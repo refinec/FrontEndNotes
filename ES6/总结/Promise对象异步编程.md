@@ -16,9 +16,9 @@
 
 ​	1. **promise内是同步，then内是异步 **
 
-2. reject函数的参数通常是Error对象的实例，表示抛出的错误；resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例
+2. **reject函数的参数通常是Error对象的实例**，表示抛出的错误；**resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例**
 
-3. 调用resolve或reject并不会终结 Promise 内语句的执行，并且同步语句会先于resolve或reject执行，因为因为立即 resolved 的 Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务。所以，最好在它们前面加上return语句，这样就不会有意外。
+3. **调用resolve或reject并不会终结 Promise 内语句的执行，并且同步语句会先于resolve或reject执行**，因为因为立即 resolved 的 **Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务**。所以，最好**在它们前面加上return语句**，这样就不会有意外。
 
 ### promise实例方法
 
@@ -26,7 +26,7 @@
 
 #### 2. Promise.prototype.catch()
 
-​	跟传统的try/catch代码块不同的是，如果没有使用catch方法指定错误处理的回调函数，Promise 对象抛出的错误不会传递到外层代码，即不会有任何反应。这就是说，Promise 内部的错误不会影响到 Promise 外部的代码，通俗的说法就是“Promise 会吃掉错误”。
+​	跟传统的try/catch代码块不同的是，**如果没有使用catch方法指定错误处理的回调函数，Promise 对象抛出的错误不会传递到外层代码**，即不会有任何反应。这就是说，**Promise 内部的错误不会影响到 Promise 外部的代码**，通俗的说法就是“Promise 会吃掉错误”。
 
 不过，**Node** 有一个**unhandledRejection **事件，专门监听未捕获的reject错误，上面的脚本会触发这个事件的监听函数，可以在监听函数里面抛出错误。
 
@@ -102,7 +102,7 @@ Promise.all([p1, p2])
 
 #### 5.Promise.race()
 
-将多个 Promise 实例，包装成一个新的 Promise 实例。只要各个Promise 实例之中有一个有一个实例率先改变状态`Promise.race()`的状态就跟着改变，那个率先改变的 Promise 实例的返回值，就传递给p的回调函数
+将多个 Promise 实例，包装成一个新的 Promise 实例。只要**各个Promise 实例之中有一个有一个实例率先改变状态`Promise.race()`的状态就跟着改变，那个率先改变的 Promise 实例的返回值，就传递给p的回调函数**
 
 * Promise.race()方法的参数与Promise.all()方法一样，如果不是 Promise 实例，就会先调用下面讲到的Promise.resolve()方法，将参数转为 Promise 实例，再进一步处理
 
@@ -129,7 +129,7 @@ allSettledPromise.then(function (results) {
 
 接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。**只要参数实例有一个变成fulfilled状态 **，包装实例就会变成fulfilled状态；如果所有参数实例都变成rejected状态，包装实例就会变成rejected状态
 
-Promise.any()跟Promise.race()方法很像，只有一点不同，就是不会因为某个 Promise 变成rejected状态而结束
+**Promise.any()跟Promise.race()方法很像，只有一点不同，就是不会因为某个 Promise 变成rejected状态而结束**
 
 #### 8. Promise.resolve()
 
@@ -207,7 +207,7 @@ Promise.reject(thenable)
 
 不知道或者不想区分，函数f是同步函数还是异步操作，但是想用 Promise 来处理它。因为这样就可以不管f是否包含异步操作，都用then方法指定下一步流程，用catch方法处理f抛出的错误。一般就会采用下面的写法。
 
-**(重要)**`new Promise()`和 `async`函数让同步函数同步执行，异步函数异步执行，并且让它们具有统一的 API 
+**(重要)** **`new Promise()`和 `async`函数让同步函数同步执行，异步函数异步执行，并且让它们具有统一的 API** 
 
 ```javascript
 // 因此如果f是同步的，就会得到同步的结果；如果f是异步的，就可以用then指定下一步，就像下面的写法。

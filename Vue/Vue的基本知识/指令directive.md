@@ -140,7 +140,7 @@
 
   动态参数预期会求出一个字符串，异常情况下值为 `null`。这个特殊的` null` 值可以被显性地用于移除绑定。
 
-  参数中不要包含大写字母
+  **参数中不要包含大写字母**
 
   ```javascript
   <a v-bind:[attributeName]="url"></a>
@@ -207,14 +207,14 @@
 
 * **该指令的事件修饰符(可串联使用)**
 
-  `.stop` 阻止向外冒泡(阻止所有人的)，调用 `event.stopPropagation()`
+  `.stop` **阻止向外冒泡(阻止所有人的)**，调用 `event.stopPropagation()`
 
-  `.self` 只当事件在该元素本身触发时触发回调(只阻止自己的冒泡，他人的冒泡不管)
+  `.self` **只当事件在该元素本身触发时触发回调(只阻止自己的冒泡，他人的冒泡不管)**
 
-  `.prevent` 阻止默认事件，调用 `event.preventDefault()`。
+  `.prevent` **阻止默认事件**，调用 `event.preventDefault()`。
 
-  * v-on:click.prevent.self 会阻止所有的点击
-  *  v-on:click.self.prevent 只会阻止对元素自身的点击
+  * v-on:click.prevent.self 会**阻止所有的点击**
+  *  v-on:click.self.prevent 只会**阻止对元素自身的点击**
 
   ```html
     <!--提交事件不再重载页面-->
@@ -227,7 +227,7 @@
 
   `.once或~` 事件只触发一次。还能被用到自定义的[组件事件](https://cn.vuejs.org/v2/guide/components-custom-events.html)上
 
-  `.passive或&` 对应 addEventListener 中的 passive 选项。不要把 .passive 和 .prevent 一起使用，.passive 会告诉浏览器你*不*想阻止事件的默认行为。
+  `.passive或&` 对应 addEventListener 中的 passive 选项。**不要把 .passive 和 .prevent 一起使用**，.passive 会告诉浏览器你*不*想阻止事件的默认行为。
 
   ```html
   <!--滚动事件的默认行为（即滚动行为)将会立即触发-->
@@ -504,9 +504,9 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
 
 * **作用域插槽**
 
-  > 在父级组件中，让插槽内容能够访问子组件中的数据。说白了就是我在子组件<slot>上绑定的属性，可以在父组件内使用！
+  > **在父级组件中，让插槽内容能够访问子组件中的数据**。**说白了就是我在子组件<slot>上绑定的属性，可以在父组件内使用**！
 
-  1. 第一步：将 user 作为 <slot> 元素的一个 attribute 绑定，该 attribute 被称为插槽 prop
+  1. 第一步：将 user 作为 <slot> 元素的一个 attribute 绑定，该 attribute 被称为**插槽 prop**
 
      ```vue
      <template>

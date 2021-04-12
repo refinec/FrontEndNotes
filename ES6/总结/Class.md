@@ -55,7 +55,7 @@ Point === Point.prototype.constructor // true
 
 > constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加
 
-* ***constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象***
+* ***constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象***（👈隔壁老王）
 
   ```javascript
   class Foo {
@@ -688,7 +688,7 @@ class ColorPoint extends Point {
      let b = new B();
      ```
 
-   * **在子类普通方法中通过super调用父类的方法时，方法内部的this指向当前的子类实例。由于this指向子类实例，所以如果通过super对某个属性赋值，这时super就是this，赋值的属性会变成子类实例的属性**
+   * **在子类普通方法中通过super调用父类的方法时，父类方法内部的this指向当前的子类实例。由于this指向子类实例，所以如果通过super对某个属性赋值，这时super就是this，赋值的属性会变成子类实例的属性**
 
      ```javascript
      class A {
@@ -738,7 +738,7 @@ class ColorPoint extends Point {
      
      ```
 
-   * **另外，在子类的静态方法中通过super调用父类的方法时，方法内部的this指向当前的子类，而不是子类的实例 **
+   * **另外，在子类的静态方法中通过super调用父类的方法时，父类方法内部的this指向当前的子类，而不是子类的实例 **
 
      ```javascript
      class A {
@@ -887,15 +887,15 @@ B.prototype.__proto__ = A.prototype;
 
 ECMAScript 的原生构造函数大致有下面这些:
 
-- **Boolean()**
-- **Number()**
-- **String()**
-- **Array()**
-- **Date()**
-- **Function()**
-- **RegExp()**
-- **Error()**
-- **Object()**
+1. **Boolean()**
+2. **Number()**
+3. **String()**
+4. **Array()**
+5. **Date()**
+6. **Function()**
+7. **RegExp()**
+8. **Error()**
+9. **Object()**
 
 1. 以前，这些原生构造函数是无法继承的，比如，不能自己定义一个Array的子类。因为ES5 是先新建子类的实例对象this，再将父类的属性添加到子类上，由于父类的内部属性无法获取，导致无法继承原生的构造函数。比如，Array构造函数有一个内部属性[[DefineOwnProperty]]，用来定义新属性时，更新length属性，这个内部属性无法在子类获取，导致子类的length属性行为不正常。
 
