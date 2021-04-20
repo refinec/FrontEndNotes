@@ -1,0 +1,79 @@
+
+
+# 配置文件
+
+**默认开发目录：**
+
+```text
+├── app.js
+├── app.json
+├── app.wxss
+├── pages
+│   │── index
+│   │   ├── index.wxml
+│   │   ├── index.js
+│   │   ├── index.json
+│   │   └── index.wxss
+│   └── logs
+│       ├── logs.wxml
+│       └── logs.js
+└── utils
+```
+
+## app.json
+
+> `app.json` 是小程序的**全局配置**，包括了小程序的**所有页面路径**、**界面表现**、**网络超时时间**、**底部 tab** 等。
+
+```json
+{
+    /** 以下2个字段为必填*/
+    "sitemapLocation":"sitemap.json", // 指明 sitemap.json 的位置
+    "pages":[ // 用于描述当前小程序所有页面路径，这是为了让微信客户端知道当前你的小程序页面定义在哪个目录。小程序中新增/减少页面，都需要对 pages 数组进行修改。 未指定 entryPagePath 时，数组的第一项代表小程序的初始页面（首页）
+        "pages/index/index",
+        "pages/logs/logs"
+    ],
+    
+    /** 以下字段可不填*/
+    "entryPagePath":"pages/index/index", // 默认小程序默认启动首页
+    "window":{ // 定义小程序所有页面的状态栏、导航条、标题、窗口背景色等
+        "backgroundTextStyle":"light",
+        "navigationBarBackgroundColor": "#fff", // 导航栏背景颜色,默认#000000
+        "navigationBarTitleText": "Weixin", // 导航栏标题文字内容
+        "navigationBarTextStyle":"black", // 导航栏标题颜色，仅支持 black / white。 默认white
+        "navigationStyle":"default", // 导航栏样式，仅支持以下值：default 默认样,custom 自定义导航栏，只保留右上角胶囊按钮。
+        "":""
+    },
+    "tabBar": { // 底部 tab 栏的表现
+        "list": [{
+            "pagePath": "pages/index/index",
+            "text": "首页"
+        }, {
+            "pagePath": "pages/logs/index",
+            "text": "日志"
+        }]
+    },
+    "networkTimeout": {
+        "request": 10000,
+        "downloadFile": 10000
+    },
+    "debug": true,
+    "navigateToMiniProgramAppIdList": [
+        "wxe5f52902cf4de896"
+    ]
+}
+```
+
+### 单独页面配置
+
+每一个小程序页面也可以使用 **同名 `.json`** 文件来对本页面的窗口表现进行配置，页面中配置项会覆盖 `app.json` 的 `window` 中相同的配置项。
+
+```json
+{
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "微信接口功能演示",
+    "backgroundColor": "#eeeeee",
+    "backgroundTextStyle": "light"
+}
+```
+

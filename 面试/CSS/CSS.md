@@ -253,9 +253,9 @@ flex 的核心的概念就是 **容器** 和 **轴**。
 
 - flex-grow 放大比例 根据所设置的比例分配盒子所剩余的空间
 - flex-shrink 缩小比例 设置元素的收缩比例   多出盒子的部分，按照比例的大小砍掉相应的大小，即比例越大，被砍的越大，默认值是1
-- flex-basis  伸缩基准值 项目占据主轴的空间。 该属性设置元素的宽度或高度，当然width也可以用来设置元素宽度，如果元素上同时出现了width 和flex-basis那么flex-basis会覆盖width的值
+- flex-basis  伸缩基准值 项目占据主轴的空间。 **该属性设置元素的宽度或高度**，当然width也可以用来设置元素宽度，如果元素上同时出现了width 和flex-basis那么flex-basis会覆盖width的值
 
-  flex: 0 1 auto； 默认主轴是row,那么不会去放大比例，如果所有的子元素宽度和大于父元素宽度时，就会按照比例的大小去砍掉相应的大小。
+  flex: 0 1 auto； 默认主轴是row,那么不会去放大比例，**如果所有的子元素宽度和大于父元素宽度时，就会按照比例的大小去砍掉相应的大小**。
 
 ### 轴
 
@@ -467,8 +467,8 @@ transform:skew(30deg,10deg);  扭曲
 
 ```css
 animation: move 1s linear forwards;
-// 定义动画的时间  duration 
 // 动画的名称
+// 定义动画的时间  duration 
 // 动画的贝塞尔曲线
 // animation-fill-mode 属性规定动画在播放之前或之后，其动画效果是否可见。 
 // forwards  当动画完成后，保持最后一个属性值	

@@ -1,4 +1,31 @@
-##### 1. 使用app.use和express.static公开指定目录
+## 1. app.set(name,value) 、app.get(name)
+
+> **app.set(name,value)**把名字为name的项的值设为value，用于设置参数
+>
+> **app.get(name)** 获取名为name的项的值
+
+```js
+//设定端口
+app.set('port', process.env.PORT || 3000);
+//设定视图路径主要清楚__dirname的意思就可以了，它是node.js中的全局变量，表示取当前执行文件的路径     
+app.set('views', path.join(__dirname,  'views' ));   
+//设定视图引擎模板，还可以设定其他模板
+app.set('view engine',  'jade' );
+```
+
+```js
+if(app.get( 'env' ) ===  'development' ) {  
+    app.use( function (err, req, res, next) { 
+        res.status(err.status|| 500);       
+        res.render( 'error' , {           
+            message: err.message,  
+            error: err        
+        });   
+    });
+}
+```
+
+## 2. 使用app.use([path], function)和express.static公开指定目录
 
 > 公开指定目录，可通过 /public/xx 的方式访问  public 目录中的所有资源
 
@@ -8,7 +35,16 @@ app.use('/static/',express.static('./static/'))
 app.use('/static',express.static(path.join(__dirname, 'public')))
 ```
 
-##### 2. 文件操作路径和模块路径
+```js
+//下面代码表示当用户使用/访问时，调用routes，即routes目录下的index.js文件，
+//其中.js后缀省略，用/users访问时，调用routes目录下users.js文件
+var  routes = require( './routes/index' );
+var  users = require( './routes/users' );
+app.use( '/' , routes);
+app.use( '/users' , users);
+```
+
+## 3. 文件操作路径和模块路径
 
 > 文件操作路径:
 
@@ -28,7 +64,7 @@ require('/data/foo.js');
 require('./data/foo.js');
 ```
 
-##### 3. 使用模板引擎时render函数的使用
+## 4. 使用模板引擎时render函数的使用
 
 > render 方法默认不可使用，但如果配置了模板引擎则可使用
 
@@ -40,7 +76,7 @@ res.render('404.html');
 app.set('views', 'render函数的默径');
 ```
 
-##### 3. 中间件使用细节
+## 5. 中间件使用细节
 
 > 同一个请求所经过的中间件都是同一个请求对象和响应对象。
 >
@@ -50,7 +86,7 @@ app.set('views', 'render函数的默径');
 > * response 响应对象
 > * next 下一个中间件
 
-* ##### 中间件类型
+* ### 中间件类型
 
   * 万能匹配(不关心任何请求路径和请方法)
 
@@ -70,7 +106,7 @@ app.set('views', 'render函数的默径');
   })
   ```
 
-* ##### 错误中间件
+* ### 错误中间件
 
   ```javascript
   app.get('/', function(req, res, next){
