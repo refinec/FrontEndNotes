@@ -151,6 +151,10 @@
 
 当开发者允许微信索引时，微信会通过爬虫的形式，为小程序的页面内容建立索引。当用户的搜索词条触发该索引时，小程序的页面将可能展示在搜索结果中。 爬虫访问小程序内页面时，会携带特定的 **user-agent：`mpcrawler`** 及[场景值](https://developers.weixin.qq.com/miniprogram/dev/reference/scene-list.html)：**`1129`**。需要注意的是，若小程序爬虫发现的页面数据和真实用户的呈现不一致，那么该页面将不会进入索引中。
 
+**注：`sitemap` 的索引提示是默认开启的，如需要关闭 `sitemap` 的索引提示，可在小程序项目配置文件 `project.config.json` 的 `setting` 中配置字段 `checkSiteMap` 为 `false`**
+
+**注: `sitemap` 文件内容最大为 5120 个 UTF8 字符**
+
 **注：没有 sitemap.json 则默认所有页面都能被索引**
 
 **注：`{"action": "allow", "page": "\*"}` 是优先级最低的默认规则，未显式指明 "disallow" 的都默认被索引**
@@ -260,3 +264,4 @@
 - `path/to/page?c=3` => 不被索引
 - 其他页面都会被索引
 
+![](../assets/Applets/sitemap.png)
