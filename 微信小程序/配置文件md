@@ -119,15 +119,144 @@
 
 每一个小程序页面也可以使用 **同名 `.json`** 文件来对本页面的窗口表现进行配置，页面中配置项会覆盖 `app.json` 的 `window` 中相同的配置项。
 
+> 页面配置中**只能设置 `app.json` 中 `window` 对应的配置项**，以决定本页面的窗口表现，**所以无需写 `window` 这个属性**。
+
 ```json
 {
-    "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "微信接口功能演示",
-    "backgroundColor": "#eeeeee",
-    "backgroundTextStyle": "light",
-    "pageOrientation": "auto"
+    "navigationBarBackgroundColor": "#000000", // 导航栏背景颜色
+    "navigationBarTextStyle": "white", //导航栏标题颜色，仅支持 black / white
+    "navigationBarTitleText": "微信接口功能演示", // 导航栏标题文字内容
+    "navigationStyle": "default", //导航栏样式，仅支持以下值：default 默认样式、custom 自定义导航栏，只保留右上角胶囊按钮
+    "backgroundColor": "#eeeeee", // 窗口的背景色
+    "backgroundTextStyle": "light", // 下拉 loading 的样式，仅支持 dark / light
+    "backgroundColorTop": "#ffffff", // 顶部窗口的背景色，仅 iOS 支持
+    "backgroundColorBottom": "#ffffff", // 底部窗口的背景色，仅 iOS 支持
+    "enablePullDownRefresh": false, //是否开启当前页面下拉刷新。
+    "onReachBottomDistance": 50, // 页面上拉触底事件触发时距页面底部距离，单位为px。
+    "pageOrientation": "auto", // 屏幕旋转设置，支持 auto / portrait / landscape
+    "disableScroll": false, // 设置为 true 则禁止页面整体上下滚动。只在页面配置中有效，无法在 app.json 中设置
+    "usingComponents":{}, // 页面自定义组件配置
+    "initialRenderingCache": , //页面初始渲染缓存配置
+    "style": "default", // 启用新版的组件样式
+    "singlePage" : {} // 单页模式相关配置
+    
 }
 ```
 
 <img src="../assets/Applets/window.jpg" style="zoom: 67%;" />
+
+## sitemap.json
+
+> `sitemap.json` 文件用于配置**小程序**及**其页面**是否允许被**微信索引**，文件内容为一个 JSON 对象，如果没有 `sitemap.json` ，则默认为所有页面都允许被索引
+
+当开发者允许微信索引时，微信会通过爬虫的形式，为小程序的页面内容建立索引。当用户的搜索词条触发该索引时，小程序的页面将可能展示在搜索结果中。 爬虫访问小程序内页面时，会携带特定的 **user-agent：`mpcrawler`** 及[场景值](https://developers.weixin.qq.com/miniprogram/dev/reference/scene-list.html)：**`1129`**。需要注意的是，若小程序爬虫发现的页面数据和真实用户的呈现不一致，那么该页面将不会进入索引中。
+
+**注：没有 sitemap.json 则默认所有页面都能被索引**
+
+**注：`{"action": "allow", "page": "\*"}` 是优先级最低的默认规则，未显式指明 "disallow" 的都默认被索引**
+
+```json
+{
+    "rules":[{
+        "action": "allow", // 只有"allow"、"disallow"两个值，命中该规则的页面是否能被索引,
+        "page": "path/to/page", // 取值："*"、页面的路径。* 表示所有页面，不能作为通配符使用
+        "params": ["a", "b"], // 当 page 字段指定的页面在被本规则匹配时可能使用的页面参数名称的列表（不含参数值）
+        "matching": "exact", // 当 page 字段指定的页面在被本规则匹配时，此参数说明 params 匹配方式
+        "priority": 1  // 优先级.  值越大则规则越早被匹配，否则默认从上到下匹配
+    }, {
+        "action": "disallow",
+        "page": "path/to/page",
+        "priority": 2
+    }]
+}
+```
+
+**matching 取值说明**
+
+| 值        | 说明                                                       |
+| --------- | ---------------------------------------------------------- |
+| exact     | 当小程序页面的参数列表**等于** params 时，规则命中         |
+| inclusive | 当小程序页面的参数列表**包含** params 时，规则命中         |
+| exclusive | 当小程序页面的参数列表与 params **交集为空**时，规则命中   |
+| partial   | 当小程序页面的参数列表与 params **交集不为空**时，规则命中 |
+
+```json
+{
+  "rules":[{
+    "action": "allow",
+    "page": "path/to/page",
+    "params": ["a", "b"],
+    "matching": "exact"
+  }, {
+    "action": "disallow",
+    "page": "path/to/page"
+  }]
+}
+```
+
+- `path/to/page?a=1&b=2` => 优先索引
+- `path/to/page` => 不被索引
+- `path/to/page?a=1` => 不被索引
+- `path/to/page?a=1&b=2&c=3` => 不被索引
+- 其他页面都会被索引
+
+```json
+{
+  "rules":[{
+    "action": "allow",
+    "page": "path/to/page",
+    "params": ["a", "b"],
+    "matching": "inclusive"
+  }, {
+    "action": "disallow",
+    "page": "path/to/page"
+  }]
+}
+```
+
+- `path/to/page?a=1&b=2` => 优先索引
+- `path/to/page?a=1&b=2&c=3` => 优先索引
+- `path/to/page` => 不被索引
+- `path/to/page?a=1` => 不被索引
+- 其他页面都会被索引
+
+```json
+{
+  "rules":[{
+    "action": "allow",
+    "page": "path/to/page",
+    "params": ["a", "b"],
+    "matching": "exclusive"
+  }, {
+    "action": "disallow",
+    "page": "path/to/page"
+  }]
+}
+```
+
+- `path/to/page` => 优先索引
+- `path/to/page?c=3` => 优先索引
+- `path/to/page?a=1` => 不被索引
+- `path/to/page?a=1&b=2` => 不被索引
+- 其他页面都会被索引
+
+```json
+{
+  "rules":[{
+    "action": "allow",
+    "page": "path/to/page",
+    "params": ["a", "b"],
+    "matching": "partial"
+  }, {
+    "action": "disallow",
+    "page": "path/to/page"
+  }]
+}
+```
+
+- `path/to/page?a=1` => 优先索引
+- `path/to/page?a=1&b=2` => 优先索引
+- `path/to/page` => 不被索引
+- `path/to/page?c=3` => 不被索引
+- 其他页面都会被索引
+
