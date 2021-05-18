@@ -118,7 +118,7 @@ Page({
 
 ### import
 
-**import可以在该文件中使用目标文件定义的template**。import 有作用域的概念，即只会 import 目标文件中定义的 template，而不会 import 目标文件 import 的 template。
+**import可以在该文件中使用目标文件定义的template**。import 有作用域的概念，即**只会 import 目标文件中定义的 template**，而不会 import 目标文件 import 的 template。
 
 ```html
 <!-- item.wxml -->
