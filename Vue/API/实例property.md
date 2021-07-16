@@ -1,4 +1,4 @@
-# 实例property
+# 实例 property
 
 ## vm.$data
 

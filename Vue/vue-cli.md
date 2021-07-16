@@ -200,7 +200,7 @@ Content-Security-Policy: script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkO
 
 ### Preload
 
-<link rel="preload">是一种 resource hint，用来指定页面加载后很快会被用到的资源，所以在页面加载的过程中，我们希望在浏览器开始主体渲染之前尽早 preload。
+<link rel="preload">是一种 resource hint，用来**指定页面加载后很快会被用到的资源，所以在页面加载的过程中，我们希望在浏览器开始主体渲染之前尽早 preload**。
 
 默认情况下，一个 Vue CLI 应用会为所有初始化渲染需要的文件自动生成 preload 提示。
 
@@ -208,7 +208,7 @@ Content-Security-Policy: script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkO
 
 ###  Prefetch
 
-<link rel="prefetch"> 是一种 resource hint，用来告诉浏览器在页面加载完成后，利用空闲时间提前获取用户未来可能会访问的内容。
+<link rel="prefetch"> 是一种 resource hint，用来告诉浏览器**在页面加载完成后，利用空闲时间提前获取用户未来可能会访问的内容**。
 
 默认情况下，一个 Vue CLI 应用会为所有作为 async chunk 生成的 JavaScript 文件 ([通过动态 `import()` 按需 code splitting](https://webpack.js.org/guides/code-splitting/#dynamic-imports) 的产物) 自动生成 prefetch 提示。
 
@@ -272,8 +272,8 @@ module.exports = {
 
 静态资源可以通过两种方式进行处理：
 
-- 在 JavaScript 被导入或在 template/CSS 中通过相对路径被引用。这类引用会被 webpack 处理。
-- 放置在 `public` 目录下或通过绝对路径被引用。这类资源将会直接被拷贝，而不会经过 webpack 的处理。
+- 在 JavaScript 被导入或在 template/CSS 中通过**相对路径被引用。这类引用会被 webpack 处理**。
+- **放置在 `public` 目录下**或通过**绝对路径被引用**。这类资源将会直接被拷贝，而不会经过 webpack 的处理。
 
 ### 从相对路径导入
 
@@ -312,15 +312,15 @@ module.exports = {
 
 - 如果 URL 是一个绝对路径 (例如 `/images/foo.png`)，它将会被保留不变。
 
-- 如果 URL 以 `.` 开头，它会作为一个相对模块请求被解释且基于你的文件系统中的目录结构进行解析。
+- 如果 URL 以 **`.`** 开头，它会作为一个相对模块请求被解释且基于你的文件系统中的目录结构进行解析。
 
-- 如果 URL 以 `~` 开头，其后的任何内容都会作为一个模块请求被解析。这意味着你甚至可以引用 Node 模块中的资源：
+- 如果 URL 以 **`~`** 开头，**其后的任何内容都会作为一个模块请求被解析。这意味着你甚至可以引用 Node 模块中的资源：**
 
   ```html
   <img src="~some-npm-package/foo.png">
   ```
 
-- 如果 URL 以 `@` 开头，它也会作为一个模块请求被解析。它的用处在于 Vue CLI 默认会设置一个指向 `<projectRoot>/src` 的别名 `@`。**(仅作用于模版中)**
+- 如果 URL 以 **`@`** 开头，它也会作为一个模块请求被解析。它的用处在于 Vue CLI 默认会设置一个指向 `<projectRoot>/src` 的别名 `@`。**(仅作用于模版中)**
 
 ### public 文件夹
 
@@ -328,9 +328,9 @@ module.exports = {
 
 推荐将资源作为你的模块依赖图的一部分导入，这样它们会通过 webpack 的处理并获得如下好处：
 
-- 脚本和样式表会被压缩且打包在一起，从而避免额外的网络请求。
-- 文件丢失会直接在编译时报错，而不是到了用户端才产生 404 错误。
-- 最终生成的文件名包含了内容哈希，因此你不必担心浏览器会缓存它们的老版本。
+- **脚本和样式表会被压缩且打包在一起，从而避免额外的网络请求。**
+- **文件丢失会直接在编译时报错，而不是到了用户端才产生 404 错误。**
+- **最终生成的文件名包含了内容哈希，因此你不必担心浏览器会缓存它们的老版本。**
 
 - 在 `public/index.html` 或其它通过 `html-webpack-plugin` 用作模板的 HTML 文件中，你需要通过 `<%= BASE_URL %>` 设置链接前缀：
 
@@ -364,7 +364,7 @@ module.exports = {
 
 所有编译后的 CSS 都会通过 [css-loader](https://github.com/webpack-contrib/css-loader) 来解析其中的 `url()` 引用，并将这些引用作为模块请求来处理。因此可以根据本地的文件结构用相对路径来引用静态资源。
 
-**注意：** 如果要引用一个 npm 依赖中的文件，或是想要用 webpack alias，则需要在路径前加上 `~` 的前缀来避免歧义。
+**注意：** **如果要引用一个 npm 依赖中的文件，或是想要用 webpack alias，则需要在路径前加上 `~` 的前缀来避免歧义**。
 
 ### 预处理器
 
@@ -596,7 +596,7 @@ VUE_APP_NOT_SECRET_CODE=some_value
 
 **注意：** 不要在应用程序中存储任何机密信息（例如私有 API 密钥），环境变量会随着构建打包嵌入到输出代码
 
-**注意：** <u>只有 `NODE_ENV`，`BASE_URL` 和以 `VUE_APP_` 开头</u>的变量将通过 `webpack.DefinePlugin` 静态地嵌入到*客户端侧*的代码中，代码中可以通过process.env.VUE_APP_BASE_API访问。这是为了避免意外公开机器上可能具有相同名称的私钥。
+**注意：** <u>只有 **`NODE_ENV`**，**`BASE_URL`** 和以 **`VUE_APP_`** 开头</u>的变量将通过 `webpack.DefinePlugin` 静态地嵌入到*客户端侧*的代码中，代码中可以通过**process.env.VUE_APP_BASE_API**访问。这是为了避免意外公开机器上可能具有相同名称的私钥。
 
 要了解解析环境文件规则的细节，参考 [dotenv](https://github.com/motdotla/dotenv#rules)。也可使用 [dotenv-expand](https://github.com/motdotla/dotenv-expand) 来实现变量扩展 (Vue CLI 3.5+ 支持)。例如：
 
@@ -690,7 +690,7 @@ export default {
 
 ### 环境文件加载优先级
 
-* 为一个特定模式准备的环境文件 (如 `.env.production`) 将会比一般的环境文件 (例如 `.env`) 拥有更高的优先级。
+* 为一个特定模式准备的环境文件 (如 **`.env.production`**) 将会比一般的环境文件 (例如 **`.env`**) 拥有更高的优先级。
 
 * 此外，Vue CLI 启动时已经存在的环境变量拥有最高优先级，并不会被 `.env` 文件覆写。
 * `.env` 环境文件是通过运行 `vue-cli-service` 命令载入的，因此环境文件发生变化，需要重启服务。
@@ -723,9 +723,9 @@ VUE_APP_TITLE=My App (staging)
   console.log(process.env.VUE_APP_SECRET)
   ```
 
-* 除了 `VUE_APP_*` 变量之外，应用代码中始终可用的还有两个特殊的变量：
-  * `NODE_ENV` - 会是 `"development"`、`"production"` 或 `"test"` 中的一个。具体的值取决于应用运行的[模式](https://cli.vuejs.org/zh/guide/mode-and-env.html#模式)。
-  * `BASE_URL` - 会和 `vue.config.js` 中的 `publicPath` 选项相符，即你的应用会部署到的基础路径。
+* 除了 **`VUE_APP_*`** 变量之外，应用代码中始终可用的还有两个特殊的变量：
+  * **`NODE_ENV`** - 会是 `"development"`、`"production"` 或 `"test"` 中的一个。具体的值取决于应用运行的[模式](https://cli.vuejs.org/zh/guide/mode-and-env.html#模式)。
+  * **`BASE_URL`** - 会和 `vue.config.js` 中的 `publicPath` 选项相符，即你的应用会部署到的基础路径。
 
   所有解析出来的环境变量都可以在 `public/index.html` 中以 [HTML 插值](https://cli.vuejs.org/zh/guide/html-and-static-assets.html#插值)中介绍的方式使用。
 
@@ -741,9 +741,9 @@ VUE_APP_TITLE=My App (staging)
 
 ### 只在本地有效的变量
 
-有一些不应该提交到代码仓库中的变量，尤其是项目托管在公共仓库时。这种情况下应该使用一个 `.env.local` 文件取而代之。本地环境文件默认会被忽略，且出现在 `.gitignore` 中。
+有一些不应该提交到代码仓库中的变量，尤其是项目托管在公共仓库时。这种情况下应该使用一个 **`.env.local`** 文件取而代之。**本地环境文件默认会被忽略，且出现在 `.gitignore` 中**。
 
-`.local` 也可以加在指定模式的环境文件上，比如 `.env.development.local` 将会在 development 模式下被载入，且被 git 忽略。
+**`.local` 也可以加在指定模式的环境文件上，比如 `.env.development.local` 将会在 development 模式下被载入，且被 git 忽略。**
 
 ## 部署
 
