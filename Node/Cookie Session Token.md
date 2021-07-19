@@ -6,7 +6,7 @@
 
 ### 设置方式
 
-> cookie 都是依靠 `set-cookie` 头设置，且不允许 JavaScript 设置。
+> cookie 都是依靠 **`set-cookie` 头设置**，且**不允许 JavaScript 设置**。
 
 ```http
 Set-Cookie: <cookie-name>=<cookie-value>
@@ -50,7 +50,7 @@ Cookie: PHPSESSID=298zf09hf012fh2; csrftoken=u32t4o3tb3gg43; _gat=1
 
 ## Session
 
- session 才是真正的“信息”，cookie 是容器，里面装着 `PHPSESSID=298zf09hf012fh2;`(上面提到)，这就是一个 session ID。 session 可以理解为信息，而 session id 是获取信息的钥匙，通常是一串唯一的哈希码。
+ **session 才是真正的“信息”，cookie 是容器**，里面装着 `PHPSESSID=298zf09hf012fh2;`(上面提到)，这就是一个 session ID。 session 可以理解为信息，而 session id 是获取信息的钥匙，通常是一串唯一的哈希码。
 
 **session 信息可以储存在客户端，如 [cookie-session](https://github.com/expressjs/cookie-session)，也可以储存在服务器，如 [express-session](https://github.com/expressjs/session)。使用 session ID 就是把 session 放在服务器里，用 cookie 里的 id 寻找服务器的信息。**
 
@@ -102,7 +102,7 @@ session 的值 `eyJ0ZXN0IjoiaGV5In0=` 通过 base64 解码。即可得到 `{"tes
 
 session储存在服务器，那么` express-session` 就需要一个容器 store，它可以是内存、redis、mongoDB 等等等等，内存应该是最快的，但是重启程序就没了，redis 可以作为备选，用数据库存 session 的场景感觉不多。
 
-` express-session`在监测到客户端送来的 cookie 之后，可以从 cookie 获取 sessionID，再使用 id 在 store 中获取 session 信息，挂到 `req.session`，经过这个中间件，就能顺利地使用 req 中的 session。
+**` express-session`在监测到客户端送来的 cookie 之后，可以从 cookie 获取 sessionID，再使用 id 在 store 中获取 session 信息，挂到 `req.session`，经过这个中间件，就能顺利地使用 req 中的 session。**
 
 在请求没有 session id 的情况下，` express-session`通过 `store.generate` 创建新的 session，在你写 session 的时候，cookie 可以不改变，只要根据原来的 cookie 访问内存里的 session 信息就可以了。
 
@@ -166,7 +166,7 @@ app.listen(3001)
 
 ## Token
 
-本质上 token 的功能就是和 session id 一模一样。你把 session id 说成 session token 也没什么问题（Wikipedia 里就写了这个别名）。
+**本质上 token 的功能就是和 session id 一模一样**。你把 session id 说成 session token 也没什么问题（Wikipedia 里就写了这个别名）。
 
 **其中的区别在于：**
 
@@ -175,7 +175,7 @@ app.listen(3001)
 * session id **一般**存在 cookie 里，自动带上；
 * token **一般**是要你主动**放在请求中**，例如设置**请求头**的 `Authorization` 为 `bearer:<access_token>`。
 
-Token 在权限证明上真的很重要，不可泄漏，谁拿到 token，谁就是“主人”。
+**Token 在权限证明上真的很重要**，不可泄漏，谁拿到 token，谁就是“主人”。
 
 ## 两种登录规范
 
@@ -183,7 +183,7 @@ Token 在权限证明上真的很重要，不可泄漏，谁拿到 token，谁�
 
 ### JWT（JSON Web Token）
 
-> 本质是一个Token，里面放着 session 信息。使用客户端储存的方式(是客户端储存 session 信息的一种)，并且可以随你选择放在 **cookie** 或是手动添加在 Authorization！但是他就叫 token！
+> **本质是一个Token，里面放着 session 信息**。使用客户端储存的方式(是**客户端储存 session 信息的一种**)，并且可以随你选择放在 **cookie** 或是手动添加在 **Authorization**！但是他就叫 token！
 
 **（重要）JWT 有着自己的结构**：`Header.Payload.Signature`  通过`.`结合一起
 
@@ -239,9 +239,9 @@ Token 在权限证明上真的很重要，不可泄漏，谁拿到 token，谁�
 
 **用户访问需要授权的连接时，可以把 token 放在 cookie，也可以在请求头带上 `Authorization: Bearer <token>`。（手动放在请求头不受 CORS 限制，不怕 CSRF）**
 
-这样可以用于自家登录，也可以用于第三方登录。单点登录也是 JWT 的常用领域。
+这样可以用于自家登录，也可以用于**第三方登录**。**单点登录**也是 JWT 的常用领域。
 
-JWT 也因为信息储存在客户端造成无法让自己失效的问题，这算是 JWT 的一个缺点。
+**JWT 也因为信息储存在客户端造成无法让自己失效的问题，这算是 JWT 的一个缺点**。
 
 ### HTTP authentication
 

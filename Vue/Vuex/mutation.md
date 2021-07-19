@@ -10,7 +10,7 @@ mutation 都有一个字符串的 **事件类型 (type) **和 一个 **回调函
 
 * **参数二：** payload
 
-  payload可以是单个参数，也可以是包含多个参数的一个对象
+  **payload可以是单个参数，也可以是包含多个参数的一个对象**
 
   ```vue
   <script>
@@ -55,7 +55,7 @@ export const SOME_MUTATION = 'SOME_MUTATION'
     const store = new Vuex.Store({
         state: {...},
         mutations:{
-            //可以使用 ES2015 风格的计算属性命名功能来使用一个常量作为函数名
+            // 可以使用 ES2015 风格的计算属性命名功能来使用一个常量作为函数名
             [SOME_MUTATION](state){
                 
             }

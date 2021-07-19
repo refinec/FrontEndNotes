@@ -14,7 +14,7 @@
 </template>
 <script>
 	Vue.filter('msgFormat', function(msg){
-    return msg.replace(/\,/g, '!');
+    	return msg.replace(/\,/g, '!');
     })
     Vue.filter('msgFormat', function(msg, arg, arg2){
         return msg.replace(/\,/g, arg + arg2);

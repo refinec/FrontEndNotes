@@ -112,7 +112,7 @@ const store = new Vuex.Store({
             namespaced:true,
             getters:{
                 //在这个模块的 getter 中，getters 被局部化了
-                //可以使用getter 的第四个参数来调用 rootGetters
+                //可以使用 getter 的第四个参数来调用 rootGetters
                 someGetter(state, getters, rootState, rootGetters){
                     getters.someOtherGetter // 'foo/someOtherGetter'
                     rootGetters.someOtherGetter // 'someOtherGetter'
