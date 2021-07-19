@@ -8,7 +8,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 
-// 	绑定了axios到vue 或this
+// 	绑定了axios到 vue 或 this
 Vue.axios.get(api).then((response) => {
     console.log(response.data)
 })

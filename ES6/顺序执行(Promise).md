@@ -82,6 +82,7 @@ function getResult(){
 }
 
 getResult();
+
 ```
 
 #### 3. (方法3)使用async、await实现类似同步编程

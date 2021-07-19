@@ -18,7 +18,7 @@
 
 2. **reject函数的参数通常是Error对象的实例**，表示抛出的错误；**resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例**
 
-3. **调用resolve或reject并不会终结 Promise 内语句的执行，并且同步语句会先于resolve或reject执行**，因为因为立即 resolved 的 **Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务**。所以，最好**在它们前面加上return语句**，这样就不会有意外。
+3. **调用resolve或reject并不会终结 Promise 内语句的执行，并且同步语句会先于resolve或reject执行**，因为立即 resolved 的 **Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务**。所以，最好**在它们前面加上return语句**，这样就不会有意外。
 
 ### promise实例方法
 

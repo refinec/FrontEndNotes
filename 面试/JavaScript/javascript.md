@@ -525,7 +525,7 @@ npm i -g lodash-clilodash-cli include=debounce,throttle
 
 ### rAF与 setTimeout 相比
 
-rAF(requestAnimationFrame) 最大的优势是**「由系统来决定回调函数的执行时机」**。
+rAF(requestAnimationFrame) 最大的优势+是**「由系统来决定回调函数的执行时机」**。
 
 具体一点讲就是，系统每次绘制之前会主动调用 rAF 中的回调函数，如果系统绘制率是 60Hz，那么回调函数就每16.7ms 被执行一次，如果绘制频率是75Hz，那么这个间隔时间就变成了 1000/75=13.3ms。
 
@@ -631,7 +631,7 @@ Function.prototype.mycall = function (context, ...args) {
 
 ### 2.客户区大小
 
-> 元素的客户区大小指的是元素内容及其内边距所占据的空间大小
+> 元素的客户区大小指的是**元素内容及其内边距所占据的空间大小**
 
 `clientWidth`：获取元素对象人眼可见内容的宽度，包含 **内容宽width+左右padding**
 
@@ -645,11 +645,11 @@ Function.prototype.mycall = function (context, ...args) {
 
 ### 3.滚动大小
 
-`scrollWidth`:获取对象的滚动宽度。即**获取指定标签内容层的真实宽度**（**可视区域宽度+被隐藏区域宽度**）。
+`scrollWidth`: 获取对象的滚动宽度。即**获取指定标签内容层的真实宽度**（**可视区域宽度+被隐藏区域宽度**）。
 
 `scrollHeight`: 获取对象的滚动高度。即**获取指定标签内容层的真实高度**（**可视区域高度+被隐藏区域高度**）
 
-`scrollLeft`:设置或获取位于<u>对象实际左边界和对象中目前可见内容的最左端之间的距离(width+padding为一体</u>
+`scrollLeft`: 设置或获取位于<u>对象实际左边界和对象中目前可见内容的最左端之间的距离(width+padding为一体</u>
 
 `scrollTop`:页面被卷去的高，设置或获取位于<u>对象实际最顶端的边界和对象中可见内容的最顶端边界之间的距离；(height+padding为一体)</u>
 
@@ -666,7 +666,7 @@ window.addEventListener('scroll', ()=>{
 });
 ```
 
-![DOM总结](https://www.meijindong.top/img/poster/Web%E5%89%8D%E7%AB%AF%E4%B9%8BoffsetWidth-clientWidth-scrollWidth-offsetLeft-clientLeft-scrollLeft/DOM%E6%80%BB%E7%BB%93%E5%9B%BE.jpg)
+<img src="../../assets/javascript/DOM总结图.jpg" alt="DOM总结" style="zoom:80%;" />
 
 ## **实现图片的懒加载**
 
