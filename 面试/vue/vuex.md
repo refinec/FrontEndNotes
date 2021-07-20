@@ -28,13 +28,13 @@
 
 ## 3. 为什么用vuex
 
-1. 当组件多层嵌套的时候，父子组件传递数据很麻烦。
-2. 增加代码的可读性和可维护性
-3. 数据是响应式的，减少数据的派发操作；
+1. 当**组件多层嵌套**的时候，**父子组件传递数据很麻烦**。
+2. **增加代码的可读性和可维护性**
+3. **数据是响应式的，减少数据的派发操作**；
 
 ## 4. Vuex 如何区分 state 是外部直接修改，还是通过 mutation 方法修改的？
 
-Vuex 中修改 state 的唯一渠道就是执行 commit('xx', payload) 方法，其底层通过执行 this._withCommit(fn) 设置_committing 标志变量为 true，然后才能修改 state，修改完毕还需要还原_committing 变量。外部修改虽然能够直接修改 state，但是并没有修改_committing 标志位，所以只要 watch 一下 state，state change 时判断是否_committing 值为 true，即可判断修改的合法性。
+Vuex 中修改 state 的唯一渠道就是执行 **commit('xx', payload)** 方法，其**底层通过执行 this._withCommit(fn) 设置_committing 标志变量为 true，然后才能修改 state，修改完毕还需要还原_committing 变量。**外部修改虽然能够直接修改state，但是并没有修改_committing 标志位，所以只要 watch 一下 state，state change 时判断是否_committing 值为 true，即可判断修改的合法性 。
 
 ## 5. vue 中 ajax 请求代码应该写在组件的 methods 中还是 vuex 的 action 中
 

@@ -822,6 +822,7 @@ function deepClone(obj, hash = new WeakMap()) {
     }
     return res
 }
+
 ```
 
 ## 实现高阶函数柯里化
@@ -853,11 +854,11 @@ function inherit(Son, Father) {
 
 **this 永远指向最后调用它的那个对象**
 
-- 默认指向，作为普通函数调用，指向window，严格模式下指向undefined
-- 使用call/apply/bind 显示改变this指向
-- new对象，被实例调用，指向的就是实例对象
-- 箭头函数：**this指向的是上级作用域中的this**
-- class方法：该this指向的就是实例
+1. 默认指向，作为**普通函数调用**，**指向window，严格模式下指向undefined**
+2. 使用**call/apply/bind** 显示改变this指向
+3. **new对象**，被实例调用，指向的就是实例对象
+4. 箭头函数：**this指向的是上级作用域中的this**
+5. class方法：该this指向的就是实例
 
 ## ECMAScript6 怎么写 class，为什么会出现 class 这种东西
 
@@ -865,21 +866,19 @@ function inherit(Son, Father) {
 
 ## 哪些操作会造成内存泄漏
 
-1. 意外的全局变量
+1. **意外的全局变量**
 
-2. 被遗忘的计时器或回调函数
+2. **被遗忘的计时器或回调函数**
 
-3. 脱离 DOM 的引用
+3. **脱离 DOM 的引用**
 
-4. 闭包
+4. **闭包**
 
-- 第一种情况是我们由于使用未声明的变量，而意外的创建了一个全局变量，而使这个变量一直留在内存中无法被回收。
+- 第一种情况是我们由于**使用未声明的变量**，而意外的创建了一个全局变量，而使这个变量一直留在内存中无法被回收。
 
-- 第二种情况是我们设置了 setInterval 定时器，而忘记取消它，如果循环函数有对外部变量的引用的话，那么这个变量会被一直留
-  在内存中，而无法被回收。
-- 第三种情况是我们获取一个 DOM 元素的引用，而后面这个元素被删除，由于我们一直保留了对这个元素的引用，所以它也无法被回
-  收。
-- 第四种情况是不合理的使用闭包，从而导致某些变量一直被留在内存当中。
+- 第二种情况是我们**设置了 setInterval 定时器，而忘记取消它**，如果循环函数有对外部变量的引用的话，那么这个变量会被一直留在内存中，而无法被回收。
+- 第三种情况是我们**获取一个 DOM 元素的引用，而后面这个元素被删除**，由于我们一直保留了对这个元素的引用，所以它也无法被回收。
+- 第四种情况是**不合理的使用闭包，从而导致某些变量一直被留在内存当中**。
 
 ## Object.is()使用过吗？跟 === 和 == 区别
 
@@ -895,9 +894,9 @@ function inherit(Son, Father) {
 - 任务队列可以分为宏任务对列和微任务对列，当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。
 - 当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
 
-微任务包括了 promise 的回调、node 中的 process.nextTick 、对 Dom 变化监听的 `MutationObserver`。
+微任务包括了 promise 的回调、node 中的 **process.nextTick** 、对 Dom 变化监听的 `MutationObserver`。
 
-宏任务包括了 script 脚本的执行、setTimeout ，setInterval ，setImmediate 一类的定时事件，还有如 I/O 操作、UI 渲染等。
+宏任务包括了 **script 脚本的执行、setTimeout ，setInterval ，setImmediate** 一类的定时事件，还有如 **I/O 操作**、**UI 渲染**等。
 
 ## 立即执行函数是什么
 
@@ -905,7 +904,7 @@ function inherit(Son, Father) {
 
 作用：
 
-1. 不必为函数命名，避免了污染全局变量
+1. 不必为函数命名，**避免了污染全局变量**
 2. 立即执行函数内部形成了一个单独的作用域，**可以封装一些外部无法读取的私有变量**
 3. 封装变量
 
@@ -928,7 +927,7 @@ class EventEmitter {
             this.list[key] = []
         }
         this.list[key].push(fn)
-        this.list[key].flag = this.list[key].length;
+        this.list[key].flag = this.list[key].length; 
         return this
     }
     emit(key, args){
@@ -1003,10 +1002,10 @@ emitter.emit('demo', [1, 2, 3]);
 
 **模块化好处**
 
-- 避免了命名冲突(减少了命名空间污染)
-- 更好的分离，按需加载
-- 更高复用性
-- 高维护性
+- **避免了命名冲突(减少了命名空间污染)**
+- **更好的分离，按需加载**
+- **更高复用性**
+- **高维护性**
 
 ### CommomJS
 
@@ -1014,13 +1013,13 @@ CommonJS定义了两个主要概念：
 
 `require`函数，用于导入模块
 
-`module.exports`变量，用于导出模块
+**`module.exports`**变量，用于导出模块
 
-`require`的第一步是解析路径获取到模块内容：
+`require`的第一步是**解析路径获取到模块内容**：
 
 - 如果是核心模块，比如`fs`，就直接返回模块
 
-- 如果是带有路径的如`/`或者`./`等等，则拼接出一个绝对路径，然后先读取缓存`require.cache`
+- 如果是带有路径的如`/`或者`./`等等，则拼接出一个绝对路径，然后**先读取缓存`require.cache`**
 
   再读取文件。如果没有加后缀，则自动加后缀然后一一识别。
 
@@ -1028,7 +1027,7 @@ CommonJS定义了两个主要概念：
   - `.json`解析JSON对象
   - `.node`解析为二进制插件模块
 
-- 首次加载后的模块会缓存在`require.cache`之中，所以多次加载`require`，得到的对象是同一个。
+- **首次加载后的模块会缓存在`require.cache`之中，所以多次加载`require`，得到的对象是同一个**。
 
 ### ES6模块与CommonJS的区别
 
@@ -1045,15 +1044,15 @@ CommonJS定义了两个主要概念：
 ### 模块化开发怎么做？
 
 - 我对模块的理解是，**一个模块是实现一个特定功能的一组方法**。在最开始的时候，js 只实现一些简单的功能，所以并没有模块的概念，但随着程序越来越复杂，代码的模块化开发变得越来越重要。
-- 由于函数具有独立作用域的特点，最原始的写法是使用函数来作为模块，几个函数作为一个模块，但是这种方式容易造成全局变量的污染，并且模块间没有联系。
+- 由于**函数具有独立作用域的特点**，最原始的写法是使用函数来作为模块，几个函数作为一个模块，但是这种方式容易造成全局变量的污染，并且模块间没有联系。
 - 后面提出了对象写法，通过将函数作为一个对象的方法来实现，这样解决了直接使用函数作为模块的一些缺点，但是这种办法会暴露所有的所有的模块成员，外部代码可以修改内部属性的值。
-- 现在最常用的是立即执行函数的写法，通过利用闭包来实现模块私有作用域的建立，同时不会对全局作用域造成污染。
+- 现在**最常用的是立即执行函数的写法，通过利用闭包来实现模块私有作用域的建立，同时不会对全局作用域造成污染。**
 
 ## Attribute与Property
 
-**attribute **：是HTML标签上的某个属性，如id、class、value等以及自定义属性
+**attribute **：是HTML**标签上的某个属性**，如id、class、value等以及自定义属性
 
-**property **：是js获取的DOM对象上的属性值，比如a，你可以将它看作为一个基本的js对象。
+**property **：是js获取的**DOM对象上的属性值**，比如a，你可以将它看作为一个基本的js对象。
 
 ```javascript
 let demo11 = oDiv.getAttribute('class');
@@ -1098,15 +1097,15 @@ history.replaceState(state, title, url);  替换当前的历史记录，不刷�
 
 **基于hash（location.hash+hashchange事件）**
 
-我们知道location.hash的值就是url中`#`后面的内容，如`http://www.163.com#something`。
+我们知道**location.hash的值就是url中`#`后面的内容**，如`http://www.163.com#something`。
 
-此网址中，location.hash='#something'。
+此网址中，**location.hash='#something'**。
 
 hash满足以下几个特性，才使得其可以实现前端路由：
 
 1. url中hash值的变化并不会重新加载页面，因为hash是用来指导浏览器行为的，对服务端是无用的，所以不会包括在http请求中。
-2. hash值的改变，都会在浏览器的访问历史中增加一个记录，也就是能通过浏览器的回退、前进按钮控制hash的切换
-3. 我们可以通过hashchange事件，监听到hash值的变化，从而响应不同路径的逻辑处理。
+2. **hash值的改变，都会在浏览器的访问历史中增加一个记录**，也就是能通过浏览器的回退、前进按钮控制hash的切换
+3. 我们可以通过**hashchange事件，监听到hash值的变化**，从而响应不同路径的逻辑处理。
 
 ```javascript
 window.addEventListener("hashchange", funcRef, false)
@@ -1116,15 +1115,15 @@ window.addEventListener("hashchange", funcRef, false)
 
 **触发hash值的变化有2种方法**👇
 
-- 一种是通过a标签，设置href属性，当标签点击之后，地址栏会改变，同时会触发hashchange事件
+- 一种是**通过a标签，设置href属性**，当标签点击之后，地址栏会改变，同时会触发hashchange事件
 
 ```html
 <a href="#TianTianUp">to somewhere</a>
 ```
 
-* 另一种是通过js直接赋值给location.hash，也会改变url，触发hashchange事件。
+* 另一种是通过**js直接赋值给location.hash**，也会改变url，触发**hashchange事件**。
 
 ```
-location.hash="#somewhere
+location.hash="#somewhere"
 ```
 
