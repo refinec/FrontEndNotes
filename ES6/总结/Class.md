@@ -624,7 +624,7 @@ class ColorPoint extends Point {
 
 1. **super作为函数调用时，代表父类的构造函数**。ES6 要求，子类的构造函数必须执行一次super函数
 
-   super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此super()在这里相当于**A.prototype.constructor.call(this) **。作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。
+   super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此super()在这里相当于**A.prototype.constructor.call(this) **。**作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。**
 
    ```javascript
    // new.target指向当前正在执行的函数。可以看到，在super()执行时，它指向的是子类B的构造函数，而不是父类A的构造函数。也就是说，super()内部的this指向的是B。
@@ -777,7 +777,7 @@ class ColorPoint extends Point {
 
      上面代码中，super.valueOf()表明super是一个对象，因此就不会报错。同时，由于**super使得this指向B的实例**，所以super.valueOf()返回的是一个B的实例。
 
-   * 最后，由于对象总是继承其他对象的，所以可以在任意一个对象中，使用super关键字。
+   * 最后，**由于对象总是继承其他对象的，所以可以在任意一个对象中，使用super关键字。**
 
    ```javascript
    var obj = {
