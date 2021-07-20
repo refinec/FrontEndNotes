@@ -462,7 +462,7 @@ __webpack_public_path__ = myRuntimePublicPath;
 
 1. 配置（推荐）：在 **webpack.config.js** 文件中指定 loader。
 
-   在`module.rules` webpack 配置中指定多个 loader。loader 从右到左地取值(evaluate)/执行(execute)。下面的示例中，从 sass-loader 开始执行，然后继续执行 css-loader，最后以 style-loader 为结束。
+   在`module.rules` webpack 配置中指定多个 loader。loader **从右到左**地取值(evaluate)/执行(execute)。下面的示例中，从 sass-loader 开始执行，然后继续执行 css-loader，最后以 style-loader 为结束。
 
    ```javascript
    module.exports = {
@@ -506,7 +506,7 @@ __webpack_public_path__ = myRuntimePublicPath;
 
 ## 插件plugin
 
->  loader 用于转换某些类型的模块，而插件则可以用于执行范围更广的任务,在于解决 loader 无法实现的其他事。包括：打包优化，资源管理，注入环境变量。
+>  loader 用于转换某些类型的模块，而插件则可以用于执行范围更广的任务,在于解决 loader 无法实现的其他事。包括：**打包优化，资源管理，注入环境变量**。
 
 ### 剖析
 
@@ -568,7 +568,7 @@ webpack --mode=production
 | 选项        | 描述                                                         |
 | ----------- | ------------------------------------------------------------ |
 | development | 会将 `DefinePlugin` 中 `process.env.NODE_ENV` 的值设置为 `development`。启用 `NamedChunksPlugin` 和 `NamedModulesPlugin`。 |
-| production  | 会将 `DefinePlugin` 中 `process.env.NODE_ENV` 的值设置为 `production`。启用 `FlagDependencyUsagePlugin`, `FlagIncludedChunksPlugin`, `ModuleConcatenationPlugin`, `NoEmitOnErrorsPlugin`, `OccurrenceOrderPlugin`, `SideEffectsFlagPlugin` 和 `TerserPlugin`。 |
+| production  | 会将 `DefinePlugin` 中 `process.env.NODE_ENV` 的值设置为 ` `。启用 `FlagDependencyUsagePlugin`, `FlagIncludedChunksPlugin`, `ModuleConcatenationPlugin`, `NoEmitOnErrorsPlugin`, `OccurrenceOrderPlugin`, `SideEffectsFlagPlugin` 和 `TerserPlugin`。 |
 | none        | 退出任何默认优化选项                                         |
 
 **注意：** *设置* `NODE_ENV` *并不会自动地设置* `mode`。
@@ -1042,8 +1042,7 @@ module.exports = {
        },
    ```
 
-
-**注意：** 从 webpack v4 开始, 指定 [`mode`](https://v4.webpack.docschina.org/concepts/mode/) 会自动地配置 [`DefinePlugin`](https://v4.webpack.docschina.org/plugins/define-plugin)；还要注意，任何位于 `/src` 的本地代码都可以使用到 process.env.NODE_ENV 环境变量。
+**注意：** 从 webpack v4 开始, 指定 [`mode`](https://v4.webpack.docschina.org/concepts/mode/) 会自动地配置 [`DefinePlugin`](https://v4.webpack.docschina.org/plugins/define-plugin)；还要注意，**任何位于 `/src` 的本地代码都可以使用到 process.env.NODE_ENV 环境变量**。
 
 ## (重要)代码分离
 

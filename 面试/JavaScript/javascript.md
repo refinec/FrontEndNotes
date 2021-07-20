@@ -2,30 +2,27 @@
 
 ## 1. 闭包
 
-**闭包就是能够读取其他函数内部变量的函数**。例如在javascript中，只有函数内部的子函数才能读取[局部变量](https://baike.baidu.com/item/局部变量/9844788)，所以闭包可以理解成“定义在一个[函数](https://baike.baidu.com/item/函数/301912)内部的函数“。在本质上，闭包是将函数内部和函数外部连接起来的桥梁。
+**闭包就是能够读取其他函数内部变量的函数**。例如在javascript中，只有函数内部的子函数才能读取[局部变量](https://baike.baidu.com/item/局部变量/9844788)，所以闭包可以理解成“定义在一个[函数](https://baike.baidu.com/item/函数/301912)内部的函数“。在本质上，**闭包是将函数内部和函数外部连接起来的桥梁**。
 
 ```javascript
-　　function f1(){
+function f1(){
+    var n=999;
+    nAdd=function(){
+        n+=1
+    }
+    function f2(){
+        alert(n);
+    }
+    return f2;
+}
 
-　　　　var n=999;
+var result=f1();
 
-　　　　nAdd=function(){n+=1}
+result(); // 999
 
-　　　　function f2(){
-　　　　　　alert(n);
-　　　　}
+nAdd();
 
-　　　　return f2;
-
-　　}
-
-　　var result=f1();
-
-　　result(); // 999
-
-　　nAdd();
-
-　　result(); // 1000
+result(); // 1000
 ```
 
 在这段代码中，result实际上就是**闭包f2函数**。它一共运行了两次，第一次的值是999，第二次的值是1000。这证明了，函数f1中的局部变量n一直保存在内存中，并没有在f1调用后被自动清除。
@@ -111,20 +108,20 @@ Number.isNaN(NaN)   // true
 
 如何判断一个类型是不是可迭代对象
 
-```
+```js
 let someString = "hi";
 typeof someString[Symbol.iterator];          // "function"
 ```
 
 - 常见的可迭代对象，有`Array`，`Map`, `Set`, `String`,`TypeArray`, `arguments`
-- 可以通过判断`Symbol.iterator`判断当前变量是否是可迭代对象
+- 可以通过判断**`Symbol.iterator`**判断当前变量是否是可迭代对象
 
 ## 6.原型
 
 - 在`js`中，我们通常会使用构造函数来创建一个对象，每一个构造函数的内部都有一个prototype属性，这个属性对应的值是一个对象，这个对象它包含了可以由该构造函数的**所有实例都共享的属性和方法**，我们把它称为原型。
 - 原型分为**显示原型**和**隐式原型**，一般称prototype为显示原型，`__proto__`称为隐式原型。
 - 一般而言，`__proto__`这个指针我们应该获取这个值，但是浏览器中都实现了 `__proto__ `属性来让我们访问这个属性，但是我们最好不要使用这个属性，因为它不是规范中规定的。
-- ES5 中新增了一个 `Object.getPrototypeOf()` 方法，我们可以通过这个方法来获取对象的原型。
+- ES5 中新增了一个 **`Object.getPrototypeOf()`** 方法，我们可以通过这个方法来获取对象的原型。
 
 举个例子👇
 
@@ -137,6 +134,15 @@ typeof someString[Symbol.iterator];          // "function"
 - `Demo.constructor.prototype`
 - Demo.`__proto__`
 - `Object.getPrototypeOf(Demo)`
+
+因为设置对象原型的代码：
+
+```js
+Object.setPrototypeOf = function (obj, proto) {
+  obj.__proto__ = proto;
+  return obj;
+ }
+```
 
 ## 6.构造函数、原型与实例之间的关系
 
@@ -151,7 +157,7 @@ typeof someString[Symbol.iterator];          // "function"
 ```javascript
 function Dog (name) {
     this.name = name;
-    this.type = 'Dog'; 
+    this.type = 'Dog';
 }
 Dog.prototype.speak = function () {
 　　alert('wang');
@@ -206,7 +212,7 @@ doggie.superSpeak();  //Animal
 
 `arguments`对象是所有（非箭头）函数中都可用的**局部变量**。此对象包含传递给函数的每个参数，第一个参数在索引0处.`arguments`对象不是一个 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 。它类似于`Array`，但除了length属性和索引元素之外没有任何`Array`属性
 
-转换成数组👇
+**转换成数组**👇
 
 ```javascript
 let args = Array.prototype.slice.call(arguments)
@@ -238,16 +244,16 @@ func(10); // 99
 
 ## 把script标签放在body闭合标签上面的原因
 
-- **JavaScript的执行**会阻塞HTML的解析渲染;
+- **JavaScript的执行**会阻塞HTML的**解析渲染**;
 - 当使用script标签引入外部`js`文件时, **Network线程**会**阻塞HTML的解析**, 但**不会阻塞HTML的渲染**;
 
 JavaScript执行确实会**阻塞HTML的解析渲染**, 若是以**嵌入的方式**引入JavaScript, 不管**script标签**是放在**head标签中**或是**body标签尾部**, 页面都会由于JavaScript的执行而持续白屏; 
 
 而在**引入外部js文件**的情况, 由于**Network线程**下载外部js文件仅阻塞HTML的解析而不会阻塞HTML的渲染, **script标签**置于**body标签尾部**可以避免由于js文件下载时间太长导致的页面持续白屏!
 
-1、避免用户等待，让页面先展示，然后再去执行脚本
-2、防止过多js执行时，变量没有初始化的情况
-3、js文件比较大，一般流程时先加载页面，然后加载并执行js
+1、**避免用户等待，让页面先展示，然后再去执行脚本**
+2、**防止过多js执行时，变量没有初始化的情况**
+3、**js文件比较大，一般流程时先加载页面，然后加载并执行js**
 
 <img src="https://pic1.zhimg.com/80/v2-c079ce4e29760c796f930b8ccf32617c_720w.jpg" style="zoom:67%;" />
 
@@ -267,7 +273,7 @@ JavaScript执行确实会**阻塞HTML的解析渲染**, 若是以**嵌入的方�
 
 **此属性告诉浏览器，此脚本加载的时候，不会阻止浏览器渲染页面，只要此脚本下载完毕，就开始执行脚本**。
 
-不过因为异步下载共有的特性，多个脚本下载完毕的先后顺序，可不一定是按代码的顺序，如果两个脚本前后有依赖，使用 async 可能不是一个好主意。异步加载的方式，更适用于类似 require.js 那样的动态加载。
+不过因为异步下载共有的特性，**多个脚本下载完毕的先后顺序，可不一定是按代码的顺序**，如果两个脚本前后有依赖，使用 async 可能不是一个好主意。异步加载的方式，更适用于类似 require.js 那样的动态加载。
 
 ```javascript
 <script src="..." defer></script>
@@ -411,7 +417,7 @@ function sort(arr) {
 
 ## 获取对象属性的方法
 
-- `Object.keys(testObj) ` 返回的参数就是一个数组，数组内包括对象内可枚举属性和方法名
+- **`Object.keys(testObj) `** 返回的参数就是一个数组，**数组内包括对象内可枚举属性和方法名**
 - for in 遍历的也可以，不过对于非继承的属性名称也会获取到，通过`hasOwnproperty`判断
 - `Object.getOwnPropertyNames(obj) `返回的参数就是一个数组，数组内包括**自身拥有的枚举**或**不可枚举属性**名称字符串，如果是数组的话，还有可能获取到`length`属性
 
@@ -427,14 +433,14 @@ for in
 **for of**
 
 - for of 语法遍历的是数组元素的**值**
-- for in 遍历的是索引
+- for in 遍历的是**索引**
 - for of遍历的只是数组内的元素，而**不包括数组的原型属性method**和**索引name**
 
 **小结**
 
 - **for..of适用遍历数/数组对象/字符串/map/set等拥有迭代器对象的集合，不能遍历对象 **，因为没有迭代对象，与`forEach()`不同的是，它可以正确响应**break**、**continue**和**return**语句。
 
-- **for in 可以遍历一个普通的对象，这样也是它的本质工作，for in会遍历原型以及可枚举属性 **，最好的情况下，使用`hasOwnProperty`判断是不是实例属性。
+- **for in 可以遍历一个普通的对象，这样也是它的本质工作，for in会遍历原型以及可枚举属性 **，最好的情况下，使用**`hasOwnProperty`**判断是不是实例属性。
 
 ## 作用域链
 
@@ -454,38 +460,39 @@ Scope = [AO].concat([[Scope]]);
 
 规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效。
 
+- **鼠标的点击事件，比如`mousedown`只触发一次**
+- **监听滚动事件，比如是否滑到底部自动加载更多，用throttle判断**
+- **比如游戏中发射子弹的频率(1秒发射一颗)**
+
 ```javascript
-function throttle(fn, delay) {
-            let flag = true,
-                timer = null
-            return function(...args) {
-                if(!flag) return
-                let context = this
-                flag = false
-                clearTimeout(timer)
-                timer = setTimeout(function() {
-                    fn.apply(context,args)
-                    flag = true
-                },delay)
-            }
+throttle(callback,wait){
+    let last = Date.now();
+    return function(...args){
+        if((Date.now() - last) > wait){
+            callback.call(this,...args);
+            last = Date.now();
         }
+    }
+}
 ```
 
 **防抖**(延迟)
 
 在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时
 
+- **search搜索，用户不断输入值时，用防抖来节约Ajax请求,也就是输入框事件**。
+- **window触发resize时，不断的调整浏览器窗口大小会不断的触发这个事件，用防抖来让其只触发一次**
+
 ```javascript
-function debounce(fn, delay) {
-            let timer = null
-            return function(...args) {
-                let context = this
-                if(timer) clearTimeout(timer)
-                timer = setTimeout(function(){
-                    fn.apply(context,args)
-                },delay)
-            }
-        }
+function debounce(callback, delay){
+    let timer = null;
+    return function(...args){
+        if(timer) clearTimeout(timer);
+        timer = setTimeout(function(){
+            callback.apply(this, args);
+        },delay)
+    }
+}
 ```
 
 如果仅需要 `_.debounce` 和 `_.throttle` 方法，可以使用 Lodash 的自定义构建工具，生成一个 2KB 的压缩库。使用以下的简单命令即可：
@@ -494,17 +501,6 @@ function debounce(fn, delay) {
 npm i -g lodash-cli
 npm i -g lodash-clilodash-cli include=debounce,throttle
 ```
-
-**防抖**
-
-- **search搜索，用户不断输入值时，用防抖来节约Ajax请求,也就是输入框事件**。
-- **window触发resize时，不断的调整浏览器窗口大小会不断的触发这个事件，用防抖来让其只触发一次**
-
-**节流**
-
-- 鼠标的点击事件，比如`mousedown`只触发一次
-- 监听滚动事件，比如是否滑到底部自动加载更多，用throttle判断
-- 比如游戏中发射子弹的频率(1秒发射一颗)
 
 ## **谈一谈你对requestAnimationFrame（rAF）理解**
 
