@@ -2,9 +2,9 @@
 
 ## 1. webpack与grunt、gulp的不同？
 
-* [grunt](https://link.zhihu.com/?target=https%3A//www.gruntjs.net/)和[gulp](https://link.zhihu.com/?target=https%3A//www.gulpjs.com.cn/)是基于任务和流（Task、Stream）的。类似jQuery，找到一个（或一类）文件，对其做一系列链式操作，更新流上的数据， 整条链式操作构成了一个任务，多个任务就构成了整个web的构建流程。
+* [grunt](https://link.zhihu.com/?target=https%3A//www.gruntjs.net/)和[gulp](https://link.zhihu.com/?target=https%3A//www.gulpjs.com.cn/)是基于**任务和流**（Task、Stream）的。类似jQuery，找到一个（或一类）文件，对其做一系列链式操作，更新流上的数据， 整条链式操作构成了一个任务，多个任务就构成了整个web的构建流程。
 
-* webpack是基于入口的。webpack会自动地递归解析入口所需要加载的所有资源文件，然后用不同的Loader来处理不同的文件，用Plugin来扩展webpack功能。
+* **webpack**是基于**入口**的。webpack会自动地**递归解析入口所需要加载的所有资源文件**，然后**用不同的Loader来处理不同的文件，用Plugin来扩展webpack功能**。
 
 - 从构建思路来说
 
@@ -34,17 +34,17 @@ webpack需要开发者找到入口，并需要清楚对于不同的资源应该�
 
 ## 3. 有哪些常见的Loader？他们是解决什么问题的？
 
-2. `file-loader`：把文件输出到一个文件夹中，在代码中通过相对 URL 去引用输出的文件 (处理图片和字体)
-3. `url-loader`：和 file-loader 类似，区别是用户可以设置一个阈值在文件很小的情况下以 base64 的方式把文件内容注入到代码中去
-3. `babel-loader`：把 ES6 转换成 ES5
-4. `ts-loader`: 将 TypeScript 转换成 JavaScript
-5. `awesome-typescript-loader`:将 TypeScript 转换成 JavaScript，性能优于 ts-loader
-6. `source-map-loader`：加载额外的 Source Map 文件，以方便断点调试
-7. `style-loader`：把 CSS 代码注入到 JavaScript 中，通过 DOM 操作去加载 CSS。
-8. `css-loader`：加载 CSS，支持模块化、压缩、文件导入等特性
-9. `sass-loader`:将SCSS/SASS代码转换成CSS
-10. `postcss-loader`:扩展 CSS 语法，使用下一代 CSS，可以配合 autoprefixer 插件自动补齐 CSS3 前缀
-11. `image-loader`：加载并且压缩图片文件
+2. **`file-loader`**：把文件输出到一个文件夹中，在代码中通过**相对 URL** 去引用输出的文件 (处理图片和字体)
+3. **`url-loader`**：和 file-loader 类似，区别是用户可以**设置一个阈值在文件很小的情况下以 base64 的方式把文件内容注入到代码中**去
+3. **`babel-loader`**：把 ES6 转换成 ES5
+4. **`ts-loader`**: 将 TypeScript 转换成 JavaScript
+5. **`awesome-typescript-loader`**:将 TypeScript 转换成 JavaScript，性能优于 ts-loader
+6. **`source-map-loader`**：加载额外的 Source Map 文件，以方便断点调试
+7. **`style-loader`**：**把 CSS 代码注入到 JavaScript 中**，通过 DOM 操作去加载 CSS。
+8. **`css-loader`**：**加载 CSS**，支持**模块化、压缩、文件导入**等特性
+9. **`sass-loader`**:将SCSS/SASS代码转换成CSS
+10. **`postcss-loader`**:扩展 CSS 语法，使用下一代 CSS，可以配合 autoprefixer 插件自动补齐 CSS3 前缀
+11. **`image-loader`**：加载并且压缩图片文件
 12. `svg-inline-loader`:将压缩后的 SVG 内容注入代码中
 13. `json-loader`:加载 JSON 文件（默认包含）
 14. `raw-loader`:加载文件原始内容（utf-8）
@@ -54,27 +54,27 @@ webpack需要开发者找到入口，并需要清楚对于不同的资源应该�
 18. `coverjs-loader`:计算测试的覆盖率
 19. `vue-loader`:加载 Vue.js 单文件组件
 20. `handlebars-loader`: 将 Handlebars 模版编译成函数并返回
-21. `i18n-loader`:国际化
-22. `cache-loader`:可以在一些性能开销较大的 Loader 之前添加，目的是将结果缓存到磁盘里
+21. **`i18n-loader`**:国际化
+22. **`cache-loader`**:可以在一些性能开销较大的 Loader 之前添加，目的是将结果缓存到磁盘里
 
 ## 4.有哪些常见的Plugin？他们是解决什么问题的？
 
 2. `ignore-plugin` :忽略部分文件
-3. `html-webpack-plugin`:简化 HTML 文件创建 (依赖于 html-loader)
-4. `web-webpack-plugin`:可方便地为单页应用输出 HTML，比 html-webpack-plugin 好用
-5. `commons-chunk-plugin`：提取公共代码
-5. `clean-webpack-plugin`: 目录清理
-6. `terser-webpack-plugin`:支持压缩 ES6 (Webpack4)
+3. **`html-webpack-plugin`**:简化 HTML 文件创建 (依赖于 html-loader)
+4. **`web-webpack-plugin`**:可方便地为单页应用输出 HTML，比 html-webpack-plugin 好用
+5. **`commons-chunk-plugin`**：提取公共代码
+5. **`clean-webpack-plugin`**: 目录清理
+6. **`terser-webpack-plugin`**:支持压缩 ES6 (Webpack4)
 7. `uglifyjs-webpack-plugin`：通过`UglifyES`压缩`ES6`代码
-8. `webpack-parallel-uglify-plugin`: 多进程执行代码压缩，提升构建速度
-9. `mini-css-extract-plugin`:分离样式文件，CSS 提取为独立文件，支持按需加载 (替代extract-text-webpack-plugin)
+8. **`webpack-parallel-uglify-plugin`**: **多进程执行代码压缩，提升构建速度**
+9. **`mini-css-extract-plugin`**:分离样式文件，CSS 提取为独立文件，支持按需加载 (替代extract-text-webpack-plugin)
 10. `serviceworker-webpack-plugin`:为网页应用增加离线缓存功能
 11. `define-plugin`：定义环境变量 (Webpack4 之后指定 mode 会自动配置)
 12. `ModuleConcatenationPlugin`: 开启 Scope Hoisting
-13. `webpack-bundle-analyzer`: 可视化 Webpack 输出文件的体积 (业务组件、依赖第三方模块)
+13. **`webpack-bundle-analyzer`**: 可视化 Webpack 输出文件的体积 (业务组件、依赖第三方模块)
 14. `speed-measure-webpack-plugin`:  可以看到每个 Loader 和 Plugin 执行耗时 (整个打包耗时、每个 Plugin 和 Loader 耗时)
 15. `webpack-dashboard`：可以更友好的展示相关打包信息。
-16. `webpack-merge`：提取公共配置，减少重复配置代码
+16. **`webpack-merge`**：提取公共配置，减少重复配置代码
 17. `size-plugin`：监控资源体积变化，尽早发现问题
 18. `HotModuleReplacementPlugin`：模块热替换
 
@@ -82,13 +82,13 @@ webpack需要开发者找到入口，并需要清楚对于不同的资源应该�
 
 **不同的作用**
 
-- **Loader**直译为"加载器"。Webpack将一切文件视为模块，但是webpack原生是只能解析js文件，如果想将其他文件也打包的话，就会用到`loader`。 所以Loader的作用是**让webpack拥有了加载和解析*非JavaScript文件*的能力 **。(本质就是一个函数，在该函数中对接收到的内容进行转换，返回转换后的结果。 因为 Webpack 只认识 JavaScript，所以 Loader 就成了翻译官，对其他类型的资源进行转译的预处理工作)
-- **Plugin**直译为"插件"。Plugin可以扩展webpack的功能，让webpack具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+- **Loader**直译为"加载器"。Webpack将一切文件视为模块，但是webpack原生是只能解析js文件，如果想将其他文件也打包的话，就会用到`loader`。 所以**Loader的作用是让webpack拥有了加载和解析*非JavaScript文件*的能力 **。(本质就是一个函数，在该函数中对接收到的内容进行转换，返回转换后的结果。 因为 Webpack 只认识 JavaScript，所以 Loader 就成了翻译官，对其他类型的资源进行转译的预处理工作)
+- **Plugin**直译为"插件"。Plugin可以**扩展webpack的功能**，让webpack具有更多的灵活性。 **在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果**。
 
 **不同的用法**
 
-- **Loader**在`module.rules`中配置，也就是说他作为模块的解析规则而存在。 **类型为数组，每一项都是一个`Object` **，里面描述了对于什么类型的文件（`test`），使用什么加载(`loader`)和使用的参数（`options`）
-- **Plugin**在`plugins`中单独配置。 **类型为数组，每一项是一个`plugin`的实例 **，参数都通过构造函数传入。
+- **Loader**在**`module.rules`**中配置，也就是说他作为模块的解析规则而存在。 **类型为数组，每一项都是一个`Object` **，里面描述了对于什么类型的文件（`test`），使用什么加载(`loader`)和使用的参数（`options`）
+- **Plugin**在**`plugins`**中单独配置。 **类型为数组，每一项是一个`plugin`的实例 **，参数都通过构造函数传入。
 
 ## 6.webpack的构建流程是什么?从读取配置到输出文件这个过程尽量说全
 
@@ -116,7 +116,7 @@ Webpack 的运行流程是一个串行的过程，从启动到结束会依次执
 
 map文件只要不打开开发者工具，浏览器是不会加载的。
 
-`hidden-source-map`：借助第三方错误监控平台 Sentry 使用
+`hidden-source-map`：借助**第三方错误监控平台 Sentry 使用**
 
 `nosources-source-map`：只会显示具体行数以及查看源代码的错误栈。安全性比 sourcemap 高
 
@@ -164,13 +164,13 @@ module.export = {
 
 ## **文件指纹是什么？怎么用？**
 
-**文件指纹是打包后输出的文件名的后缀 **。
+文件指纹是**打包后输出的文件名的后缀 **。
 
-`Hash`：和整个项目的构建相关，只要项目文件有修改，整个项目构建的 hash 值就会更改
+**`Hash`**：和整个项目的构建相关，只要项目文件有修改，整个项目构建的 hash 值就会更改
 
-`Chunkhash`：和 Webpack 打包的 chunk 有关，不同的 entry 会生出不同的 chunkhash
+**`Chunkhash`**：和 Webpack 打包的 chunk 有关，不同的 entry 会生出不同的 chunkhash
 
-`Contenthash`：根据文件内容来定义 hash，文件内容不变，则 contenthash 不变
+**`Contenthash`**：**根据文件内容来定义 hash**，文件内容不变，则 contenthash 不变
 
 ```javascript
 // JS的文件指纹设置,设置 output 的 filename，用 chunkhash:
@@ -203,7 +203,7 @@ module.exports = {
 
 **图片的文件指纹设置**
 
-设置file-loader的name，使用hash。
+**设置file-loader的name，使用hash**。
 
 占位符名称及含义
 
@@ -250,7 +250,7 @@ Loader像一个"翻译官"把读到的源文件内容转义成新的文件内容
 
 ## 8.webpack的热更新是如何做到的？说明其原理？
 
-webpack的热更新又称热替换（Hot Module Replacement），缩写为HMR。 这个机制可以做到不用刷新浏览器而将新变更的模块替换掉旧的模块。
+webpack的热更新又称热替换（Hot Module Replacement），缩写为HMR。 这个机制可以做到**不用刷新浏览器而将新变更的模块替换掉旧的模块**。
 
 ![img](https://pic3.zhimg.com/80/v2-40ff7f2e518e4b4695777d5160a3406e_720w.jpg)
 
@@ -271,11 +271,11 @@ webpack的热更新又称热替换（Hot Module Replacement），缩写为HMR。
 
 ## 9.如何利用webpack来优化前端性能？（提高性能和体验）
 
-用webpack优化前端性能是指优化webpack的输出结果，让打包的最终结果在浏览器运行快速高效。
+用webpack优化前端性能是指**优化webpack的输出结果，让打包的最终结果在浏览器运行快速高效**。
 
 - ***压缩代码***。**删除多余的代码、注释、简化代码的写法等**等方式。可以利用webpack的`UglifyJsPlugin`和`ParallelUglifyPlugin`来压缩JS文件， 利用`cssnano`（css-loader?minimize）来压缩css
-- **利用CDN加速 **。在构建过程中，将引用的静态资源路径修改为CDN上对应的路径。可以利用webpack对于`output`参数和各loader的`publicPath`参数来修改资源路径
-- **删除死代码（Tree Shaking） **。将代码中永远不会走到的片段删除掉。可以通过在启动webpack时追加参数`--optimize-minimize`来实现
+- **利用CDN加速 **。在构建过程中，**将引用的静态资源路径修改为CDN上对应的路径**。可以利用webpack对于`output`参数和各loader的`publicPath`参数来修改资源路径
+- **删除死代码（Tree Shaking） **。**将代码中永远不会走到的片段删除掉**。可以通过在启动webpack时追加参数**`--optimize-minimize`**来实现
 - **提取公共代码 **。
 
 ## 10.如何提高webpack的构建速度？
