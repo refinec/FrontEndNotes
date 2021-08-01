@@ -26,9 +26,9 @@
 
 只对可信内容使用 HTML 插值，绝不要对用户提供的内容使用插值。
 
-**v-text:** 更新元素的 `textContent`。如果要更新部分的 `textContent`，需要使用 `{{ Mustache }}` 插值。
+**v-text:** 更新元素的 **`textContent`**。如果要更新部分的 `textContent`，需要使用 `{{ Mustache }}` 插值。
 
-**v-html: ** 更新元素的 `innerHTML`。**注意：内容按普通 HTML 插入 - 不会作为 Vue 模板进行编译**。如果试图使用 `v-html` 组合模板，可以重新考虑是否通过使用组件来替代。在[单文件组件](https://cn.vuejs.org/v2/guide/single-file-components.html)里，`scoped` 的样式不会应用在 `v-html` 内部，因为那部分 HTML 没有被 Vue 的模板编译器处理。如果你希望针对 `v-html` 的内容设置带作用域的 CSS，你可以替换为 [CSS Modules](https://vue-loader.vuejs.org/en/features/css-modules.html) 或用一个额外的全局 `<style>` 元素手动设置类似 BEM 的作用域策略。
+**v-html: ** 更新元素的 **`innerHTML`**。**注意：内容按普通 HTML 插入 - 不会作为 Vue 模板进行编译**。如果试图使用 `v-html` 组合模板，可以重新考虑是否通过使用组件来替代。在[单文件组件](https://cn.vuejs.org/v2/guide/single-file-components.html)里，`scoped` 的样式不会应用在 `v-html` 内部，因为那部分 HTML 没有被 Vue 的模板编译器处理。如果你希望针对 `v-html` 的内容设置带作用域的 CSS，你可以替换为 [CSS Modules](https://vue-loader.vuejs.org/en/features/css-modules.html) 或用一个额外的全局 `<style>` 元素手动设置类似 BEM 的作用域策略。
 
 ### 3. v-bind
 
@@ -36,9 +36,9 @@
 
 **修饰符**：
 
-- `.prop` - 作为一个 DOM property 绑定而不是作为 attribute 绑定。([差别在哪里？](https://stackoverflow.com/questions/6003819/properties-and-attributes-in-html#answer-6004028))
-- `.camel` - (2.1.0+) 将 kebab-case attribute 名转换为 camelCase。(从 2.1.0 开始支持)
-- `.sync` (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 `v-on` 侦听器。
+- **`.prop`** - 作为一个 DOM property 绑定而不是作为 attribute 绑定。([差别在哪里？](https://stackoverflow.com/questions/6003819/properties-and-attributes-in-html#answer-6004028))
+- **`.camel`** - (2.1.0+) 将 kebab-case attribute 名转换为 camelCase。(从 2.1.0 开始支持)
+- **`.sync`** (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 `v-on` 侦听器。
 
 ```html
 <!-- 缩写 -->
@@ -75,13 +75,11 @@
 <svg><a :xlink:special="foo"></a></svg>
 ```
 
-`.camel` 修饰符允许在使用 DOM 模板时将 `v-bind` property 名称驼峰化，例如 SVG 的 `viewBox` property：
+`.camel` 修饰符允许在使用 DOM 模板时将 `v-bind` property 名称**驼峰化**，例如 SVG 的 `viewBox` property：
 
 ```html
 <svg :view-box.camel="viewBox"></svg>
 ```
-
-
 
 * **属性变量+合法的JS表达式**
 
@@ -355,7 +353,7 @@
 
 ### 5. v-model
 
-v-bind指令只能单向绑定数据，v-model可以双向绑定
+v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
 - v-model 指令在表单 <input>、<textarea> 及 <select> 元素上创建双向数据绑定。
 
@@ -369,15 +367,15 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
 
 - **修饰符：**
 
-- - .lazy ：转为在 change 事件_之后_进行同步
-  - .number ：自动将用户的输入值转为数值类型
-  - .trim ：自动过滤用户输入的首尾空白字符
+- - **.lazy** ：转为在 change 事件_之后_进行同步
+  - **.number** ：自动将用户的输入值转为数值类型
+  - **.trim** ：自动过滤用户输入的首尾空白字符
 
 - **自定义组件的 v-model**
 
 - ​	组件上的 v-model 默认会利用名为 `value` 的属性和名为 `input` 的事件
 
-  ![image-20201121194036891](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121194036891.png)
+  ![image-20201121194036891](../../assets/vue/image-20201121194036891.png)
 
   为了让它正常工作，这个组件内的 <input> 必须：
 
@@ -385,19 +383,19 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
 
 - 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
 
-  ![image-20201121200200157](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121200200157.png)
+  ![image-20201121200200157](../../assets/vue/image-20201121200200157.png)
 
   * **model 选项可以用来避免这样的冲突**
 
     这里的 lovingVue 的值将会传入这个名为 checked 的 prop。同时当 <base-checkbox> 触发一个 change 事件并附带一个新的值的时候，这个 lovingVue 的 property 将会被更新
 
-    ![image-20201121200503336](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121200503336.png)
+    ![image-20201121200503336](../../assets/vue/image-20201121200503336.png)
 
 ### 6. v-for
 
 > v-for正在更新已渲染过的元素列表时，默认使用“就地复用”的策略。若数据项的顺序被改变，Vue将不是移动DOM元素来匹配数据项的顺序，而是简单复用此处的每个元素，并确保它在特定索引下显示已被渲染过的每个元素。
 
-要强制其重新排序元素,使用**key属性** :用字符串或数值类型的值作为该属性的值。
+要强制其重新排序元素,使用**key属性** :用**字符串**或**数值**类型的值作为该属性的值。
 
 * 迭代数组 ：(item, index)
 * 迭代对象 : (value, name, index)
@@ -413,11 +411,11 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
 
  * `v-if` ：每次都会重新删除或创建元素，有较高的切换开销；切换过程中条件块内的事件监听器和子组件适当地被销毁和重建。当和 v-if 一起使用时，v-for 的优先级比 v-if 更高。
 
-   也可以同时使用key属性，管理可复用的元素，保证元素唯一性：
+   也可以同时使用key属性，**管理可复用的元素，保证元素唯一性**：
 
    ![image-20201121201453136](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121201453136.png)
 
-* `v-show` ：每次只是切换了元素的display:none 样式，有较高的初始渲染开销。如果元素可能永远
+* `v-show` ：每次只是切换了元素的**display:none** 样式，有较高的初始渲染开销。如果元素可能永远
 
   也不会显示出来被用户看到则应该使用v-if
 
@@ -431,7 +429,7 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
    <span v-once>这个将不会改变{{ msg }}</span>
    ```
 
-* 通过 v-once 创建低开销的静态组件
+* 通过 **v-once 创建低开销的静态组件**
 
   当一个组件包含了大量静态内容，在这种情况下，你可以在根元素上**添加 v-once属性以确保这些内容只计算一次然后缓存起来 **，就像这样:
 
@@ -484,7 +482,7 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
   </template>
   ```
 
-  在一个 <template> 元素上使用 v-slot 指令，并以 v-slot 的参数的形式提供其名称:
+  在一个 <template> 元素上使用 v-slot 指令，并以 v-slot 的**参数的形式提供其名称**:
 
   **注意:** <u> **v-slot 只能添加在 <template> 上**</u>
 
@@ -637,32 +635,32 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
 
 ```vue
 <script>
-	  directives:{
-      'fontweight':{
-          bind: function(el, binding){
-              el.style.fontWeight = binding.value
-          }
-      },
-       //这种function 等同于把代码写到了 bind 和 update
-      'fontsize':function(el,binding){
-          el.style.fontSize = parseInt(binding.value) + 'px';
-      }
-  }
+    directives:{
+        'fontweight':{
+            bind: function(el, binding){
+                el.style.fontWeight = binding.value
+            }
+        },
+            //这种 function 等同于把代码写到了 bind 和 update
+            'fontsize':function(el,binding){
+                el.style.fontSize = parseInt(binding.value) + 'px';
+            }
+    }
 </script>
 ```
 
  * **钩子函数**
    
-   - `bind`：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置(如样式设置)。
-   - `inserted`：被绑定元素插入父节点时调用     (仅保证父节点存在，但不一定已被插入文档中)，可进行事件行为设置。
-   - `update`：所在组件的 VNode 更新时调用，但是可能发生在其子 VNode     更新之前。指令的值可能发生了改变，也可能没有。但是你可以通过比较更新前后的值来忽略不必要的模板更新 
-   - `componentUpdated`：指令所在组件的 VNode 及其子 VNode 全部更新后调用。
-   - `unbind`：只调用一次，指令与元素解绑时调用。做清理操作，比如移除bind时绑定的事件监听器
+   - **`bind`**：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置(如样式设置)。
+   - **`inserted`**：被绑定元素插入父节点时调用     (仅保证父节点存在，但不一定已被插入文档中)，可进行事件行为设置。
+   - **`update`**：**所在组件的 VNode 更新时调用**，但是可能发生在其子 VNode  更新之前。指令的值可能发生了改变，也可能没有。但是你可以通过比较更新前后的值来忽略不必要的模板更新 
+   - **`componentUpdated`**：**指令所在组件的 VNode 及其子 VNode 全部更新后调用**。
+   - **`unbind`**：只调用一次，**指令与元素解绑时调用**。做清理操作，比如移除bind时绑定的事件监听器
 * **钩子函数参数**
 
-  - el：指令所绑定的元素，可以用来直接操作 DOM。
+  - **el**：指令所绑定的元素，可以用来直接操作 DOM。
 
-  - binding：一个对象，包含以下 property：
+  - **binding**：一个对象，包含以下 property：
 
   - - name：指令名，不包括 v- 前缀。
     - **value**：指令的绑定值，例如：v-my-directive="1      + 1" 中，绑定值为 2。
@@ -671,9 +669,9 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
     - **arg**：传给指令的参数，可选。例如 v-my-directive**:**foo 中，参数为 "foo"。
     - modifiers：一个包含修饰符的对象。例如：v-my-directive**.**foo**.**bar 中，修饰符对象为 { foo: true, bar: true }。
 
-  - vnode：Vue 编译生成的虚拟节点。
+  - **vnode**：Vue 编译生成的虚拟节点。
 
-  - oldVnode：上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
+  - **oldVnode**：上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
 
   ***注意：*** 如果需要在钩子之间共享数据，建议通过元素的 [dataset](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/dataset) 来进行。
 
@@ -699,7 +697,7 @@ v-bind指令只能单向绑定数据，v-model可以双向绑定
 
 #### 私有指令中调用 method 中的方法
 
-```
+```vue
 bind(el, binding, vnode, oldVnode){
 	vnode.context.method中的方法名
 }

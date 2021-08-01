@@ -178,14 +178,12 @@ box-sizing：border-box    //怪异盒模型
 
 ```html
 <div class="wrapper">
-        
-        <div class="main">
-            <div class="inner"></div>
-        </div>
-        <div class="left"></div>
-        
-        <div class="right"></div>
+    <div class="main">
+        <div class="inner"></div>
     </div>
+    <div class="left"></div>
+    <div class="right"></div>
+</div>
 ```
 
 ```css
@@ -198,29 +196,24 @@ box-sizing：border-box    //怪异盒模型
     float: left; /*浮动*/
     width: 200px;
     margin-left: -100%;
-    
     height: 400px;
-    
 }
 .right {
     float: left; /*浮动*/
     width: 200px;
     margin-left: -200px;
-    
     height: 400px;
 }
 
 .main {
     float: left; /*浮动*/
     width: 100%; 
-    
     height: 500px;
 }
 .main .inner {
     /* margin水平方向要是左右两者的宽度 */
     margin: 0 200px;    
     height: 100%;
-    
     border: 2px solid brown;
 }
 ```
@@ -551,11 +544,11 @@ CSS hack书写顺序，一般是将适用范围广、被识别能力强的CSS定
 
 ## svg和canvas的区别
 
-1. canvas画图基于像素点，是位图，如果进行放大或缩小会失真 ；
+1. canvas画图**基于像素点**，是位图，如果进行放大或缩小**会失真** ；
 
-   svg基于图形，用html标签描绘形状，放大缩小不会失真 
+   svg**基于图形**，用html标签描绘形状，放大缩小**不会失真** 
 
-2. canvas需要在js中绘制 ；svg在html绘制 
+2. canvas需要**在js中绘制** ；svg**在html绘制** 
 
 3. canvas支持颜色比svg多 
 

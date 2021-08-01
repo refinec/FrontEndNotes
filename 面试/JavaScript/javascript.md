@@ -53,19 +53,19 @@ result(); // 1000
 
 **基本数据类型有**:
 
-1. String
-2. Number
-3. Boolean
-4. Null
-5. Undefined
-6. Symbol
-7. BigInt
+1. **String**
+2. **Number**
+3. **Boolean**
+4. **Null**
+5. **Undefined**
+6. **Symbol**
+7. **BigInt**
 
 **引用数据类型有**:
 
-1. Object
-2. Array
-3. Function
+1. **Object**
+2. **Array**
+3. **Function**
 
 **基本数据类型的值**直接保存在***栈*** 中，而**复杂数据类型的值**保存在***堆***中，**通过使用在栈中保存对应的指针来获取堆中的值**。
 
@@ -118,7 +118,7 @@ typeof someString[Symbol.iterator];          // "function"
 
 ## 6.原型
 
-- 在`js`中，我们通常会使用构造函数来创建一个对象，每一个构造函数的内部都有一个prototype属性，这个属性对应的值是一个对象，这个对象它包含了可以由该构造函数的**所有实例都共享的属性和方法**，我们把它称为原型。
+- 在`js`中，我们**通常会使用构造函数来创建一个对象，每一个构造函数的内部都有一个prototype属性，这个属性对应的值是一个对象，这个对象它包含了可以由该构造函数的所有实例都共享的属性和方法**，我们把它称为原型。
 - 原型分为**显示原型**和**隐式原型**，一般称prototype为显示原型，`__proto__`称为隐式原型。
 - 一般而言，`__proto__`这个指针我们应该获取这个值，但是浏览器中都实现了 `__proto__ `属性来让我们访问这个属性，但是我们最好不要使用这个属性，因为它不是规范中规定的。
 - ES5 中新增了一个 **`Object.getPrototypeOf()`** 方法，我们可以通过这个方法来获取对象的原型。
@@ -386,9 +386,9 @@ function sort(arr) {
 
 ## 解释一下事件流？
 
-* 事件捕获阶段：当事件发生的时候，将事件从window依次往子元素传递
+* **事件捕获阶段**：当事件发生的时候，将事件从window依次往子元素传递
   确定目标阶段：确定事件目标
-* 事件冒泡阶段：事件目标开始处理事件，处理完以后会将事件依次传递给父元素，一直到window
+* **事件冒泡阶段**：事件目标开始处理事件，处理完以后会将事件依次传递给父元素，一直到window
   事件都是在事件冒泡处理,`ie`只有冒泡
 
 ## ajax请求的时候get 和post方式的区别，什么时候用post
@@ -418,8 +418,8 @@ function sort(arr) {
 ## 获取对象属性的方法
 
 - **`Object.keys(testObj) `** 返回的参数就是一个数组，**数组内包括对象内可枚举属性和方法名**
-- for in 遍历的也可以，不过对于非继承的属性名称也会获取到，通过`hasOwnproperty`判断
-- `Object.getOwnPropertyNames(obj) `返回的参数就是一个数组，数组内包括**自身拥有的枚举**或**不可枚举属性**名称字符串，如果是数组的话，还有可能获取到`length`属性
+- **for in** 遍历的也可以，不过对于非继承的属性名称也会获取到，通过`hasOwnproperty`判断
+- **`Object.getOwnPropertyNames(obj) `**返回的参数就是一个数组，数组内包括**自身拥有的枚举**或**不可枚举属性**名称字符串，如果是数组的话，还有可能获取到`length`属性
 
 ## for of 和 for in区别
 
@@ -444,7 +444,7 @@ for in
 
 ## 作用域链
 
-**作用域** 规定了如何查找变量，也就是确定当前执行代码对变量的访问权限。当查找变量的时候，会先从**当前上下文的变量对象中**查找，如果没有找到，就会从**父级（词法层面上的父级）执行上下文的变量对象中**查找，一直找到**全局上下文的变量对象**，也就是全局对象。这样**由多个执行上下文的变量对象构成的链表**就叫做 **作用域链**。
+**<u>作用域 规定了如何查找变量</u>**，也就是确定当前执行代码对变量的访问权限。当查找变量的时候，会先从**当前上下文的变量对象中**查找，如果没有找到，就会从**父级（词法层面上的父级）执行上下文的变量对象中**查找，一直找到**全局上下文的变量对象**，也就是全局对象。这样**由多个执行上下文的变量对象构成的链表**就叫做 **作用域链**。
 
 **函数的作用域在函数创建时就已经确定了。**当函数创建时，会有一个名为 **`[[scope]]`** 的内部属性保存所有父变量对象到其中。当函数执行时，会创建一个执行环境，然后通过复制函数的 `[[scope]]`  属性中的对象构建起执行环境的作用域链，然后，变量对象 `VO` 被激活生成 `AO` 并添加到作用域链的前端，完整作用域链创建完成：
 
@@ -529,9 +529,9 @@ rAF(requestAnimationFrame) 最大的优势+是**「由系统来决定回调函�
 
 另外它可以自动调节频率。如果callback工作太多无法在一帧内完成会自动降低为30fps。虽然降低了，但总比掉帧好。
 
-与setTimeout动画对比的话，有以下几点优势
+**与setTimeout动画对比的话，有以下几点优势**
 
-- 当页面隐藏或者最小化时，setTimeout仍然在后台执行动画，此时页面不可见或者是不可用状态，动画刷新没有意义，浪费CPU。
+- 当页面隐藏或者最小化时，setTimeout仍然在后台执行动画，此时页面不可见或者是不可用状态，动画刷新没有意义，**浪费CPU**。
 - rAF不一样，当页面处理未激活的状态时，该页面的屏幕绘制任务也会被系统暂停，因此跟着系统步伐走的rAF也会停止渲染，当页面被激活时，动画就从上次停留的地方继续执行，有效节省了 CPU 开销。
 
 ### 什么时候调用呢
@@ -547,63 +547,6 @@ rAF(requestAnimationFrame) 最大的优势+是**「由系统来决定回调函�
 
 - 根据经验，如果 JavaScript 方法需要绘制或者直接改变属性，我会选择 `requestAnimationFrame`，只要涉及到重新计算元素位置，就可以使用它。
 - 涉及到 AJAX 请求，添加/移除 class （可以触发 CSS 动画），我会选择 `_.debounce` 或者 `_.throttle` ，可以设置更低的执行频率
-
-## 手写AJAX
-
-```javascript
-function ajax(url, method) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    xhr.open(url, method, true)
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          resolve(xhr.responseText)
-        } else if (xhr.status === 404) {
-          reject(new Error('404'))
-        }
-      } else {
-        reject('请求数据失败')
-      }
-    }
-    xhr.send(null)
-  })
-}
-```
-
-## 数组去重
-
-```javascript
-function unique_3(array) {
-    var obj = {};
-    return array.filter(function (item, index, array) {
-        return obj.hasOwnProperty(typeof item + item) ? false : (obj[typeof item + item] = true)
-    })
-}
-```
-
-## 手写bind函数
-
-```javascript
-Function.prototype.mybind = function(context, ...args) {
-    return (...newArgs) => {
-        return this.call(context, ...args, ...newArgs)
-    }
-}
-```
-
-## 实现call
-
-```javascript
-Function.prototype.mycall = function (context, ...args) {
-    context = Object(context) || window
-    let fn = Symbol(1)
-    context[fn] = this
-    let result = context[fn](...args)
-    delete context[fn]
-    return result
-}
-```
 
 ## offsetWidth、clientWidth、scrollTop的区别？
 
@@ -766,88 +709,6 @@ function throttle(fn, delay) {
 };
 window.addEventListener('scroll', throttle(lazyLoad,1000))
 lazyLoad();  // 首次加载 
-```
-
-## 实现一个快排
-
-```javascript
-function quickSort(arr){
-    if (arr.length <= 1) return arr;
-    let index = Math.floor(arr.length / 2)
-    let pivot = arr.splice(index, 1)[0],
-        left = [],
-        right = [];
-    for(let i = 0; i < arr.length; i++){
-        if(pivot > arr[i]){
-            left.push(arr[i])
-        }else{
-            right.push(arr[i])
-        }
-    }
-    return quickSort(left).concat([pivot],quickSort(right))
-}
-```
-
-## 数组的扁平化
-
-```javascript
-function flatDeep(arr) {
-    return arr.reduce((res, cur) => {
-        if(Array.isArray(cur)){
-            return [...res, ...flatDeep(cur)]
-        }else{
-            return [...res, cur]
-        }
-    },[])
-}
-```
-
-## 深拷贝
-
-```javascript
-function deepClone(obj, hash = new WeakMap()) {
-    if (obj instanceof RegExp) return new RegExp(obj)
-    if (obj instanceof Date) return new Date(obj)
-
-    if (obj === null || typeof obj !== 'object') return obj
-
-    if (hash.has(obj)) return obj
-
-    let res = new obj.constructor();
-    hash.set(obj, res)
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            res[key] = deepClone(obj[key],hash)
-        }
-    }
-    return res
-}
-
-```
-
-## 实现高阶函数柯里化
-
-```javascript
-function currying(fn, ...args) {
-    if (fn.length > args.length) {
-        return (...newArgs) => currying(fn, ...args, ...newArgs)
-    } else {
-        return fn(...args)
-    }
-}
-```
-
-## 寄生组合式继承
-
-```javascript
-function inherit(Son, Father) {
-    // 创建对象，创建父类原型的一个副本
-    let prototype = Object.create(Father.prototype)
-    // 增强对象，弥补因重写原型而失去的默认的constructor 属性
-    prototype.construct = Son
-     // 指定对象，将新创建的对象赋值给子类的原型
-    Son.prototype = prototype
-}
 ```
 
 ## this

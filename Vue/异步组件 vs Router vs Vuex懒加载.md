@@ -38,7 +38,7 @@ new VueRouter({
 
 ## Vuex懒加载
 
-Vuex具有`registerModule`使我们能够动态创建Vuex模块的方法。如果考虑到该`import`函数以ES模块作为有效负载返回了promise，则可以使用它来延迟加载模块：
+Vuex具有**`registerModule`**使我们能够动态创建Vuex模块的方法。如果考虑到该`import`函数以ES模块作为有效负载返回了promise，则可以使用它来延迟加载模块：
 
 ```javascript
 const store = new Vuex.Store();

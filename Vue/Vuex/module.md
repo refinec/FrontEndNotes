@@ -24,9 +24,11 @@
 </script>
 ```
 
-### 模块的局部状态
+<img src="../../assets/vue/image-20201123161426895.png" alt="image-20201123161426895" style="zoom: 80%;" />
 
-* **对于模块内部的 mutation 和 getter，接收的第一个参数是模块的局部状态对象state。对于模块内部的 getter，根节点状态会作为第三个参数暴露出来：**
+* **对于模块内部的 mutation 和 getter，接收的第一个参数是模块的局部状态对象state。**
+
+* **对于<u>模块内部的 getter</u>，根节点状态会作为第三个参数暴露出来**：
 
   ```vue
   <script>
@@ -58,7 +60,7 @@
 
 * **默认情况下，模块内部的 action、mutation 和 getter 是注册在全局命名空间的**
 
-* **添加 namespaced: true 的方式使其成为带命名空间的模块，具有更高的封装度和复用性**
+* **添加 <u>namespaced: true</u> 的方式使其成为带命名空间的模块，具有更高的封装度和复用性**
 
 ```javascript
 const store = new Vuex.Store({
@@ -208,16 +210,16 @@ const store = new Vuex.Store({
 
 * 在 store 创建之后，你可以使用 **store.registerModule** 方法注册模块，之后就可以通过 **store.state.myModule** 和 **store.state.nested.myModule** 访问模块的状态：
 
-  ```vue
+  ```js
   const store = new Vuex.Store({..});
   // 注册模块 ‘myModule'
   store.registerModule('myModule',{
-  //..
+      //..
   })
   
   //注册嵌套模块 'nested/myModle'
   store.registerModule(['nested','myModule'],{
-  //...
+      //...
   })
   ```
 

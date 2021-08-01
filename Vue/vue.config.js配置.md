@@ -4,7 +4,7 @@
 
 * 在**package.json**里的**scripts配置项**中添加**--mode xxx**来选择不同环境
 
-* 在项目根目录中新建`.env`, `.env.production`, `.env.analyz`等文件。
+* 在项目根目录中新建**`.env`**, **`.env.production`**, **`.env.analyz`**等文件。
 
 * 只有以 **`VUE_APP_ `**开头的变量会被 **webpack.DefinePlugin** 静态嵌入到客户端侧的包中，代码中可以通过**process.env.VUE_APP_BASE_API**访问
 

@@ -10,11 +10,11 @@ Vue 实例观察的数据对象。Vue 实例代理了对其 data 对象 property
 
 ## vm.$el
 
-Vue 实例使用的根 DOM 元素。
+Vue 实例使用的**根 DOM 元素**。
 
 ## vm.$options
 
-用于当前 Vue 实例的初始化选项。需要在选项中包含自定义 property 时会有用处：
+**用于当前 Vue 实例的初始化选项**。需要在选项中包含自定义 property 时会有用处：
 
 ```javascript
 new Vue({
@@ -31,7 +31,7 @@ new Vue({
 
 ## vm.$root
 
-当前组件树的根 Vue 实例。如果当前实例没有父实例，此实例将会是其自己
+**当前组件树的根 Vue 实例**。如果当前实例没有父实例，此实例将会是其自己
 
 ## vm.$children
 
