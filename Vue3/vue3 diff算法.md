@@ -25,3 +25,4 @@ export function render(_ctx, _cache, $props, $setup, $data, $options){
 ```
 
 ![](../assets/vue3/静态标记类型.jpg)
+
