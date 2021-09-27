@@ -621,6 +621,24 @@ var h= document.documentElement.offsetHeight
     || document.body.offsetHeight;
 ```
 
+## 网页卷去的距离与偏移量
+
+<img src="../../assets/JavaScript/网页卷去的距离与偏移量.jpeg" style="zoom:50%;" />
+
+**scrollLeft:**设置或获取位于给定对象左边界与窗口中目前可见内容的最左端之间的距离 ，即左边灰色的内容。
+
+**scrollTop:**设置或获取位于对象最顶端与窗口中可见内容的最顶端之间的距离 ，即上边灰色的内容。
+
+**offsetLeft:**获取指定对象相对于版面或由 offsetParent 属性指定的父坐标的计算左侧位置 。
+
+**offsetTop:**获取指定对象相对于版面或由 offsetParent 属性指定的父坐标的计算顶端位置 。
+
+**注意:**
+
+**1. 区分大小写**
+
+**2. offsetParent：布局中设置postion属性(Relative、Absolute、fixed)的父容器，从最近的父节点开始，一层层向上找，直到HTML的body。**
+
 ## offsetWidth、clientWidth、scrollTop的区别？
 
 **`Element.getBoundingClientRect()` **方法返回元素的大小及其相对于视口的位置
