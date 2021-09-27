@@ -548,6 +548,79 @@ rAF(requestAnimationFrame) 最大的优势+是**「由系统来决定回调函�
 - 根据经验，如果 JavaScript 方法需要绘制或者直接改变属性，我会选择 `requestAnimationFrame`，只要涉及到重新计算元素位置，就可以使用它。
 - 涉及到 AJAX 请求，添加/移除 class （可以触发 CSS 动画），我会选择 `_.debounce` 或者 `_.throttle` ，可以设置更低的执行频率
 
+## 浏览器窗口可视区域大小 clientHeight
+
+> 获得浏览器窗口的尺寸（浏览器的视口，不包括工具栏和滚动条）的方法:
+
+**一、对于IE9+、Chrome、Firefox、Opera 以及 Safari：**
+
+• window.innerHeight - 浏览器窗口的内部高度
+
+• window.innerWidth - 浏览器窗口的内部宽度
+
+**二、对于 Internet Explorer 8、7、6、5：**
+
+• document.documentElement.clientHeight表示HTML文档所在窗口的当前高度。
+
+• document.documentElement.clientWidth表示HTML文档所在窗口的当前宽度。
+
+或者
+
+Document对象的body属性对应HTML文档的<body>标签
+
+• document.body.clientHeight
+
+• document.body.clientWidth
+
+**在不同浏览器都实用的 JavaScript 方案：**
+
+```js
+var w = document.documentElement.clientWidth || document.body.clientWidth;
+var h = document.documentElement.clientHeight || document.body.clientHeight;
+```
+
+## 网页尺寸scrollHeight
+
+> scrollHeight和scrollWidth，获取网页内容高度和宽度
+
+**一、针对IE、Opera:**
+
+scrollHeight 是网页内容实际高度，可以小于 clientHeight。
+
+**二、针对NS、FF:**
+
+scrollHeight 是网页内容高度，不过最小值是 clientHeight。也就是说网页内容实际高度小于 clientHeight 时，scrollHeight 返回 clientHeight 。
+
+**三、浏览器兼容性**
+
+```
+var w=document.documentElement.scrollWidth
+   || document.body.scrollWidth;
+var h=document.documentElement.scrollHeight
+   || document.body.scrollHeight;
+```
+
+**注意:区分大小写**
+
+scrollHeight和scrollWidth还可获取Dom元素中内容实际占用的高度和宽度。
+
+## 网页尺寸offsetHeight
+
+offsetHeight和offsetWidth，获取网页内容高度和宽度(包括滚动条等边线，会随窗口的显示大小改变)。
+
+**一、值**
+
+offsetHeight = clientHeight + 滚动条 + 边框。
+
+**二、浏览器兼容性**
+
+```js
+var w= document.documentElement.offsetWidth
+    || document.body.offsetWidth;
+var h= document.documentElement.offsetHeight
+    || document.body.offsetHeight;
+```
+
 ## offsetWidth、clientWidth、scrollTop的区别？
 
 **`Element.getBoundingClientRect()` **方法返回元素的大小及其相对于视口的位置
