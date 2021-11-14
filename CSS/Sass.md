@@ -221,7 +221,14 @@ p {
           border: #{$i}px solid blue;
       }
   }
+  @for $i from 1 through 10 {
+      .border-#{$i} {
+          border: #{$i}px solid blue;
+      }
+  }
   ```
+
+  这两个的区别是关键字 through 表示包括 最后一个数，而 to 则不包括 最后一个数
 
 * **while循环**
 
