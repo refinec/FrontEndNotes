@@ -226,5 +226,57 @@ li::marker {
 }
 ```
 
+## 10. Affix固钉 sticky position
+
+```html
+<div class="static">Static</div>
+<div class="sticky">Sticky</div>
+```
+
+```css
+.sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  
+  padding: 1em 0;
+  background-color: #149bdf;
+  background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 100px 100px;
+  color: white;
+  text-align: center;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.static {
+  padding: 5em 0;
+  background: #1085bc;
+  color: white;
+  text-align: center;
+}
+
+:root {
+  height: 1000%;
+  font-family: sans-serif;
+}
+```
+
+```js
+var sticky = document.querySelector('.sticky');
+
+if (sticky.style.position !== 'sticky') {
+  var stickyTop = sticky.offsetTop;
+
+  document.addEventListener('scroll', function () {
+    window.scrollY >= stickyTop ?
+      sticky.classList.add('fixed') :
+      sticky.classList.remove('fixed');
+  });
+}
+```
+
 
 
