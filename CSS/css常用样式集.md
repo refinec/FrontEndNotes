@@ -180,5 +180,51 @@ li::marker {
    }
    ```
 
-   
+## 9. 彩色粉笔字
+
+```html
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch:700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="text-effect">
+        <span>B</span><span>e</span><span>s</span><span>t</span>
+        <span>J</span><span>Q</span><span>u</span><span>e</span>		<span>r</span><span>y</span>
+    </div>
+</body>
+```
+
+```css
+.text-effect{
+	color: #ffff00;
+	font-family: 'Cabin Sketch', cursive;
+	font-size: 100px;
+	text-align: center;
+	text-transform: uppercase;
+	margin: 0 auto;
+	position: relative;
+}
+.text-effect span{
+	display: inline-block;
+	animation: animate 0.5s linear infinite both;
+}
+.text-effect span:nth-child(1),
+.text-effect span:nth-child(4),
+.text-effect span:nth-child(7),
+.text-effect span:nth-child(10){
+   color: #4cd137;
+}
+.text-effect span:nth-child(2),
+.text-effect span:nth-child(5),
+.text-effect span:nth-child(8){
+   color: #ff0000;
+}
+@keyframes animate{
+	0%, 50%, 100%{ transform: rotate(0deg) scale(1); }
+	25%{ transform: rotate(4deg) scale(0.98); }
+	75%{ transform: rotate(-4deg) scale(1.02); }
+}
+```
+
+
 
