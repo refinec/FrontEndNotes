@@ -278,5 +278,31 @@ if (sticky.style.position !== 'sticky') {
 }
 ```
 
+## 11. Clip-path 属性添加shadow
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div class="container">
+      <div class="shape"></div>
+    </div>
+  </body>
+  <style>
+    
+    .container{
+      filter: drop-shadow(0px 10px 5px rgba(0,0,0,0.5));
+    }
+    .shape{
+      -webkit-clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      background:red;
+      width:100px;
+      height:100px;     
+    }
+  </style>
+</html>
+```
+
 
 
