@@ -18,7 +18,7 @@
 }
 ```
 
-![](E:\MarkDown\FrontEndNotes\assets\css\2065661232-f02ca79a2516d6bc_articlex.png)
+![](../assets/css/2065661232-f02ca79a2516d6bc_articlex.png)
 
 ## 3. 图片相关
 
