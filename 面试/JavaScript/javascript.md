@@ -552,6 +552,25 @@ rAF(requestAnimationFrame) 最大的优势+是**「由系统来决定回调函�
 
 ## 浏览器窗口可视区域大小 clientHeight
 
+1. offsetWidth : 元素的宽度值
+2. offsetHeight : 元素的高度值
+3. offsetLeft : 元素的水平偏移
+4. offsetTop : 元素的垂直偏移
+5. clientX : 元素在当前窗口中的水平偏移量
+6. clientY : 元素在当前窗口中的垂直偏移量
+7. clientWidth : 元素的宽度值(不包括边框)
+8. clientHeight : 元素的高度值(不包括边框)
+9. pageX : 元素在页面中的水平偏移
+10. pageY : 元素在页面中的垂直偏移
+11. pageX : clientX + scrollLeft
+12. pageY : clientY + scrollTop
+13. screenX : 元素在屏幕中水平偏移
+14. screenY : 元素在屏幕中垂直偏移
+15. scrollLeft : 滚动条的水平偏移距离
+16. scrollTop : 滚动条的垂直偏移距离
+17. scrollWidth : 水平滚动条能滚动的距离
+18. scrollHeight : 垂直滚动条能滚动的距离
+
 > 获得浏览器窗口的尺寸（浏览器的视口，不包括工具栏和滚动条）的方法:
 
 **一、对于IE9+、Chrome、Firefox、Opera 以及 Safari：**
