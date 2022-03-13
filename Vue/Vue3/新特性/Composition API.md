@@ -4,7 +4,7 @@
 >
 > 1. **ref** 定义基础数据类型的响应式数据
 > 2. **reactive** 定义引用数据类型的响应式数据
-> 3. **setup() { … }** setup函数是 **Composition API** 的入口函数
+> 3. **setup(props, { attrs, slots, emit }) { … }** setup函数是 **Composition API** 的入口函数
 
 ### setup
 
