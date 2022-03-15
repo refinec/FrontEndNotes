@@ -304,5 +304,30 @@ if (sticky.style.position !== 'sticky') {
 </html>
 ```
 
+## 12. 修改div为空时的placeholder
+
+```scss
+div{
+  min-height: 50px;
+  background: #eeeeee45;
+  border-radius: 2px;
+  border: 2px dashed #eeeeee;
+  position: relative;
+  &:empty::before {
+    // content: attr(data-placeholder); 
+    content: "[line " attr(data-placeholder) "]"; // 拼接字符串
+    color: lightgrey;
+    width: fit-content;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+}
+```
+
 
 
