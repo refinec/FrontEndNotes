@@ -102,6 +102,20 @@ counter.value = 5;
 watch(counter, (newValue, oldValue) => {
   console.log('The new counter value is: ' + counter.value)
 })
+// 监听多个数据
+const data: IDataProps = reactive({
+  count: 0,
+  double: computed(() => data.count * 2),
+  increase() {
+    data.count++;
+  },
+});
+watch([counter, data], (newV, oldV) => {
+  console.log(newV, oldV); // oldV返回的是Proxy，不好处理
+})
+watch([counter, () => data.count], (newV, oldV) => { // 用函数改写来返回值
+  console.log(newV, oldV);
+})
 ```
 
 #### 4. 独立的 `computed` 属性
@@ -171,23 +185,23 @@ export default {
 import { onMounted } from 'vue'
 ```
 
-| 选项式 API        | `setup` 内的钩子    |
-| :---------------- | ------------------- |
-| `beforeCreate`    | **Not needed**      |
-| `created`         | **Not needed**      |
-| `beforeMount`     | `onBeforeMount`     |
-| `mounted`         | `onMounted`         |
-| `beforeUpdate`    | `onBeforeUpdate`    |
-| `updated`         | `onUpdated`         |
-| `beforeUnmount`   | `onBeforeUnmount`   |
-| `unmounted`       | `onUnmounted`       |
-| `errorCaptured`   | `onErrorCaptured`   |
-| `renderTracked`   | `onRenderTracked`   |
-| `renderTriggered` | `onRenderTriggered` |
-| `activated`       | `onActivated`       |
-| `deactivated`     | `onDeactivated`     |
+| 选项式 API        | `setup` 内的钩子                                             |
+| :---------------- | ------------------------------------------------------------ |
+| `beforeCreate`    | **Not needed**                                               |
+| `created`         | **Not needed**                                               |
+| `beforeMount`     | `onBeforeMount`                                              |
+| `mounted`         | `onMounted`                                                  |
+| `beforeUpdate`    | `onBeforeUpdate ` ：data选项中数据更新                       |
+| `updated`         | `onUpdated` ：data选项中数据更新                             |
+| `beforeUnmount`   | `onBeforeUnmount`                                            |
+| `unmounted`       | `onUnmounted`                                                |
+| `errorCaptured`   | `onErrorCaptured`                                            |
+| `renderTracked`   | `onRenderTracked `：调试用的debug钩子函数                    |
+| `renderTriggered` | `onRenderTriggered((event) => {})`：调试用的debug钩子函数，data选项中的数据更新时，会显示数据变化的状态信息 |
+| `activated`       | `onActivated`                                                |
+| `deactivated`     | `onDeactivated`                                              |
 
-**注意📢：** 因为 `setup` 是围绕 `beforeCreate` 和 `created` 生命周期钩子运行的，所以不需要显式地定义它们。换句话说，在这些钩子中编写的任何代码都应该直接在 `setup` 函数中编写
+**注意📢：** <u>因为 `setup` 是围绕 `beforeCreate` 和 `created` 生命周期钩子运行的，所以不需要显式地定义它们。换句话说，在这些钩子中编写的任何代码都应该直接在 `setup` 函数中编写</u>
 
 这些函数**接受一个回调函数**，当钩子被组件调用时将会被执行:
 
