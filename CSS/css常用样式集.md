@@ -329,5 +329,271 @@ div{
 }
 ```
 
+## 13. 丝带
 
+<img src="../assets/css/6种CSS丝带.png" style="zoom:50%;" />
 
+```html
+<div>
+ <section>
+  <h2><span>CSS3 丝带</span></h2>
+  <div class="ribbon"><span class="ribbon1"><span>丝带效果1</span></span></div>
+  <div class="ribbon"><span class="ribbon2">丝<br>带<br>效<br>果<br>2</span></div>
+  <div class="ribbon"><span class="ribbon3">丝带效果3</span></div>
+  <div class="ribbon"><span class="ribbon4">丝带效果4</span></div>
+  <div class="ribbon"><span class="ribbon5">丝带效果5</span></div>
+  <div class="ribbon"><div class="wrap"><span class="ribbon6">丝带效果6</span></div></div>
+ </section>
+</div>
+```
+
+1. **丝带1**
+
+   ```css
+   .ribbon1 {
+       position: absolute;
+       top: -6px;
+       right: 10px;
+   }
+   .ribbon1:after {
+       position: absolute;
+       content: "";
+       display: block;
+       width: 0;
+       height: 0;
+       border-left: 53px solid transparent;
+       border-right: 53px solid transparent;
+       border-top: 10px solid #F8463F;
+   }
+   .ribbon1 span {
+       position: relative;
+       display: inline-block;
+       text-align: center;
+       background: #F8463F;
+       font-size: 14px;
+       line-height: 1;
+       padding: 12px 8px 10px;
+       border-top-right-radius: 8px;
+       width: 90px;
+   }
+   .ribbon1 span:before, .ribbon1 span:after {
+       position: absolute;
+       content: "";
+       display: block;
+   }
+   .ribbon1 span:before {
+       background: #F8463F;
+       height: 6px;
+       width: 6px;
+       left: -6px;
+       top: 0;
+   }
+   .ribbon1 span:after {
+       background: #C02031;
+       height: 6px;
+       width: 8px;
+       border-radius: 8px 8px 0 0;
+       left: -8px;
+       top: 0;
+   }
+   ```
+
+2. **丝带2**
+
+   ```css
+   .ribbon2 {
+     display: inline-block;
+     width: 60px;
+     padding: 10px 0;
+     background: #F47530;
+     top: -6px;
+     left: 25px;
+     position: absolute;
+     text-align: center;
+     border-top-left-radius: 3px;
+   }
+   .ribbon2:before {
+      height: 0;
+      width: 0;
+      border-bottom: 6px solid #8D5A20;
+      border-right: 6px solid transparent;
+      right: -6px;
+      top: 0;
+   }
+   .ribbon2:before, .ribbon2:after {
+       content: "";
+       position: absolute;
+   }
+   .ribbon2:after {
+       height: 0;
+       width: 0;
+       border-left: 30px solid #F47530;
+       border-right: 30px solid #F47530;
+       border-bottom: 30px solid transparent;
+       bottom: -30px;
+       left: 0;
+   }
+   ```
+
+3. **丝带3**
+
+   ```css
+   .ribbon3 {
+     display: inline-block;
+     position: absolute;
+     width: 150px;
+     height: 50px;
+     line-height: 50px;
+     padding-left: 15px;
+     background: #59324C;
+     left: -8px;
+     top: 20px
+   }
+   .ribbon3:before, .ribbon3:after {
+       content: "";
+       position: absolute;
+   }
+   .ribbon3:before {
+     height: 0;
+     width: 0;
+     border-bottom: 8px solid black;
+     border-left: 8px solid transparent;
+     top: -8px;
+     left: 0;
+   }
+   .ribbon3:after {
+     height: 0;
+     width: 0;
+     border-top: 25px solid transparent;
+     border-bottom: 25px solid transparent;
+     border-left: 15px solid #59324C;
+     right: -15px;
+   }
+   ```
+
+4. **丝带4**
+
+   ```css
+   .ribbon4 {
+       position: absolute;
+       top: 15px;
+       padding: 8px 10px;
+       background: #00B3ED;
+       box-shadow: -1px 2px 4px rgba(0,0,0,0.5);
+     }
+   .ribbon4:before, .ribbon4:after {
+       position: absolute;
+       content: "";
+       display: block;
+   }
+   .ribbon4:before {
+       width: 7px;
+       height: 100%;
+       padding: 0 0 7px;
+       top: 0;
+       left: -7px;
+       background: inherit;
+       border-radius: 5px 0 0 5px;
+   }
+   .ribbon4:after {
+       width: 5px;
+       height: 5px;
+       background: rgba(0,0,0,0.35);
+       bottom: -5px;
+       left: -5px;
+       border-radius: 5px 0 0 5px;
+    }
+   ```
+
+5. **丝带5**
+
+   ```css
+   .ribbon5 {
+     display: inline-block;
+     width: calc(100% + 20px);
+     height: 50px;
+     line-height: 50px;
+     text-align: center;
+     margin-left: -10px;
+     margin-right: -10px;
+     background: #EDBA19;
+     position: relative;
+     top: 20px;
+   }
+   .ribbon5:before {
+     content: "";
+     position: absolute;
+     height: 0;
+     width: 0;
+     border-top: 10px solid #cd8d11;
+     border-left: 10px solid transparent;
+     bottom: -10px;
+     left: 0;
+   }
+   .ribbon5:after {
+     content: "";
+     position: absolute;
+     height: 0;
+     width: 0;
+     border-top: 10px solid #cd8d11;
+     border-right: 10px solid transparent;
+     right: 0;
+     bottom: -10px;
+   }
+   ```
+
+6. **丝带6**
+
+   ```css
+   .wrap {
+     width: 100%;
+     height: 188px;
+     position: absolute;
+     top: -8px;
+     left: 8px;
+     overflow: hidden;
+   }
+   .wrap:before {
+       content: "";
+       display: block;
+       border-radius: 8px 8px 0px 0px;
+       width: 40px;
+       height: 8px;
+       position: absolute;
+       right: 100px;
+       background: #4D6530;
+   }
+   .wrap:after {
+       content: "";
+       display: block;
+       border-radius: 0px 8px 8px 0px;
+       width: 8px;
+       height: 40px;
+       position: absolute;
+       right: 0px;
+       top: 100px;
+       background: #4D6530;
+   }
+   .ribbon6 {
+     display: inline-block;
+     text-align: center;
+     width: 200px;
+     height: 40px;
+     line-height: 40px;
+     position: absolute;
+     top: 30px;
+     right: -50px;
+     z-index: 2;
+     overflow: hidden;
+     transform: rotate(45deg);
+     -ms-transform: rotate(45deg);
+     -moz-transform: rotate(45deg);
+     -webkit-transform: rotate(45deg);
+     -o-transform: rotate(45deg);
+     border: 1px dashed;
+     box-shadow:0 0 0 3px #57DD43,  0px 21px 5px -18px rgba(0,0,0,0.6);
+    background: #57DD43;
+   }
+   ```
+
+   
