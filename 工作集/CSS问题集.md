@@ -81,3 +81,10 @@ filter: drop-shadow(30px 10px 4px #3a3a3a);
 - `10px`表示目标的相对位置向上，负值则向底部移动阴影。
 - `4px`代表目标的模糊因子。
 - `#3a3a3a`代表目标的颜色。
+
+## 4. IOS手机容器滚动条滑动不流畅
+
+```css
+overflow: auto;
+-webkit-overflow-scrolling: touch;
+```

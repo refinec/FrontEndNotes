@@ -1099,4 +1099,3 @@ window.addEventListener("hashchange", funcRef, false)
 ```
 location.hash="#somewhere"
 ```
-
