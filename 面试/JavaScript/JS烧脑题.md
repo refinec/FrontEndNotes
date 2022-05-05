@@ -405,7 +405,7 @@ console.log(5);
 
 ## 第18题
 
-```
+```js
 console.log('1');
 
 setTimeout(function() {
