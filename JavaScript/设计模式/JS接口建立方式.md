@@ -208,3 +208,20 @@ Interface.ensureImplements(c1,CompositeInterface,FormItemInterface);
 c1.add();
 ```
 
+四、继承方法
+
+```js
+const extend = function(sub, sup) {
+  // 目的：实现只继承父类的原型对象
+  const F = new Function(); // 1.创建一个空函数。 目的：空函数进行中转
+  F.prototype = sup.prototype; // 2. 实现空函数的原型对象和超类的原型对象转换
+  sub.prototype = new F(); // 3.原型继承
+  sub.prototype.constructor = sub; // 4.还原子类的构造器
+  sub.superClass = sup.prototype; // 自定义一个子类的的静态属性，接受父类的原型对象
+  // 判断父类的原型对象的构造器（加保险）
+  if(sup.prototype.constructor == Object.prototype.constructor) {
+    sup.prototype.constructor = sup; // 手动设置父类原型对象的构造器
+  }
+}
+```
+
