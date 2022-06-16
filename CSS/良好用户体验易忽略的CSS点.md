@@ -41,7 +41,7 @@ img {
 
   可以将以上内容包装在@supports中，以避免在不支持对象适配的浏览器中拉伸徽标图像。
 
-  ```
+  ```css
   @supports (object-fit: contain) {
     img {
       object-fit: contain;

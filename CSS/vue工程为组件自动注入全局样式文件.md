@@ -21,9 +21,10 @@ $ npm i -D stylus stylus-loader
    -------- functions.less
    ```
 
+
 2. 创建一个包含上面引入的入口样式文件`entry.less`，然后在各组件中导入即可
 
-   ```
+   ```less
    # entry.less
    
    @import './variables';
@@ -31,12 +32,12 @@ $ npm i -D stylus stylus-loader
    @import './functions';
    ```
 
-   ```
-   <script lang="less">
+   ```less
+   <style lang="less">
    @import "../styles/entry";
    
    // 其他样式
-   </script>
+   </style>
    ```
 
 3. 在vue工程中配置自动导入
@@ -78,13 +79,13 @@ $ npm i -D stylus stylus-loader
 
    如果工程使用的是`Stylus`，则将A行替换为
 
-   ```
+   ```js
    types.forEach(type => addStyleResource(config.module.rule('stylus').oneOf(type)))
    ```
 
    将B行替换为
 
-   ```
+   ```js
    path.resolve(__dirname, './src/styles/entry.styl')
    ```
 
