@@ -55,7 +55,7 @@ Point === Point.prototype.constructor // true
 
 > constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加
 
-* ***constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象***（👈隔壁老王）
+* ***constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象***（指向隔壁老王👈）
 
   ```javascript
   class Foo {
@@ -67,7 +67,8 @@ Point === Point.prototype.constructor // true
   // false
   ```
 
-	#### 类的实例
+
+#### 类的实例
 
 与 ES5 一样，***实例的属性除非显式定义在其本身（即定义在this对象上），否则都是定义在原型上（即定义在class上）***
 
@@ -192,7 +193,7 @@ person.sayName(); // "张三"
 
 #### 注意点
 
-1. **类和模块的内部，默认就是严格模式，所以不需要使用use strict指定运行模式**
+1. **类和模块的内部，默认就是严格模式，所以不需要使用`use strict`指定运行模式**
 
 2. **类不存在变量提升（hoist），这一点与 ES5 完全不同，ES6 不会把类的声明提升到代码头部，必须保证子类在父类之后定义**
 
@@ -200,7 +201,7 @@ person.sayName(); // "张三"
 
 4. **Generator方法**
 
-   ***在某个方法之前加上星号（*），就表示该方法是一个 Generator 函数***
+   ***在某个方法之前加上星号（\*），就表示该方法是一个 Generator 函数***
 
    `Symbol.iterator`方法返回一个Foo类的默认遍历器，`for...of`循环会自动调用这个遍历器。
 
@@ -246,7 +247,7 @@ person.sayName(); // "张三"
 
    1. **在构造方法中绑定this，这样就不会找不到print方法了**
 
-      ```javascript
+      ```js
       class Logger {
           constructor() {
               this.printName = this.printName.bind(this);
@@ -255,23 +256,24 @@ person.sayName(); // "张三"
       }
       ```
 
-   2. **使用箭头函数**
 
-      **箭头函数内部的this总是指向定义时所在的对象**。下面代码中，箭头函数位于构造函数内部，它的定义生效的时候，是在构造函数执行的时候。这时，箭头函数所在的运行环境，肯定是实例对象，所以this会总是指向实例对象。
-
-      ```javascript
-      class Obj {
-          constructor() {
-              this.getThis = () => this;
-          }
-      }
-      const myObj = new Obj();
-      myObj.getThis() === myObj // true
-      ```
+      2. **使用箭头函数**
+    
+         **箭头函数内部的this总是指向定义时所在的对象**。下面代码中，箭头函数位于构造函数内部，它的定义生效的时候，是在构造函数执行的时候。这时，箭头函数所在的运行环境，肯定是实例对象，所以this会总是指向实例对象。
+    
+         ```javascript
+         class Obj {
+             constructor() {
+                 this.getThis = () => this;
+             }
+         }
+         const myObj = new Obj();
+         myObj.getThis() === myObj // true
+         ```
 
    3. **使用Proxy，获取方法的时候，自动绑定this**
 
-      ```javascript
+      ```js
       function selfish (target) {
           const cache = new WeakMap();
           const handler = {
@@ -429,18 +431,18 @@ Bar.classMethod() // 'hello'
    }
    
    class Foo {
-       #a;
-       #b;
-       constructor(a, b) {
-           this.#a = a;
-           this.#b = b;
-       }
-   #sum() {
-   return #a + #b;
-   }
-   	printSum() {
+     #a;
+     #b;
+     constructor(a, b) {
+       this.#a = a;
+       this.#b = b;
+     }
+     #sum() {
+       return #a + #b;
+     }
+     printSum() {
        console.log(this.#sum());
-                   }
+     }
    }
    
    ```
@@ -496,13 +498,13 @@ Bar.classMethod() // 'hello'
      FakeMath.#computeRandomNumber() // 报错
      ```
 
-#### new.target 属性
+#### `new.target` 属性
 
 new是从构造函数生成实例对象的命令
 
-* ES6 为new命令引入了一个new.target属性，**该属性一般用在构造函数之中，返回new命令作用于的那个构造函数 **
+* ES6 为new命令引入了一个`new.target`属性，**该属性一般用在构造函数之中，返回new命令作用于的那个构造函数 **
 
-* 如果构造函数不是通过`new命令`或`Reflect.construct()`调用的，**new.target会返回undefined**，因此**这个属性可以用来确定构造函数是怎么调用的**。
+* 如果构造函数不是通过`new命令`或`Reflect.construct()`调用的，**`new.target`会返回undefined**，因此**这个属性可以用来确定构造函数是怎么调用的**。
 
   下面代码确保构造函数只能通过new命令调用
 
@@ -624,7 +626,7 @@ class ColorPoint extends Point {
 
 1. **super作为函数调用时，代表父类的构造函数**。ES6 要求，子类的构造函数必须执行一次super函数
 
-   super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此super()在这里相当于**A.prototype.constructor.call(this) **。**作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。**
+   super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此super()在这里相当于**`A.prototype.constructor.call(this)` **。**作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。**
 
    ```javascript
    // new.target指向当前正在执行的函数。可以看到，在super()执行时，它指向的是子类B的构造函数，而不是父类A的构造函数。也就是说，super()内部的this指向的是B。
@@ -641,6 +643,7 @@ class ColorPoint extends Point {
    new A() // A
    new B() // B
    ```
+
 
 2. ***super作为对象时，在普通方法中，指向父类的原型对象；在静态方法中，指向父类。***
 
@@ -790,11 +793,11 @@ class ColorPoint extends Point {
 
 #### 类的 prototype 属性和__proto__属性
 
-> Class 作为构造函数的语法糖，同时有prototype属性和__proto__属性，因此同时存在两条继承链。
+> Class 作为构造函数的语法糖，同时有`prototype`属性和`__proto__`属性，因此同时存在两条继承链。
 
-1. 子类的__proto__属性，表示**构造函数的继承，总是指向父类**。
+1. 子类的`__proto__`属性，表示**构造函数的继承，总是指向父类**。
 
-2. 子类**prototype属性的__proto__属性**，表示**方法的继承，总是指向父类的prototype属性**。
+2. 子类**prototype属性的`__proto__`属性**，表示**方法的继承，总是指向父类的prototype属性**。
 
 ```javascript
 class A {
@@ -874,7 +877,7 @@ B.prototype.__proto__ = A.prototype;
    p2.__proto__.__proto__ === p1.__proto__ // true
    ```
 
-   因此，通过子类实例的__proto__.__proto__属性，可以修改父类实例的行为
+   因此，通过子类实例的`__proto__.__proto__`属性，可以修改父类实例的行为
 
    ```javascript
    p2.__proto__.__proto__.printName = function () {

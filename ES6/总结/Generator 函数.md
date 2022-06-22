@@ -8,10 +8,10 @@
 
   ```javascript
   function* demo() {
-      console.log('Hello' + yield); // SyntaxError
-                  console.log('Hello' + yield 123); // SyntaxError
-      console.log('Hello' + (yield)); // OK
-                  console.log('Hello' + (yield 123)); // OK
+    console.log('Hello' + yield); // SyntaxError
+    console.log('Hello' + yield 123); // SyntaxError
+    console.log('Hello' + (yield)); // OK
+    console.log('Hello' + (yield 123)); // OK
   }
   ```
 
@@ -24,11 +24,11 @@
       }
   ```
 
-* **任意一个对象的Symbol.iterator方法，等于该对象的遍历器生成函数，调用该函数会返回该对象的一个遍历器对象。由于 Generator 函数就是遍历器生成函数，因此可以把 Generator 赋值给对象的Symbol.iterator属性，从而使得该对象具有 Iterator 接口**。
+* **任意一个对象的`Symbol.iterator`方法，等于该对象的遍历器生成函数，调用该函数会返回该对象的一个遍历器对象。由于 Generator 函数就是遍历器生成函数，因此可以把 Generator 赋值给对象的Symbol.iterator属性，从而使得该对象具有 Iterator 接口**。
 
 ### next方法的参数
 
-* **yield表达式本身没有返回值，或者说总是返回undefined。next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值，但第一次使用next方法时，传递参数是无效的 **
+* **yield表达式本身没有返回值，或者说总是返回`undefined `。next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值，但第一次使用next方法时，传递参数是无效的 **
 
   ```javascript
   function* f() {
@@ -105,13 +105,13 @@
   // last: Doe
   ```
 
-* 除了**for...of **循环以外，**扩展运算符...   **、**解构赋值 **和**Array.from **方法内部调用的，都是遍历器接口。这意味着，它们都可以将 Generator 函数返回的 Iterator 对象，作为参数
+* 除了**`for...of` **循环以外，**`扩展运算符...`   **、**`解构赋值` **和**`Array.from` **方法内部调用的，都是遍历器接口。这意味着，它们都可以将 Generator 函数返回的 Iterator 对象，作为参数
 
 ### 实例方法
 
 #### Generator.prototype.throw()
 
-Generator 函数返回的遍历器对象，都有一个throw方法，可以在函数体外抛出错误，然后在 Generator 函数体内捕获：
+Generator 函数返回的遍历器对象，都有一个`throw`方法，可以在函数体外抛出错误，然后在 Generator 函数体内捕获：
 
 ```javascript
 var g = function* () {

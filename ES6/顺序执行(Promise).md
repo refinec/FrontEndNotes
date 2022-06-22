@@ -6,19 +6,19 @@
 
 ```javascript
 function getA(){
-      return  new Promise(function(resolve, reject){ 
-      setTimeout(function(){     
-            resolve(2);
-        }, 1000);
-    });
+  return new Promise(function(resolve, reject){ 
+    setTimeout(function(){     
+      resolve(2);
+    }, 1000);
+  });
 }
  
 function getB(){
-    return  new Promise(function(resolve, reject){       
-        setTimeout(function(){
-            resolve(3);
-        }, 1000);
-    });
+  return new Promise(function(resolve, reject){       
+    setTimeout(function(){
+      resolve(3);
+    }, 1000);
+  });
 }
  
 function addAB(a,b){

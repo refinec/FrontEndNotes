@@ -89,7 +89,7 @@ app.listen(3001)
 
 在通过 `app.use(cookieSession())` 使用中间件之前，请求是不会设置 cookie 的，添加后再访问（并且在设置 req.session 后，若不添加 session 信息就没必要写、也没内容写到 cookie 里），就能看到服务器响应头部新增了下面两行，分别写入 session 和 session.sig：
 
-```
+```http
 Set-Cookie: session=eyJ0ZXN0IjoiaGV5In0=; path=/; expires=Tue, 23 Feb 2021 01:07:05 GMT; httponly
 Set-Cookie: session.sig=QBoXofGvnXbVoA8dDmfD-GMMM6E; path=/; expires=Tue, 23 Feb 2021 01:07:05 GMT; httponly
 ```
@@ -281,7 +281,9 @@ Basic authentication 大概比较适合 serverless，毕竟他没有运行着的
 
 2. **获取 code**
 
-   > 什么是授权临时票据（code）？ 答：第三方通过 code 进行获取 `access_token` 的时候需要用到，code 的超时时间为 10 分钟，一个 code 只能成功换取一次 `access_token` 即失效。code 的临时性和一次保障了微信授权登录的安全性。第三方可通过使用 https 和 state 参数，进一步加强自身授权登录的安全性。
+   > 什么是授权临时票据（code）？ 
+   >
+   > 答：第三方通过 code 进行获取 `access_token` 的时候需要用到，code 的超时时间为 10 分钟，一个 code 只能成功换取一次 `access_token` 即失效。code 的临时性和一次保障了微信授权登录的安全性。第三方可通过使用 https 和 state 参数，进一步加强自身授权登录的安全性。
 
    在这一步中，**登录用户**先在**登录平台**进行身份校验。
 

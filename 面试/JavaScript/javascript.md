@@ -285,10 +285,6 @@ JavaScript执行确实会**阻塞HTML的解析渲染**, 若是以**嵌入的方�
 
 另外 **defer 还有一个特点，它是按代码顺序来执行**的。
 
-
-
-![](https://www.chrisyue.com/wp-content/uploads/2017/10/async-vs-defer-twitter.png)
-
 ## 讲讲PWA
 
 PWA全称Progressive Web App，即渐进式WEB应用
@@ -397,11 +393,6 @@ function sort(arr) {
 
 1. GET请求会将参数跟在URL后进行传递，而POST请求则是作为HTTP消息的实体内容发送给WEB服务器。当然在Ajax请求中，这种区别对用户是不可见的
 2. GEt传输数据容量小，不安全，post传输数据内容大，更加安全； 当向服务器发送一些数据的时候选择post比较安全
-
-## ajax请求时，如何解释json数据
-
-如果是字符串形式的`json：eval("("+ajax.response+")")`
-如果是本地的json文件：`JSON.parse(data)`
 
 ## js哪些操作会造成内存泄露？
 

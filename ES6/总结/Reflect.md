@@ -6,7 +6,7 @@ Reflect对象 与 Proxy对象一样，也是 ES6 为了操作对象而提供的�
 
 1. 将Object对象的一些明显属于语言内部的方法（比如Object.defineProperty），放到Reflect对象上。现阶段，某些方法同时在Object和Reflect对象上部署，未来的新方法将只部署在Reflect对象上。也就是说，从Reflect对象上可以拿到语言内部的方法。
 
-2. **修改某些 Object方法 的返回结果**，让其变得更合理。比如，Object.defineProperty(obj, name, desc)在无法定义属性时，会抛出一个错误，而Reflect.defineProperty(obj, name, desc)则会返回false
+2. **修改某些 Object方法 的返回结果**，让其变得更合理。比如，`Object.defineProperty(obj, name, desc)`在无法定义属性时，会抛出一个错误，而`Reflect.defineProperty(obj, name, desc)`则会返回`false `
 
    ```js
    // 老写法
@@ -23,6 +23,7 @@ Reflect对象 与 Proxy对象一样，也是 ES6 为了操作对象而提供的�
        // failure
    }
    ```
+
 
 3.  **让Object操作都变成函数行为**。某些Object操作是命令式，比如`name in obj`和`delete obj[name]`，而`Reflect.has(obj, name)`和`Reflect.deleteProperty(obj, name)`让它们变成了函数行为。
 
@@ -221,6 +222,13 @@ p.foo // "bar"
 
 上面代码中，Proxy.defineProperty对属性赋值设置了拦截，然后使用Reflect.defineProperty完成了赋值。
 
+- `writable` : 表示能否修改属性的值，即值是可写的还是只读。
+- `enumaerable ` : 目标属性是否可被枚举（遍历）。用来控制所描述的属性，是否将被包括在for…in循环之中。具体来说，如果一个属性的enumerable为false，下面三个操作不会取到该属性：
+  1. for…in循环
+  2. Object.keys方法
+  3. JSON.stringify方法
+- `configurable` : 表示能否通过 **delete** 删除属性、能否修改属性的特性，或者将属性修改为访问器（getter、setter）属性。
+
 ## 5.Reflect.**deleteProperty**(target, name)
 
 > Reflect.deleteProperty方法等同于delete obj[name]，用于删除对象的属性
@@ -238,9 +246,9 @@ Reflect.deleteProperty(myObj, 'foo');
 
 ## 6.Reflect.**apply**(target, thisArg,  args)
 
-> Reflect.apply方法等同于Function.prototype.apply.call(func, thisArg, args)，用于绑定this对象后执行给定函数
+> Reflect.apply方法等同于`Function.prototype.apply.call(func, thisArg, args)`，用于绑定this对象后执行给定函数
 
-一般来说，如果要绑定一个函数的this对象，可以这样写fn.apply(obj, args)，但是如果函数定义了自己的apply方法，就只能写成Function.prototype.apply.call(fn, obj, args)，采用Reflect对象可以简化这种操作。
+一般来说，如果要绑定一个函数的this对象，可以这样写`fn.apply(obj, args)`，但是如果函数定义了自己的apply方法，就只能写成`Function.prototype.apply.call(fn, obj, args)`，采用Reflect对象可以简化这种操作。
 
 ```js
 const ages = [11, 33, 12, 54, 18, 96];
@@ -256,7 +264,7 @@ const type = Reflect.apply(Object.prototype.toString, youngest, []);
 
 ## 7.Reflect.**preventExtensions**(target)
 
-> Reflect.preventExtensions对应Object.preventExtensions方法，用于让一个对象变为不可扩展。它返回一个布尔值，表示是否操作成功
+> `Reflect.preventExtensions`对应`Object.preventExtensions`方法，用于让一个对象变为不可扩展。它返回一个布尔值，表示是否操作成功
 
 ```js
 var myObject = {};
@@ -279,7 +287,7 @@ Reflect.preventExtensions(1) // 报错
 
 ## 8.Reflect.**isExtensible**(target)
 
-> Reflect.isExtensible方法对应Object.isExtensible，返回一个布尔值，表示当前对象是否可扩展
+> `Reflect.isExtensible`方法对应`Object.isExtensible`，返回一个布尔值，表示当前对象是否可扩展
 
 ```js
 const myObject = {};
@@ -298,7 +306,7 @@ Reflect.isExtensible(1) // 报错
 
 ## 9.Reflect.**ownKeys**(target)
 
-> Reflect.ownKeys方法用于返回对象的所有属性，基本等同于Object.getOwnPropertyNames与Object.getOwnPropertySymbols之和
+> `Reflect.ownKeys`方法用于返回对象的所有属性，基本等同于`Object.getOwnPropertyNames`与`Object.getOwnPropertySymbols`之和
 
 ```js
 var myObject = {
@@ -317,11 +325,11 @@ Reflect.ownKeys(myObject)
 // ['foo', 'bar', Symbol(baz), Symbol(bing)]
 ```
 
-如果Reflect.ownKeys()方法的第一个参数不是对象，会报错
+如果`Reflect.ownKeys()`方法的第一个参数不是对象，会报错
 
 ## 10.Reflect.**getOwnPropertyDescriptor**(target,  name)
 
-> Reflect.getOwnPropertyDescriptor基本等同于Object.getOwnPropertyDescriptor，用于得到指定属性的描述对象
+> `Reflect.getOwnPropertyDescriptor`基本等同于`Object.getOwnPropertyDescriptor`，用于得到指定属性的描述对象
 
 ```js
 var myObject = {};
@@ -335,11 +343,11 @@ var theDescriptor = Object.getOwnPropertyDescriptor(myObject, 'hidden');
 var theDescriptor = Reflect.getOwnPropertyDescriptor(myObject, 'hidden');
 ```
 
-**如果第一个参数不是对象，Object.getOwnPropertyDescriptor(1, 'foo')不报错，返回undefined，而Reflect.getOwnPropertyDescriptor(1, 'foo')会抛出错误，表示参数非法**。
+**如果第一个参数不是对象，`Object.getOwnPropertyDescriptor(1, 'foo')`不报错，返回`undefined`，而`Reflect.getOwnPropertyDescriptor(1, 'foo')`会抛出错误，表示参数非法**。
 
 ## 11.Reflect.**construct**(target, args)
 
-> Reflect.construct方法等同于**new target(...args)**，这提供了一种不使用new，来调用构造函数的方法
+> `Reflect.construct`方法等同于**`new target(...args)`**，这提供了一种不使用new，来调用构造函数的方法
 
 ```js
 function Greeting(name) {
@@ -353,7 +361,7 @@ const instance = Reflect.construct(Greeting, ['张三']);
 
 ## 12.Reflect.**getPrototypeOf**(target)
 
-> Reflect.getPrototypeOf方法用于读取对象的__proto__属性，对应Object.getPrototypeOf(obj)
+> `Reflect.getPrototypeOf`方法用于读取对象的__proto__属性，对应`Object.getPrototypeOf(obj)`
 
 ```js
 const myObj = new FancyThing();
@@ -365,7 +373,7 @@ Reflect.getPrototypeOf(myObj) === FancyThing.prototype;
 
 ## 13.Reflect.**setPrototypeOf**(target, prototype)
 
-> Reflect.setPrototypeOf方法用于设置目标对象的原型（prototype），对应Object.setPrototypeOf(obj, newProto)方法。它返回一个布尔值，表示是否设置成功。
+> `Reflect.setPrototypeOf`方法用于设置目标对象的原型（prototype），对应`Object.setPrototypeOf(obj, newProto)`方法。它返回一个布尔值，表示是否设置成功。
 
 ```js
 const myObj = {};

@@ -1,6 +1,6 @@
 # 路由元信息meta
 
-一个路由匹配到的所有路由记录会暴露为 **$route** 对象 (还有在导航守卫中的路由对象) 的 **$route.matched** 数组。遍历 **$route.matched** 来检查路由记录中的 **meta** 字段
+一个路由匹配到的所有路由记录会暴露为 **$route** 对象 (还有在导航守卫中的路由对象) 的 **`$route.matched`** 数组。遍历 **`$route.matched`** 来检查路由记录中的 **`meta`** 字段
 
 ```javascript
 const router = new VueRouter({

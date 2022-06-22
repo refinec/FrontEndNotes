@@ -728,3 +728,23 @@ const proxy = new Proxy(target, handler);
 proxy.getDate() // 1
 ```
 
+## Proxy默认只代理一层对象的属性问题
+
+> 解决办法是，在Reflect返回的时候，判断是否是一个对象，如果是对象的话，**再次用Proxy代理，返回代理对象**。
+
+```js
+const obj = {
+    name: '张三',
+    age: 20,
+    xxx: { a:1 }
+}
+const handler = {
+  get(target, key, receiver) {
+    const ret = Reflect.get(target, key, receiver);
+    
+    return type ret === "object" ? new Proxy(ret, handler) : ret;
+	}
+}
+new Proxy(obj, handler);
+```
+

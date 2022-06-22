@@ -44,13 +44,13 @@ interface IterationResult {
 
 **原生具备 Iterator 接口的数据结构如下**:
 
-- Set
-- Map
-- Array
-- String
-- TypedArray
-- 函数的 arguments 对象
-- NodeList 对象
+1. `Set`
+2. `Map `
+3. `Array `
+4. `String`
+5. `TypedArray`
+6. 函数的 `arguments` 对象
+7. `NodeList` 对象
 
 ```js
 let arr = ['a', 'b', 'c'];
@@ -450,7 +450,7 @@ for (let [key, value] of entries(obj)) {
 
 ## **计算生成的数据结构**
 
-有些数据结构是在现有数据结构的基础上，计算生成的。比如，ES6 的数组、Set、Map 都部署了以下三个方法，调用后都返回遍历器对象。
+有些数据结构是在现有数据结构的基础上，计算生成的。比如，**ES6 的数组、Set、Map** 都部署了以下三个方法，调用后都返回遍历器对象。
 
 - **`entries()`** 返回一个遍历器对象，用来遍历[键名, 键值]组成的数组。对于数组，键名就是索引值；对于 Set，键名与键值相同。Map 结构的 Iterator 接口，默认就是调用entries方法。
 - **`keys()`** 返回一个遍历器对象，用来遍历所有的键名。

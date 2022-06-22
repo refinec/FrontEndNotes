@@ -24,7 +24,7 @@
 </script>
 ```
 
-<img src="../../assets/vue/image-20201123161426895.png" alt="image-20201123161426895" style="zoom: 80%;" />
+<img src="../../../assets/vue/image-20201123161426895.png" alt="image-20201123161426895" style="zoom: 80%;" />
 
 * **对于模块内部的 mutation 和 getter，接收的第一个参数是模块的局部状态对象state。**
 

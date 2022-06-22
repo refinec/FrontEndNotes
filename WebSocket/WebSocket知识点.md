@@ -233,6 +233,7 @@ var binaryType = ws.binaryType;
    ws.send('your message');
    ```
 
+
 2. 发送 Blob 对象的例子
 
    ```js
@@ -241,6 +242,7 @@ var binaryType = ws.binaryType;
      .files[0];
    ws.send(file);
    ```
+
 
 3. 发送 ArrayBuffer 对象的例子
 
