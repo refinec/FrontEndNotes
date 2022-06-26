@@ -1,0 +1,120 @@
+## **说一说从输入URL到页面呈现发生了什么？**
+
+### 网络请求
+
+1. **构建请求**
+
+   首先，浏览器构建**「请求行」**信息（如下所示），构建好后，浏览器准备发起网络请求
+
+   ```
+   GET / HTTP1.1
+   GET是请求方法，路径就是根路径，HTTP协议版本1.1
+   ```
+
+
+2. **查找缓存**
+
+   **在真正发起网络请求之前**，浏览器会先在浏览器缓存中查询是否有要请求的文件。
+
+   1. 通过`Cache-Control`和`Expires`来检查是否命中强缓存，命中则直接取本地磁盘的html（状态码为200 from disk(or memory)  cache，内存or磁盘）；
+
+   2. 如果没有命中强缓存，则会向服务器发起请求（先进行下一步的TCP连接），服务器通过`Etag`和`Last-Modify`来与服务器确认返回的响应是否被更改（协商缓存），若无更改则返回状态码（304 Not Modified）,浏览器取本地缓存；
+
+   3. 若强缓存和协商缓存都没有命中则进行下一步。
+
+3. **DNS解析**
+
+   输入的域名的话，我们需要根据域名去获取对应的`ip地址`。 这个过程需要依赖一个服务系统，叫做是`DNS域名解析`, 从查找到获取到具体IP的过程叫做是`DNS解析`。**浏览器提供了DNS数据缓存功能**，如果一个域名已经解析过了，那么就会把解析的结果缓存下来，下次查找的话，直接去缓存中找，不需要结果DNS解析。
+
+   1. **首先查看是否有对应的域名缓存，有的话直接用缓存的ip访问**
+
+      `ipconfig /displaydns` 输入这个命令就可以查看对应的电脑中是否有缓存
+
+   2. **如果缓存中没有，则去查找hosts文件**
+
+   3. 如果hosts文件里没找到想解析的域名，则将**「域名发往自己配置的dns服务器」**，也叫**「本地dns服务器」**
+
+   4. 如果**「本地dns服务器有相应域名的记录」**，则返回记录
+
+      > 电脑的dns服务器一般是各大运营商如电信联通提供的，或者像180.76.76.76，223.5.5.5，4个114等知名dns服务商提供的，本身缓存了大量的常见域名的ip，所以常见的网站，都是有记录的。不需要找根服务器。
+      
+   5. 如果电脑自己的服务器没有记录，会去找根服务器。根服务器全球只要13组，回去找其中之一,找了根服务器后，**「根服务器会根据请求的域名，返回对应的“顶级域名服务器”」**，如：
+
+      1. 如果请求的域名是[xxx.com](https://link.zhihu.com/?target=http%3A//xxx.com)，则返回负责com域的服务器
+      2. 如果是[xxx.cn](https://link.zhihu.com/?target=http%3A//xxx.cn)，则发给负责cn域的服务器
+      3. 如果是[xxx.ca](https://link.zhihu.com/?target=http%3A//xxx.ca)，则发给负责ca域的服务器
+
+   6. **「顶级域服务器收到请求，会返回二级域服务器的地址」**
+      
+   1. 比如一个网址是`www.xxx.edu.cn`，则顶级域名服务器再转发给负责`.edu.cn`域的二级服务器
+      
+   7. **「以此类推，最终会发到负责锁查询域名的，最精确的那台dns，可以得到查询结果。」**
+
+   8. 最后一步，**「本地dns服务器，把最终的解析结果，返回给客户端，对客户端来讲，只是一去一回的事，客户端并不知道本地dns服务器经过了千山万水。」**
+
+4. **建立TCP链接**
+
+   Chrome 在同一个域名下要求同时最多只能有 6 个 TCP 连接，超过 6 个的话剩下的请求就得等待。
+
+   建立`TCP连接`经历下面三个阶段：
+
+   - 通过**「三次握手」**建立客户端和服务器之间的连接。
+   - 进行数据传输。
+   - 断开连接的阶段。数据传输完成，现在要断开连接了，通过**「四次挥手」**来断开连接。
+
+5.  **发送HTTP请求**
+
+   TCP连接完成后，接下来就可以与服务器通信了，也就是我们经常说的发送HTTP请求。
+
+   发送HTTP请求的话，需要携带三样东西：**「请求行」**，**「请求头」**，**「请求体」**。
+
+   ```http
+   Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+   Accept-Encoding: gzip, deflate, br
+   Accept-Language: zh-CN,zh;q=0.9
+   Cache-Control: no-cache
+   Connection: keep-alive
+   Cookie: /* 省略cookie信息 */
+   Host: juejin.im
+   Pragma: no-cache
+   Upgrade-Insecure-Requests: 1
+   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
+   ```
+
+最后就是请求体，请求体的话只有在`POST`请求场景下存在，常见的就是`表单提交`
+
+### 网络响应
+
+HTTP 请求到达服务器，服务器进行对应的处理。最后要把数据传给浏览器，也就是通常我们说的返回网络响应。
+
+跟请求部分类似，网络响应具有三个部分:**「响应行」**、**「响应头」**和**「响应体」**。
+
+```http
+HTTP/1.1 200 OK /* 响应行 */
+```
+
+```http
+/* 响应头 */
+Access-Control-Max-Age: 86400
+Cache-control: private
+Connection: close
+Content-Encoding: gzip
+Content-Type: text/html;charset=utf-8
+Date: Wed, 22 Jul 2020 13:24:49 GMT
+Vary: Accept-Encoding
+Set-Cookie: ab={}; path=/; expires=Thu, 22 Jul 2021 13:24:49 GMT; secure; httponly
+Transfer-Encoding: chunked
+```
+
+数据拿到了，会断开TCP连接吗？这个的看响应头中的Connection字段。上面的字段值为close，那么就会断开，一般情况下，HTTP1.1版本的话，通常请求头会包含**「Connection: Keep-Alive」**表示建立了持久连接，这样`TCP`连接会一直保持，之后请求统一站点的资源会复用这个连接。
+
+### 渲染阶段
+
+1. 构建DOM树
+2. 样式计算
+3. 布局阶段
+4. 分层
+5. 绘制
+6. 分块
+7. 光栅化
+8. 合成
