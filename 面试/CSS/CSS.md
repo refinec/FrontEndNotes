@@ -196,13 +196,13 @@ box-sizing：border-box    //怪异盒模型
     float: left; /*浮动*/
     width: 200px;
     margin-left: -100%;
-    height: 400px;
+    height: 500px;
 }
 .right {
     float: left; /*浮动*/
     width: 200px;
     margin-left: -200px;
-    height: 400px;
+    height: 500px;
 }
 
 .main {
@@ -217,129 +217,6 @@ box-sizing：border-box    //怪异盒模型
     border: 2px solid brown;
 }
 ```
-
-## BFC 是什么？
-
-BFC全称是Block Formatting Context，即**块格式化上下文 **.
-
-**BFC是一个独立的布局环境，其中的元素布局是不受外界的影响**，并且在一个BFC中，块盒与行盒（行盒由一行中所有的内联元素所组成）都会垂直的沿着其父元素的边框排列。
-
-**BFC布局规则**
-
-1. BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。
-
-2. 内部的Box会在垂直方向，一个接一个地放置。
-
-3. Box垂直方向的距离由margin决定。**属于同一个BFC的两个相邻Box的margin会发生重叠 **
-
-   ```html
-   <!--属于同一个BFC的两个相邻的Box会发生margin重叠，所以我们可以设置，两个不同的BFC，也就是我们可以让把第二个p用div包起来，然后激活它使其成为一个BFC -->
-   <style>
-       *{
-           margin: 0;
-           padding: 0;
-       }
-       p {
-           color: #f55;
-           background: yellow;
-           width: 200px;
-           line-height: 100px;
-           text-align:center;
-           margin: 30px;
-       }
-       div{
-           overflow: hidden;
-       }
-   </style>
-   <body>
-       <p>1看看我的 margin是多少</p>
-       
-    	<!--<p>2看看我的 margin是多少</p>  -->
-       <div>
-           <p>2看看我的 margin是多少</p>
-       </div>
-   </body>
-   ```
-
-4. 每个元素的margin box的左边， 与包含块border box的左边相接触(对于从左往右的格式化，否则相反)。即使存在浮动也是如此。
-
-   ```html
-   <style>
-       *{
-           margin: 0;
-           padding: 0;
-       }
-       body {
-           width: 100%;
-           position: relative;
-       }
-    
-       .left {
-           width: 100px;
-           height: 150px;
-           float: left; /*浮动*/
-           background: rgb(139, 214, 78);
-           text-align: center;
-           line-height: 150px;
-           font-size: 20px;
-       }
-       .right {
-           overflow: hidden; /* 添加这行使BFC的区域不会与float box重叠 */
-           height: 300px;
-           background: rgb(170, 54, 236);
-           text-align: center;
-           line-height: 300px;
-           font-size: 40px;
-       }
-   </style>
-   <body>
-       <div class="left">LEFT</div>
-       <div class="right">RIGHT</div>
-   </body>
-   ```
-
-5. BFC的区域不会与float box重叠。
-
-6. 计算BFC的高度时，浮动元素也参与计算
-
-   ```html
-   <!--当我们不给父节点设置高度，子节点设置浮动的时候，会发生高度塌陷，这个时候我们就要清除浮动。-->
-   <style>
-       .par {
-           border: 5px solid rgb(91, 243, 30);
-           width: 300px;
-           overflow: hidden; /*清除浮动，高度值浮动元素也参与计算*/
-       }
-       
-       .child {
-           border: 5px solid rgb(233, 250, 84);
-           width:100px;
-           height: 100px;
-           float: left;
-       }
-   </style>
-   <body>
-       <div class="par">
-           <div class="child"></div>
-           <div class="child"></div>
-       </div>
-   </body>
-   ```
-
-**下列方式会创建块格式化上下文**：
-
-2. float属性不为none
-3. position为absolute或fixed
-4. display为`inline-block, table-cell, table-caption, flex, inline-flex`
-5. overflow不为visible
-
-需要背的条件👇
-
-1. 浮动元素（元素的 float 不是 none）
-2. 绝对定位元素（元素的 position 为 absolute 或 fixed）
-3. 行内块元素
-4. overflow 值不为 visible 的块元素
-5. 弹性元素（display为 flex 或 inline-flex元素的直接子元素）
 
 ## 选择器优先级
 
