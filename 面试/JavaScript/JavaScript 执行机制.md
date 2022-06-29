@@ -1,7 +1,5 @@
 # JavaScript 执行机制
 
-<img src="https://user-gold-cdn.xitu.io/2017/11/21/15fdd88994142347?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" style="zoom: 50%;" />
-
 1. 同步和异步任务分别进入不同的执行"场所"，**同步的进入主线程**，**异步的进入Event Table并注册回调函数**。
 2. 当指定的事情完成时，**Event Table会将这个函数移入Event Queue **。
 3. 主线程内的任务执行完毕为空，会去Event Queue读取对应的函数，进入主线程执行。
