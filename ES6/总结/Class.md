@@ -864,7 +864,7 @@ B.prototype.__proto__ = A.prototype;
    A.prototype.__proto__ === Object.prototype // true
    ```
 
-   这种情况下，A作为一个基类（即不存在任何继承），就是一个普通函数，所以直接继承Function.prototype。但是，A调用后返回一个空对象（即Object实例），所以A.prototype.__proto__指向构造函数（Object）的prototype属性
+   这种情况下，A作为一个基类（即不存在任何继承），就是一个普通函数，所以直接继承`Function.prototype`。但是，A调用后返回一个空对象（即Object实例），所以`A.prototype.__proto__`指向构造函数（`Object`）的`prototype`属性
 
 #### 实例的 __proto__ 属性
 
