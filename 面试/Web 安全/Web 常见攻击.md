@@ -33,7 +33,7 @@ XSS 全称是 `Cross Site Scripting` ,为了与`CSS`区分开来，故简称 `XS
 
 举个例子:
 
-```
+```js
 http://TianTianUp.com?query=<script>alert("你受到了XSS攻击")</script>
 ```
 

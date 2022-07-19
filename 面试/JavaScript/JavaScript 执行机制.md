@@ -118,8 +118,6 @@ console.log('console');
 
 事件循环，宏任务，微任务的关系如图所示：
 
-<img src="https://user-gold-cdn.xitu.io/2017/11/21/15fdcea13361a1ec?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" style="zoom: 50%;" />
-
 ```javascript
 console.log('1');
 

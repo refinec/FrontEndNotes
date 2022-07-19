@@ -375,7 +375,7 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
 - ​	组件上的 v-model 默认会利用名为 `value` 的属性和名为 `input` 的事件
 
-  ![image-20201121194036891](../../assets/vue/image-20201121194036891.png)
+  ![image-20201121194036891](../../../assets/vue/image-20201121194036891.png)
 
   为了让它正常工作，这个组件内的 <input> 必须：
 
@@ -383,13 +383,13 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
 - 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
 
-  ![image-20201121200200157](../../assets/vue/image-20201121200200157.png)
+  ![image-20201121200200157](../../../assets/vue/image-20201121200200157.png)
 
   * **model 选项可以用来避免这样的冲突**
 
     这里的 lovingVue 的值将会传入这个名为 checked 的 prop。同时当 <base-checkbox> 触发一个 change 事件并附带一个新的值的时候，这个 lovingVue 的 property 将会被更新
 
-    ![image-20201121200503336](../../assets/vue/image-20201121200503336.png)
+    ![image-20201121200503336](../../../assets/vue/image-20201121200503336.png)
 
 ### 6. v-for
 
@@ -412,8 +412,6 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
  * `v-if` ：每次都会重新删除或创建元素，有较高的切换开销；切换过程中条件块内的事件监听器和子组件适当地被销毁和重建。当和 v-if 一起使用时，v-for 的优先级比 v-if 更高。
 
    也可以同时使用key属性，**管理可复用的元素，保证元素唯一性**：
-
-   ![image-20201121201453136](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121201453136.png)
 
 * `v-show` ：每次只是切换了元素的**display:none** 样式，有较高的初始渲染开销。如果元素可能永远
 
@@ -693,7 +691,6 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
   在 v-mydirective:[argument]="value" 中，argument 参数可以根据组件实例数据进行更新！这使得自定义指令可以在应用中被灵活使用
 
-  ![image-20201121204920021](C:\Users\c1539\AppData\Roaming\Typora\typora-user-images\image-20201121204920021.png)
 
 #### 私有指令中调用 method 中的方法
 

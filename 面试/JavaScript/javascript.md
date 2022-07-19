@@ -492,7 +492,7 @@ function debounce(callback, delay){
 
 ```
 npm i -g lodash-cli
-npm i -g lodash-clilodash-cli include=debounce,throttle
+npm i -g lodash-cli include=debounce,throttle
 ```
 
 ## **谈一谈你对requestAnimationFrame（rAF）理解**

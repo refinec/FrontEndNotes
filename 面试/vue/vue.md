@@ -169,9 +169,7 @@ MVVM 是 Model-View-ViewModel 的缩写。mvvm 是一种设计思想。**Model �
 
 **ViewModel 通过双向数据绑定把 View 层和 Model 层连接了起来**，而 View 和 Model 之间的同步工作完全是自动的，无需人为干涉，因此开发者只需关注业务逻辑，不需要手动操作 DOM, 不需要关注数据状态的同步问题，复杂的数据状态维护完全由 MVVM 来统一管理。
 
- **Vue的MVVM模式实现原理:**
-
-![img](https://user-gold-cdn.xitu.io/2019/6/13/16b4fd5ceadd8343?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+ **Vue的MVVM模式实现原理:
 
 Mvvm的入口函数，将三者整合
 
