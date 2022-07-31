@@ -4,7 +4,7 @@
 
 > 有时候表单项是一个循环的列表，需要对每一项进行校验
 
-![1639314939(1).jpg](../assets/UI框架/09f36b9bde724160bf849cc7747c893e~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
+![image-20220731232852908](../assets/UI框架/image-20220731232852908.png)
 
 ```vue
 <template>
@@ -74,7 +74,7 @@ export default {
 
 > 如果在表单里嵌套表格，那么如何对表格里面的控件进行校验呢？
 
-![1639315824(1).jpg](../assets/UI框架/2f61fb571bba4da18f14bec455d10162~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
+![image-20220731232913790](../assets/UI框架/image-20220731232913790.png)
 
 ```vue
 <template>
@@ -187,7 +187,7 @@ export default {
 
 ## el-form-item 表单校验 label只保留 *
 
-![1639312147(1).jpg](../assets/UI框架/ae92a837ac804673a130dd41358653cf~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
+![image-20220731232935410](../assets/UI框架/image-20220731232935410.png)
 
 ```vue
 <template>
@@ -212,7 +212,7 @@ export default {
 
 > 使用样式穿透修改下拉框样式，你会发现打死都不生效，那是因为下拉框是默认挂载在 body 下面。解决办法：设置 `:popper-append-to-body="false"`
 
-![image.png](../assets/UI框架/74f10805b5824ca2819709e561451281~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
+![image-20220731232956804](../assets/UI框架/image-20220731232956804.png)
 
 ```vue
 <template>
