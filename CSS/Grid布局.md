@@ -74,7 +74,7 @@
 }
 ```
 
-![image](../assets/css/17389591dc05edac~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/1.gif)
 
 #### **auto-fill**
 
@@ -82,7 +82,7 @@
 
 `grid-template-columns: repeat(auto-fill, 200px)` 表示列宽是 200 px，但列的数量是不固定的，只要浏览器能够容纳得下，就可以放置元素。
 
-![img](../assets/css/17389591c300e81a~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/2.gif)
 
 #### `fr`等分
 
@@ -99,7 +99,7 @@
 }
 ```
 
-![img](../assets/css/17389591ccc256d1~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/3.gif)
 
 #### auto
 
@@ -116,7 +116,7 @@
 }
 ```
 
-![image](../assets/css/17389591f2146e1d~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/4.gif)
 
 ### 3. grid-gap 和 grid-row-gap、grid-column-gap
 
@@ -128,7 +128,7 @@
 - `grid-column-gap: 20px` 表示列间距是 20px
 - `grid-gap: 10px 20px` 实现的效果是一样的
 
-![img](../assets/css/17389591f78de6f2~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/5.png)
 
 ### 4. grid-template-areas
 
@@ -169,7 +169,7 @@
 
 上面代码表示划分出 6 个单元格，其中值得注意的是 `.` 符号代表空的单元格，也就是没有用到该单元格。类 `.sidebar` `.content` `.header`所在的元素将放在上面 `grid-template-areas` 中定义的 `sidebar` `content` `header` 区域中
 
-![img](../assets/css/173895920bbe824a~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/6.png)
 
 ### 5. grid-auto-flow
 
@@ -202,11 +202,11 @@
 }
 ```
 
-![img](../assets/css/173895921548265c~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/7.png)
 
 但这有一个问题，就是第五个项目和第六个项目之间有个空白，这个是由于第六块的长度大于了空白处的长度，被挤到了下一行导致的。在实际应用中，我们可能想让下面长度合适的填满这个空白，这个时候可以设置  `grid-auto-flow: row dense`，表示尽可能填满表格。
 
-![image](../assets/css/173895923612a19b~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/9.png)
 
 可以设置 `grid-auto-flow: column`，表示先列后行
 
@@ -220,7 +220,7 @@
 }
 ```
 
-![image](../assets/css/173895923f11dd83~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/10.png)
 
 ### 6. justify-items 、align-items 和 place-items
 
@@ -234,7 +234,7 @@
 
 如：`start `对齐单元格的起始边缘
 
-![image](../assets/css/1738959244947d96~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/11.png)
 
 ### 7. justify-content 、align-content 和 place-content
 
@@ -255,9 +255,9 @@
 - space-evenly - 项目与项目的间隔相等，项目与容器边框之间的间隔也同样相等
 - stretch - 项目大小没有指定时，拉伸占据整个网格容器
 
-![image](../assets/css/173895926d20f5d6~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/12.png)
 
-![image](../assets/css/173895927ba770c4~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/13.png)
 
 ### 8.grid-auto-columns 、 grid-auto-rows 
 
@@ -278,7 +278,7 @@
 
 `grid-template-columns` 属性和 `grid-template-rows` 属性只是指定了两行两列，但实际有九个元素，就会产生隐式网格。通过 `grid-auto-rows` 可以指定隐式网格的行高为 50px
 
-![img](../assets/css/173895927d99af1c~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/14.png)
 
 ## 项目属性
 
@@ -359,7 +359,7 @@
 
 `.two` 所在的网格项目，垂直网格线是从 2 到 4，水平网格线是从 1 到 2。其中它跟 `.three` （垂直网格线是从3 到 4，水平网格线是从 1 到 4） 是有冲突的。可以设置 `z-index` 去决定它们的层级关系
 
-![img](../assets/css/173895928bc7e88e~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![img](../assets/css/15.png)
 
 ### 2. grid-area
 
@@ -409,7 +409,7 @@
 }
 ```
 
-![image](../assets/css/17389592c297495a~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/16.gif)
 
 ### `repeat`+`auto-fit`+`minmax` 去掉右侧空白
 
@@ -425,7 +425,7 @@
 }
 ```
 
-![auto-auto-minmax.gif](../assets/css/17389592cc3c2bf9~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![auto-auto-minmax.gif](../assets/css/17.gif)
 
 ### `repeat`+`auto-fit`+`minmax`-`span`-`dense` 解决空缺问题
 
@@ -458,7 +458,7 @@
 }
 ```
 
-![image](../assets/css/17389592f9da3763~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/18.gif)
 
 不对，怎么右侧又有空白了？原来是有一些长度太长了，放不下，这个时候就到我们的 `dense` 关键字出场了。`grid-auto-flow: row dense` 表示尽可能填充，而不留空白。
 
@@ -477,4 +477,6 @@
 }
 ```
 
-![image](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/7/26/17389593009f7fe7~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![image](../assets/css/19.gif)
+
+
