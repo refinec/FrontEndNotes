@@ -65,4 +65,115 @@ const element = {
 
    你可以安全地在 JSX 当中**插入用户输入内容**，这是因为`React DOM` 在渲染所有输入内容之前，默认会进行[转义](https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html)。它可以确保在你的应用中，永远不会注入那些并非自己明确编写的内容。所有的内容在渲染之前都被转换成了字符串。这样可以有效地防止 [XSS（cross-site-scripting, 跨站脚本）](https://en.wikipedia.org/wiki/Cross-site_scripting)攻击。
 
-   
+
+### 在运行时选择类型
+
+你不能将通用表达式作为 React 元素类型。如果你想通过通用表达式来（动态）决定元素类型，你需要首先将它赋值给大写字母开头的变量。这通常用于根据 prop 来渲染不同组件的情况下:
+
+```jsx
+import React from 'react';
+import { PhotoStory, VideoStory } from './stories';
+
+const components = {
+  photo: PhotoStory,
+  video: VideoStory
+};
+
+function Story(props) {
+  // 错误！JSX 类型不能是一个表达式。  return <components[props.storyType] story={props.story} />;}
+```
+
+要解决这个问题, 需要首先将类型赋值给一个大写字母开头的变量：
+
+```jsx
+import React from 'react';
+import { PhotoStory, VideoStory } from './stories';
+
+const components = {
+  photo: PhotoStory,
+  video: VideoStory
+};
+
+function Story(props) {
+  // 正确！JSX 类型可以是大写字母开头的变量。  const SpecificStory = components[props.storyType];  return <SpecificStory story={props.story} />;}
+```
+
+### 函数作为子元素
+
+通常，JSX 中的 JavaScript 表达式将会被计算为字符串、React 元素或者是列表。不过，`props.children` 和其他 prop 一样，它可以传递任意类型的数据，而不仅仅是 React 已知的可渲染类型。例如，如果你有一个自定义组件，你可以把回调函数作为 `props.children` 进行传递：
+
+```jsx
+// 调用子元素回调 numTimes 次，来重复生成组件
+function Repeat(props) {
+  let items = [];
+  for (let i = 0; i < props.numTimes; i++) {    
+    items.push(props.children(i));
+  }
+  return <div>{items}</div>;
+}
+
+function ListOfTenThings() {
+  return (
+    <Repeat numTimes={10}>
+      {(index) => <div key={index}>This is item {index} in the list</div>}    
+    </Repeat>
+  );
+}
+```
+
+你可以将任何东西作为子元素传递给自定义组件，只要确保在该组件渲染之前能够被转换成 React 理解的对象。这种用法并不常见，但可以用于扩展 JSX。
+
+### 布尔类型、Null 以及 Undefined 将会忽略
+
+`false`, `null`, `undefined`, and `true` 是合法的子元素。但它们并不会被渲染。以下的 JSX 表达式渲染结果相同：
+
+```jsx
+<div />
+
+<div></div>
+
+<div>{false}</div>
+
+<div>{null}</div>
+
+<div>{undefined}</div>
+
+<div>{true}</div>
+```
+
+这有助于依据特定条件来渲染其他的 React 元素。例如，在以下 JSX 中，仅当 `showHeader` 为 `true` 时，才会渲染 `<Header />` 组件：
+
+```jsx
+<div>
+  {showHeader && <Header />}  
+  <Content />
+</div>
+```
+
+值得注意的是有一些 [“falsy” 值](https://developer.mozilla.org/en-US/docs/Glossary/Falsy)，如数字 `0`，仍然会被 React 渲染。例如，以下代码并不会像你预期那样工作，因为当 `props.messages` 是空数组时，将会渲染为数字 `0`：
+
+```jsx
+<div>
+  {props.messages.length &&    
+    <MessageList messages={props.messages} />
+  }
+</div>
+```
+
+要解决这个问题，确保 `&&` 之前的表达式总是布尔值：
+
+```jsx
+<div>
+  {props.messages.length > 0 &&    
+    <MessageList messages={props.messages} />
+  }
+</div>
+```
+
+反之，如果你想渲染 `false`、`true`、`null`、`undefined` 等值，你需要先将它们[转换为字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#String_conversion)：
+
+```jsx
+<div>
+  My JavaScript variable is {String(myVariable)}.
+</div>
+```
