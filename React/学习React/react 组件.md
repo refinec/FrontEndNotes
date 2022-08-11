@@ -217,6 +217,183 @@ this.setState((state, props) => ({
 
 1. `setState()` 接收一个函数而不是一个对象
 
+## 组件的`render` Props
+
+>  [“render prop”](https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce) 是指一种在 React 组件之间使用一个值为函数的 prop **共享代码**的简单技术，以此来实现代码逻辑复用。它更像一个具名插槽
+
+具有 `render prop` 的组件接受一个返回 **React 元素的函数**，并在组件内部通过调用此函数来实现自己的渲染逻辑。
+
+```jsx
+<DataProvider render={data => (
+  <h1>Hello {data.target}</h1>
+)}/>
+```
+
+使用` render prop` 的库有 [React Router](https://reacttraining.com/react-router/web/api/Route/render-func)、[Downshift](https://github.com/paypal/downshift) 以及 [Formik](https://github.com/jaredpalmer/formik)。
+
+### 怎么使用？
+
+> 像一个具名插槽一般使用
+
+```jsx
+class Cat extends React.Component {
+  render() {
+    const mouse = this.props.mouse;
+    return (
+      <img src="/cat.jpg" style={{ position: 'absolute', left: mouse.x, top: mouse.y }} />
+    );
+  }
+}
+
+class Mouse extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.state = { x: 0, y: 0 };
+  }
+
+  handleMouseMove(event) {
+    this.setState({
+      x: event.clientX,
+      y: event.clientY
+    });
+  }
+
+  render() {
+    return (
+      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
+
+        {/*
+          使用 `render`prop 动态决定要渲染的内容，
+          而不是给出一个 <Mouse> 渲染结果的静态表示
+        */}
+        {this.props.render(this.state)}
+      </div>
+    );
+  }
+}
+
+class MouseTracker extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>移动鼠标!</h1>
+        <Mouse render={mouse => (
+          <Cat mouse={mouse} />
+        )}/>
+      </div>
+    );
+  }
+}
+```
+
+现在，我们提供了一个 `render` 方法 让 `<Mouse>` 能够动态决定什么需要渲染，而不是克隆 `<Mouse>` 组件然后硬编码来解决特定的用例。
+
+更具体地说，**render prop 是一个用于告知组件需要渲染什么内容的函数 prop。**
+
+关于 render prop 一个有趣的事情是你可以使用带有 render prop 的常规组件来实现大多数[高阶组件](https://zh-hans.reactjs.org/docs/higher-order-components.html) (HOC)。 例如，如果你更喜欢使用 `withMouse` HOC而不是 `<Mouse>` 组件，你可以使用带有 render prop 的常规 `<Mouse>` 轻松创建一个：
+
+```jsx
+// 如果你出于某种原因真的想要 HOC，那么你可以轻松实现
+// 使用具有 render prop 的普通组件创建一个！
+function withMouse(Component) {
+  return class extends React.Component {
+    render() {
+      return (
+        <Mouse render={mouse => (
+          <Component {...this.props} mouse={mouse} />
+        )}/>
+      );
+    }
+  }
+}
+```
+
+### `render` prop也可叫做其他名字
+
+> render prop 是因为模式才被称为 *render* prop ，你不一定要用名为 `render` 的 prop 来使用这种模式。事实上， [*任何*被用于告知组件需要渲染什么内容的函数 prop 在技术上都可以被称为 “render prop”](https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce)
+
+尽管上面的例子使用了 `render`，但我们也可以简单地使用 `children` prop！
+
+```jsx
+<Mouse children={mouse => (
+  <p>鼠标的位置是 {mouse.x}，{mouse.y}</p>
+)}/>
+```
+
+记住，`children` prop 并不真正需要添加到 JSX 元素的 “attributes” 列表中。相反，你可以直接放置到元素的*内部*！
+
+```jsx
+<Mouse>
+  {mouse => (
+    <p>鼠标的位置是 {mouse.x}，{mouse.y}</p>
+  )}
+</Mouse>
+```
+
+由于这一技术的特殊性，当你在设计一个类似的 API 时，你或许要直接地在你的 `propTypes` 里声明 `children` 的类型应为一个函数。
+
+```jsx
+Mouse.propTypes = {
+  children: PropTypes.func.isRequired
+};
+```
+
+### 注意事项
+
+将 `Render Props `与 `React.PureComponent` 一起使用时要小心。
+
+`render` 方法里每次创建返回一个函数，因此`React.PureComponent` 在浅比较`props`时总会得到`false`，这样`React.PureComponent` 的功能将无法起到作用。
+
+```jsx
+class Mouse extends React.PureComponent {
+  // 与上面相同的代码......
+}
+
+class MouseTracker extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Move the mouse around!</h1>
+
+        {/*
+          这是不好的！
+          每个渲染的 `render` prop的值将会是不同的。
+        */}
+        <Mouse render={mouse => (
+          <Cat mouse={mouse} />
+        )}/>
+      </div>
+    );
+  }
+}
+```
+
+例如，上面的代码是继续我们之前使用的 `<Mouse>` 组件，如果 `Mouse` 继承自 `React.PureComponent` 而不是 `React.Component`，每次 `<MouseTracker>` 渲染，它会生成一个新的函数作为 `<Mouse render>` 的 prop，因而在同时也抵消了继承自 `React.PureComponent` 的 `<Mouse>` 组件的效果！
+
+为了绕过这一问题，有时你可以定义一个 `prop` 作为实例方法，类似这样：
+
+```jsx
+class MouseTracker extends React.Component {
+  // 定义为实例方法，`this.renderTheCat`始终
+  // 当我们在渲染中使用它时，它指的是相同的函数
+  renderTheCat(mouse) {
+    return <Cat mouse={mouse} />;
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Move the mouse around!</h1>
+        <Mouse render={this.renderTheCat} />
+      </div>
+    );
+  }
+}
+```
+
+如果你无法静态定义 prop（例如，因为你需要控制组件 props 和/或 state 的暴露程度），则 `<Mouse>` 应该继承自 `React.Component`。
+
 ## 阻止组件渲染(让组件不渲染)
 
 在某些情况下，可能需要隐藏组件。若要完成此操作，你可以让 `render` 方法直接返回 `null`，而不进行任何渲染。
@@ -326,6 +503,42 @@ class ErrorBoundary extends React.Component {
 > **注意📢**
 >
 > 组件名称在栈追踪中的显示依赖于 [`Function.name`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name) 属性。如果你想要支持尚未提供该功能的旧版浏览器和设备（例如 IE 11），考虑在你的打包（bundled）应用程序中包含一个 `Function.name` 的 polyfill，如 [`function.name-polyfill`](https://github.com/JamesMGreene/Function.name) 。或者，你可以在所有组件上显式设置 [`displayName`](https://zh-hans.reactjs.org/docs/react-component.html#displayname) 属性。
+
+## 严格模式 `React.StrictMode`
+
+> `StrictMode` 是一个用来突出显示应用程序中潜在问题的工具。与 `Fragment` 一样，`StrictMode` 不会渲染任何可见的 UI。它为其后代元素触发额外的检查和警告。
+>
+> 严格模式检查仅在开发模式下运行；*它们不会影响生产构建*。
+
+```jsx
+import React from 'react';
+
+function ExampleApplication() {
+  return (
+    <div>
+      <Header />
+      <React.StrictMode>        
+        <div>
+          <ComponentOne />
+          <ComponentTwo />
+        </div>
+      </React.StrictMode>      
+      <Footer />
+    </div>
+  );
+}
+```
+
+在上述的示例中，*不*会对 `Header` 和 `Footer` 组件运行严格模式检查。但是，`ComponentOne` 和 `ComponentTwo` 以及它们的所有后代元素都将进行检查。
+
+`StrictMode` 目前有助于：
+
+- [识别不安全的生命周期](https://zh-hans.reactjs.org/docs/strict-mode.html#identifying-unsafe-lifecycles)
+- [关于使用过时字符串 ref API 的警告](https://zh-hans.reactjs.org/docs/strict-mode.html#warning-about-legacy-string-ref-api-usage)
+- [关于使用废弃的 findDOMNode 方法的警告](https://zh-hans.reactjs.org/docs/strict-mode.html#warning-about-deprecated-finddomnode-usage)
+- [检测意外的副作用](https://zh-hans.reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects)
+- [检测过时的 context API](https://zh-hans.reactjs.org/docs/strict-mode.html#detecting-legacy-context-api)
+- [确保可复用的状态](https://zh-hans.reactjs.org/docs/strict-mode.html#ensuring-reusable-state)
 
 ## 高阶组件（HOC）
 
@@ -577,3 +790,239 @@ import MyComponent, { someFunction } from './MyComponent.js';
 这个问题的解决方案是通过使用 `React.forwardRef` API
 
 ## react 组件生命周期
+
+
+
+## React 内置组件
+
+### 一、Portals 穿梭挂载组件
+
+> `Portals`类似与Vue的`Teleport`组件，**将子节点渲染到存在于父组件以外的 DOM 节点内**
+
+使用工具：`ReactDOM.createPortal(child, container)`
+
+- 参数一：`child`
+
+  是任何[可渲染的 React 子元素](https://zh-hans.reactjs.org/docs/react-component.html#render)，例如一个**元素**，**字符串**或 `fragment`
+
+- 参数二：`container`
+
+  一个 DOM 元素
+
+一个 `portal` 的典型用例是当父组件有 `overflow: hidden` 或 `z-index` 样式时，但你需要子组件能够在视觉上“跳出”其容器。例如，**对话框**、**悬浮卡**以及**提示框**
+
+#### 用法示例
+
+```html
+<html>
+  <head>
+    <style>
+    #modal-root {
+      position: relative;
+      z-index: 999;
+    }
+
+    .app {
+      height: 10em;
+      width: 10em;
+      background: lightblue;
+      overflow: hidden;
+    }
+
+    .modal {
+      background-color: rgba(0,0,0,0.5);
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app-root"></div>
+    <div id="modal-root"></div>
+  </body>
+</html>
+```
+
+```jsx
+// 在 DOM 中有两个容器是兄弟级 （siblings）
+const appRoot = document.getElementById('app-root');
+const modalRoot = document.getElementById('modal-root');
+
+class Modal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.el = document.createElement('div');
+  }
+
+  componentDidMount() {
+    // 在 Modal 的所有子元素被挂载后，
+    // 这个 portal 元素会被嵌入到 DOM 树中，
+    // 这意味着子元素将被挂载到一个分离的 DOM 节点中。
+    // 如果要求子组件在挂载时可以立刻接入 DOM 树，
+    // 例如衡量一个 DOM 节点，
+    // 或者在后代节点中使用 ‘autoFocus’，
+    // 则需添加 state 到 Modal 中，
+    // 仅当 Modal 被插入 DOM 树中才能渲染子元素。
+    modalRoot.appendChild(this.el);
+  }
+
+  componentWillUnmount() {
+    modalRoot.removeChild(this.el);
+  }
+
+  render() {
+    return ReactDOM.createPortal(
+      this.props.children,
+      this.el
+    );
+  }
+}
+
+class Parent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {clicks: 0};
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    // 当子元素里的按钮被点击时，
+    // 这个将会被触发更新父元素的 state，
+    // 即使这个按钮在 DOM 中不是直接关联的后代
+    this.setState(state => ({
+      clicks: state.clicks + 1
+    }));
+  }
+
+  render() {
+    return (
+      <div onClick={this.handleClick}>
+        <p>Number of clicks: {this.state.clicks}</p>
+        <p>
+          Open up the browser DevTools
+          to observe that the button
+          is not a child of the div
+          with the onClick handler.
+        </p>
+        <Modal>
+          <Child />
+        </Modal>
+      </div>
+    );
+  }
+}
+
+function Child() {
+  // 这个按钮的点击事件会冒泡到父元素
+  // 因为这里没有定义 'onClick' 属性
+  return (
+    <div className="modal">
+      <button>Click</button>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(appRoot);
+root.render(<Parent />);
+```
+
+### 二、Profiler 渲染分析器
+
+> `Profiler` 测量一个 React 应用多久渲染一次以及渲染一次的“代价”。 它的目的是识别出应用中渲染较慢的部分，或是可以使用[类似 memoization 优化](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-to-memoize-calculations)的部分，并从相关优化中获益。
+
+> **注意📢：**
+>
+> `Profiling` 增加了额外的开支，所以**它在[生产构建](https://zh-hans.reactjs.org/docs/optimizing-performance.html#use-the-production-build)中会被禁用**。
+>
+> 为了将 `profiling` 功能加入生产环境中，React 提供了使 `profiling` 可用的特殊的生产构建环境。 从 [fb.me/react-profiling](https://fb.me/react-profiling)了解更多关于如何使用这个构建环境的信息。
+
+#### 用法示例
+
+> `Profiler` 能添加在 React 树中的任何地方来测量树中这部分渲染所带来的开销。 
+>
+> 它需要两个 **prop** ：一个是 `id`(string)，一个是当组件树中的组件“提交”更新的时候被React调用的回调函数 `onRender`(function)。
+
+ `onRender` 回调参数：
+
+> React 会在 profile 包含的组件树中任何组件 “提交” 一个更新的时候调用这个函数。 它的参数描述了渲染了什么和花费了多久
+
+```jsx
+function onRenderCallback(
+  id, // 发生提交的 Profiler 树的 “id”
+  phase, // "mount" （如果组件树刚加载） 或者 "update" （如果它重渲染了）之一
+  actualDuration, // 本次更新 committed 花费的渲染时间
+  baseDuration, // 估计不使用 memoization 的情况下渲染整棵子树需要的时间
+  startTime, // 本次更新中 React 开始渲染的时间
+  commitTime, // 本次更新中 React committed 的时间
+  interactions // 属于本次更新的 interactions 的集合
+) {
+  // 合计或记录渲染时间。。。
+}
+```
+
+- **`id: string`** - 发生提交的 `Profiler` 树的 `id`。 如果有多个 profiler，它能用来分辨树的哪一部分发生了“提交”。
+- **`phase: "mount" | "update"`** - 判断是组件树的第一次装载引起的重渲染，还是由 props、state 或是 hooks 改变引起的重渲染。
+- **`actualDuration: number`** - 本次更新在渲染 `Profiler` 和它的子代上花费的时间。 这个数值表明使用 memoization 之后能表现得多好。（例如 [`React.memo`](https://zh-hans.reactjs.org/docs/react-api.html#reactmemo)，[`useMemo`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)，[`shouldComponentUpdate`](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-do-i-implement-shouldcomponentupdate)）。 理想情况下，由于子代只会因特定的 prop 改变而重渲染，因此这个值应该在第一次装载之后显著下降。
+- **`baseDuration: number`** - 在 `Profiler` 树中最近一次每一个组件 `render` 的持续时间。 这个值估计了最差的渲染时间。（例如当它是第一次加载或者组件树没有使用 memoization）。
+- **`startTime: number`** - 本次更新中 React 开始渲染的时间戳。
+- **`commitTime: number`** - 本次更新中 React commit 阶段结束的时间戳。 在一次 commit 中这个值在所有的 profiler 之间是共享的，可以将它们按需分组。
+- **`interactions: Set`** - 当更新被制定时，[“interactions”](https://fb.me/react-interaction-tracing) 的集合会被追踪。（例如当 `render` 或者 `setState` 被调用时）。
+
+
+
+1. 分析 `Navigation` 组件和它的子代：
+
+   ```jsx
+   render(
+     <App>
+       <Profiler id="Navigation" onRender={callback}>
+         <Navigation {...props} />
+       </Profiler>
+       <Main {...props} />
+     </App>
+   );
+   ```
+
+2. 多个 `Profiler` 组件能测量应用中的不同部分：
+
+   ```jsx
+   render(
+     <App>
+       <Profiler id="Navigation" onRender={callback}>
+         <Navigation {...props} />
+       </Profiler>
+       <Profiler id="Main" onRender={callback}>
+         <Main {...props} />
+       </Profiler>
+     </App>
+   );
+   ```
+
+3. 嵌套使用 `Profiler` 组件来测量相同一个子树下的不同组件：
+
+   ```jsx
+     <App>
+       <Profiler id="Panel" onRender={callback}>
+         <Panel {...props}>
+           <Profiler id="Content" onRender={callback}>
+             <Content {...props} />
+           </Profiler>
+           <Profiler id="PreviewPane" onRender={callback}>
+             <PreviewPane {...props} />
+           </Profiler>
+         </Panel>
+       </Profiler>
+     </App>
+   );
+   ```
+
+> **注意📢**：
+>
+> 尽管 `Profiler` 是一个轻量级组件，我们依然应该在需要时才去使用它。对一个应用来说，每添加一些都会给 CPU 和内存带来一些负担。
+
