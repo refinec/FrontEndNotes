@@ -1,0 +1,371 @@
+## 一、组件
+
+* `React.Component` 
+*  `React.PureComponent`
+* `React.memo`：把组件定义为可被包装的函数
+* `React.Fragment`：是一个用于减少不必要嵌套的组件
+
+### React.Component
+
+### React.PureComponent
+
+> `React.PureComponent` 与 `React.Component` 很相似。两者的区别在于 `React.Component` 并未实现 `shouldComponentUpdate()`，而 `React.PureComponent` 中以浅层对比 **prop** 和 **state** 的方式来实现了该函数。
+
+#### 使用场景
+
+如果赋予 React 组件相同的 **props** 和 **state**，`render()` 函数会渲染相同的内容，那么在某些情况下使用 `React.PureComponent` 可提高性能。
+
+#### 注意点📢
+
+> `React.PureComponent` 中的 `shouldComponentUpdate()` 仅作对象的浅层比较。
+>
+> 如果对象中包含复杂的数据结构，则有可能因为无法检查深层的差别，产生错误的比对结果。仅在你的 **props** 和 **state** 较为简单时，才使用 `React.PureComponent`，或者在深层数据结构发生变化时调用 [`forceUpdate()`](https://zh-hans.reactjs.org/docs/react-component.html#forceupdate) 来确保组件被正确地更新。你也可以考虑使用 [immutable 对象](https://facebook.github.io/immutable-js/)加速嵌套数据的比较。
+
+此外，`React.PureComponent` 中的 `shouldComponentUpdate()` 将跳过所有子组件树的 prop 更新。因此，请确保所有子组件也都是“纯”的组件。
+
+### React.memo
+
+```jsx
+const MyComponent = React.memo(function MyComponent(props) {
+  /* 使用 props 渲染 */
+});
+```
+
+#### 使用场景
+
+> 如果你的组件在相同 props 的情况下渲染相同的结果，那么你可以通过将其包装在 `React.memo` 中调用，以此通过记忆组件渲染结果的方式来提高组件的性能表现。
+
+这意味着在这种情况下，React 将跳过渲染组件的操作并直接复用最近一次渲染的结果。
+
+```jsx
+const MyComponent = React.memo(function MyComponent(props) {
+  /* 使用 props 渲染 */
+});
+```
+
+#### 特点
+
+**`React.memo` 仅检查 props 变更**。如果函数组件被 `React.memo` 包裹，且其实现中拥有 [`useState`](https://zh-hans.reactjs.org/docs/hooks-state.html)，[`useReducer`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usereducer) 或 [`useContext`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usecontext) 的 Hook，当 `state` 或 `context` 发生变化时，它仍会重新渲染。
+
+默认情况下`React.memo`只会对复杂对象做浅层对比，如果你想要控制对比过程，那么请将自定义的比较函数通过第二个参数传入来实现（此方法仅作为**性能优化**的方式而存在。但请不要依赖它来“阻止”渲染，因为这会产生 **bug**）：
+
+```jsx
+function MyComponent(props) {
+  /* 使用 props 渲染 */
+}
+function areEqual(prevProps, nextProps) {
+  /*
+  如果把 nextProps 传入 render 方法的返回结果与
+  将 prevProps 传入 render 方法的返回结果一致则返回 true，
+  否则返回 false
+  */
+}
+export default React.memo(MyComponent, areEqual);
+```
+
+> **注意📢**：
+>
+> 与 class 组件中 [`shouldComponentUpdate()`](https://zh-hans.reactjs.org/docs/react-component.html#shouldcomponentupdate) 方法不同的是，如果 props 相等，`areEqual` 会返回 `true`；如果 props 不相等，则返回 `false`。这与 `shouldComponentUpdate` 方法的返回值相反。
+
+### React.Fragment
+
+> `React.Fragment` 组件能够在不额外创建 DOM 元素的情况下，让 `render()` 方法中返回多个元素。
+
+```jsx
+render() {
+  return (
+    <React.Fragment>
+      Some text.
+      <h2>A heading</h2>
+    </React.Fragment>
+  );
+}
+```
+
+## 二、创建 React 元素
+
+每个 JSX 元素都是调用 [`React.createElement()`](https://zh-hans.reactjs.org/docs/react-api.html#createelement) 的语法糖。一般来说，如果你使用了 JSX，就不再需要调用以下方法：
+
+- `createElement()`
+- `createFactory()`
+
+### createElement()
+
+```jsx
+React.createElement(
+  type,
+  [props],
+  [...children]
+)
+```
+
+### createFactory() - 已废弃
+
+> 返回用于生成指定类型 React 元素的函数。与 [`React.createElement()`](https://zh-hans.reactjs.org/docs/react-api.html#createelement) 相似的是，类型参数既可以是标签名字符串（像是 `'div'` 或 `'span'`），也可以是 [React 组件](https://zh-hans.reactjs.org/docs/components-and-props.html) 类型 （class 组件或函数组件），或是 [React fragment](https://zh-hans.reactjs.org/docs/react-api.html#reactfragment) 类型。
+
+```jsx
+React.createFactory(type)
+```
+
+## 三、转换元素
+
+`React` 提供了几个用于操作元素的 API：
+
+- `cloneElement()`
+- `isValidElement()`
+- `React.Children`
+
+### cloneElement()
+
+```jsx
+React.cloneElement(
+  element,
+  [config],
+  [...children]
+)
+```
+
+以 `element` 元素为样板克隆并返回新的 React 元素。`config` 中应包含新的 props，`key` 或 `ref`。返回元素的 props 是将新的 props 与原始元素的 props 浅层合并后的结果。
+
+新的子元素将取代现有的子元素，如果在 `config` 中未出现 `key` 或 `ref`，那么原始元素的 `key` 和 `ref` 将被保留。
+
+`React.cloneElement()` 几乎等同于：
+
+```jsx
+<element.type {...element.props} {...props}>{children}</element.type>
+```
+
+但是，这也保留了组件的 `ref`。这意味着当通过 `ref` 获取子节点时，你将不会意外地从你祖先节点上窃取它。相同的 `ref` 将添加到克隆后的新元素中。如果存在新的 `ref` 或 `key` 将覆盖之前的。
+
+### isValidElement()
+
+> 验证对象是否为 React 元素，返回值为 `true` 或 `false`
+
+```jsx
+React.isValidElement(object)
+```
+
+### React.Children
+
+> 提供了用于处理 `this.props.children` 不透明数据结构的实用方法
+
+#### React.Children.map
+
+```jsx
+React.Children.map(children, function[(thisArg)])
+```
+
+在 `children` 里的每个直接子节点上调用一个函数，并将 `this` 设置为 `thisArg`。如果子节点为 `null` 或是 `undefined`，则此方法将返回 `null` 或是 `undefined`，而不会返回数组。
+
+**注意📢**：如果 `children` 是一个 `Fragment` 对象，它将被视为单一子节点的情况处理，而不会被遍历。
+
+#### React.Children.forEach
+
+```jsx
+React.Children.forEach(children, function[(thisArg)])
+```
+
+与`React.Children.map`类似，但它不会返回一个数组
+
+####  React.Children.count
+
+```jsx
+React.Children.count(children)
+```
+
+返回 `children` 中的组件总数量，等同于通过 `map` 或 `forEach` 调用回调函数的次数
+
+#### React.Children.only
+
+```jsx
+React.Children.only(children)
+```
+
+验证 `children` 是否只有一个子节点（一个 React 元素），如果有则返回它，否则此方法会抛出错误。
+
+**注意📢**：`React.Children.only()` 不接受 `React.Children.map()`的返回值，因为它是一个数组而并不是 React 元素。
+
+#### React.Children.toArray
+
+```jsx
+React.Children.toArray(children)
+```
+
+将 `children` 这个复杂的数据结构以数组的方式扁平展开并返回，并为每个子节点分配一个 key。当你想要在渲染函数中操作子节点的集合时，它会非常实用，**特别是当你想要在向下传递 `this.props.children` 之前对内容重新排序或获取子集时**。
+
+**注意📢**：`React.Children.toArray()` 在拉平展开子节点列表时，更改 key 值以保留嵌套数组的语义。也就是说，`toArray` 会为返回数组中的每个 key 添加前缀，以使得每个元素 key 的范围都限定在此函数入参数组的对象内。
+
+## 四、Refs
+
+- `React.createRef`
+- `React.forwardRef`
+
+### React.createRef
+
+> `React.createRef` 创建一个能够通过 ref 属性附加到 React 元素的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html)。
+
+```jsx
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.inputRef = React.createRef();
+  }
+
+  render() {
+    return <input type="text" ref={this.inputRef} />;
+  }
+
+  componentDidMount() {
+    this.inputRef.current.focus();
+  }
+}
+```
+
+### React.forwardRef
+
+`React.forwardRef` 会创建一个React组件，这个组件能够将其接受的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html) 属性转发到其组件树下的另一个组件中。它在以下两种场景中特别有用：
+
+- [转发 refs 到 DOM 组件](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components)
+- [在高阶组件中转发 refs](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-in-higher-order-components)
+
+`React.forwardRef` 接受渲染函数作为参数。React 将使用 `props` 和 `ref` 作为参数来调用此函数。此函数应返回 React 节点。
+
+```jsx
+const FancyButton = React.forwardRef((props, ref) => (  <button ref={ref} className="FancyButton">    {props.children}
+  </button>
+));
+
+// You can now get a ref directly to the DOM button:
+const ref = React.createRef();
+<FancyButton ref={ref}>Click me!</FancyButton>;
+```
+
+在上述的示例中，React 会将 `<FancyButton ref={ref}>` 元素的 `ref` 作为第二个参数传递给 `React.forwardRef` 函数中的渲染函数。该渲染函数会将 `ref` 传递给 `<button ref={ref}>` 元素。
+
+因此，当 React 附加了 ref 属性之后，`ref.current` 将直接指向 `<button>` DOM 元素实例。
+
+## 五、Suspense
+
+> Suspense 使得组件可以“等待”某些操作结束后，再进行渲染。目前，Suspense 仅支持的使用场景是：[通过 `React.lazy` 动态加载组件](https://zh-hans.reactjs.org/docs/code-splitting.html#reactlazy)。它将在未来支持其它使用场景，如数据获取等。
+
+- `React.lazy`
+- `React.Suspense`
+
+### React.lazy
+
+> `React.lazy()` 允许你定义一个动态加载的组件。这有助于缩减 bundle 的体积，并延迟加载在初次渲染时未用到的组件。
+
+```jsx
+// 这个组件是动态加载的
+const SomeComponent = React.lazy(() => import('./SomeComponent'));
+```
+
+注意📢：渲染 `lazy` 组件依赖该组件渲染树上层的 `<React.Suspense>` 组件。
+
+这是指定加载指示器（loading indicator）的方式。
+
+### React.Suspense
+
+`React.Suspense` 可以指定加载指示器，以防其组件树中的某些子组件尚未具备渲染条件。
+
+如今，懒加载组件是 `<React.Suspense>` 支持的唯一用例：
+
+```jsx
+// 该组件是动态加载的
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+function MyComponent() {
+  return (
+    // 显示 <Spinner> 组件直至 OtherComponent 加载完成
+    <React.Suspense fallback={<Spinner />}>
+      <div>
+        <OtherComponent />
+      </div>
+    </React.Suspense>
+  );
+}
+```
+
+请注意，`lazy` 组件可以位于 `Suspense` 组件树的深处——它不必包装树中的每一个延迟加载组件。最佳实践是将 `<Suspense>` 置于你想展示加载指示器（loading indicator）的位置，而 `lazy()` 则可被放置于任何你想要做代码分割的地方。
+
+> 注意📢：
+>
+> 对于已经展示给用户的内容来说，在切换回去时，展示加载指示器可能会让人困惑。有时，在准备新的 UI 时，展示 “旧” 的 UI 可能会更加友好。要做到这一点，你可以使用新的 transition API [`startTransition`](https://zh-hans.reactjs.org/docs/react-api.html#starttransition) 和 [`useTransition`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usetransition) 来将标记更新为 transitions，同时避免意外的兜底方案。
+
+#### 服务端渲染中的 `React.Suspense`
+
+在服务端渲染过程中，Suspense 边界允许你挂起，通过较小的块来刷新应用程序。 当组件挂起时，我们会安排一个低优先级的任务来渲染最近的 Suspense 边界的 fallback。如果组件在我们刷新 fallback 之前取消挂起，那么我们会发送实际内容并丢弃 fallback。
+
+#### hydrate 过程中的 `React.Suspense`
+
+Suspense 边界依赖于它们的父边界，在它们可以 hydrate 前被 hydrate，但是它们可以独立于兄弟边界进行 hydrate。边界 hydrate 前发生的事件将导致边界 hydrate 的优先级高于相邻边界的优先级。具体请参阅[讨论](https://github.com/reactwg/react-18/discussions/130)。
+
+## 六、Transitions
+
+*`Transitions`* 是一个全新的并发特性。它允许你将**标记**更新作为一个 `transitions`，这会告诉 React 它们可以被**中断执行**，并避免回到已经可见内容的 `Suspense` 降级方案。
+
+- `React.startTransition`
+- `React.useTransition`
+
+### React.startTransition
+
+```jsx
+React.startTransition(callback)
+```
+
+`React.startTransition` 让你把提供的 **fallback** 里面的更新标记为 **transitions**。这个方法是为了在 [`React.useTransition`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usetransition) 不可用时使用
+
+> 注意📢：
+>
+> 过渡期的更新会被更紧急的更新取代，如点击操作。
+>
+> 过渡期的更新不会显示重新挂起内容的 **fallback**，允许用户在渲染更新时继续进行交互。
+>
+> `React.startTransition` 不提供 `isPending` 的标志。要跟踪过渡的待定状态，请参阅`React.useTransition`
+
+### React.useTransition
+
+```jsx
+const [isPending, startTransition] = useTransition();
+```
+
+* `isPending`：一个状态值，表示过渡任务的等待状态
+
+* `startTransition`：一个启动该过渡任务的函数
+
+`startTransition` 允许你通过标记更新将提供的回调函数作为一个过渡任务：
+
+```jsx
+startTransition(() => {
+  setCount(count + 1);
+})
+```
+
+`isPending` 指示过渡任务何时活跃以显示一个等待状态：
+
+```jsx
+function App() {
+  const [isPending, startTransition] = useTransition();
+  const [count, setCount] = useState(0);
+  
+  function handleClick() {
+    startTransition(() => {
+      setCount(c => c + 1);
+    })
+  }
+
+  return (
+    <div>
+      {isPending && <Spinner />}
+      <button onClick={handleClick}>{count}</button>
+    </div>
+  );
+}
+```
+
+> **注意📢**：
+>
+> 过渡任务中触发的更新会让更紧急地更新先进行，比如点击。
+>
+> 过渡任务中的更新将不会展示由于再次挂起而导致降级的内容。这个机制允许用户在 React 渲染更新的时候继续与当前内容进行交互。
