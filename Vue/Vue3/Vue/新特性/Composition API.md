@@ -66,7 +66,7 @@ export default {
 </script>
 ```
 
-<img src="../../../assets/vue3/对比.jpg" style="zoom: 80%;" />
+<img src="../../../../assets/vue3/对比.jpg" style="zoom: 80%;" />
 
 #### 1. `ref`
 
