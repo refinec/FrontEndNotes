@@ -16,7 +16,7 @@ transition元素是一个包装器，可协助向元素添加过渡动画功能�
 
 在下面这个例子中，我们将创建一个按钮来转换`<p>`元素以进行渲染。
 
-```
+```vue
 <template>
   <div>
     <h1>Vue Transition Animation</h1>
@@ -30,7 +30,7 @@ transition元素是一个包装器，可协助向元素添加过渡动画功能�
 
 相应的`<script>`部分。
 
-```
+```vue
 import { ref } from "vue";
 
 export default {
@@ -48,7 +48,7 @@ export default {
 
 请看Vue文档中的样式示例。
 
-```
+```css
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
@@ -87,7 +87,7 @@ export default {
 
 这在将自定义库添加到代码时尤其有用。也是我们稍后要对`Animate.css`所做的事情。
 
-```
+```vue
 <transition 
   enter-active-class="animated fadeIn zoomIn" 
   leave-active-class="animated fadeOut zoomOut"
@@ -105,7 +105,7 @@ export default {
 
 声明JS事件处理程序
 
-```
+```vue
 <transition @before-enter='beforeEnter'>
     <!-- ... -->
 </transition>
@@ -113,7 +113,7 @@ export default {
 
 然后用JavaScript进行处理。
 
-```
+```vue
 export default {
   methods: {
     // done is an optional callback method
@@ -136,7 +136,7 @@ export default {
 
 简单极了。只需像这样将属性`appear`添加到过渡元素即可。
 
-```
+```vue
 <transition name="fade" appear>
       ...
 </transition>
@@ -146,7 +146,7 @@ export default {
 
 假设你有两个`div`，它们像这样在彼此之间交替。
 
-```
+```vue
 <transition name="fade" appear>
       <div v-if="visible">
         Option A
@@ -179,7 +179,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 自定义过渡时间：
 
-```
+```vue
 <transition :duration="500">...</transition>
 
 ...
@@ -193,7 +193,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 模板代码如下：
 
-```
+```vue
  <transition name="fade" appear>
        <component :is='componentType' />
  </transition>
@@ -207,7 +207,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 代码如下所示：
 
-```
+```vue
  <template>
    <transition name="fade" appear>
      <slot></slot>
@@ -225,7 +225,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 旋转图像：
 
-```
+```vue
 <template>
   <div class="main-content">
     <transition name="rotate">
@@ -247,7 +247,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 接下来添加一个按钮，通过切换变量的值来转换元素的显示。
 
-```
+```vue
 <button @click='show = !show'> Toggle </button>
 ```
 
@@ -255,7 +255,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 有一个很酷的技巧可以让离开动画与进入动画相同，那就是`reverse`！
 
-```
+```css
 @keyframes rotate {
     0% { opacity: 0; transform: scale(0) rotate(-180deg); }
     100% { opacity: 1; transform: scale(1) rotate(0deg); }
@@ -284,7 +284,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 对于示例，我们将使用Animate.css——要添加Animate.css，我们只需将CDN链接添加到`index.html`文件。
 
-```
+```html
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
 ```
 
@@ -292,7 +292,7 @@ Vue通常可以检测到过渡/动画何时结束，但如果你想设置确切�
 
 请注意，对于Animate.js，我们需要添加类`animated`。
 
-```
+```vue
 <transition 
   enter-active-class="animated fadeIn zoomIn" 
   leave-active-class="animated fadeOut zoomOut"

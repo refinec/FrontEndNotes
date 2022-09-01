@@ -79,4 +79,3 @@ declare global {
   const watchSyncEffect: typeof import('vue')['watchSyncEffect']
 }
 ```
-
