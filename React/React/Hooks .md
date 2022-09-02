@@ -1,6 +1,6 @@
 # Hooks
 
-> `Hook`可以让你在不编写 `class` 的情况下使用 `state` 以及其他的 React **特性**。
+> `Hook`可以让你在不编写 `class` 的情况下使用 `state` 以及其他的 React **特性**，所以Hook 在 class 内部是**不**起作用的
 
 - [基础 Hook](https://zh-hans.reactjs.org/docs/hooks-reference.html#basic-hooks)
   - [`useState`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usestate)
@@ -53,9 +53,7 @@ Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：
 
 ### `useState `
 
-> `useState` 会返回一对值：**当前**状态和一个让你更新它的函数
->
-> 更新函数类似 **class** 组件的 `this.setState`，但是它不会把新的 `state` 和旧的 `state` 进行合并。
+> `useState` 会返回一对值：**当前**状态和一个让你更新它的函数（更新函数类似 **class** 组件的 `this.setState`，但是它不会把新的 `state` 和旧的 `state` 进行合并）
 
 ```jsx
 function ExampleWithManyStates() {
@@ -67,7 +65,7 @@ function ExampleWithManyStates() {
 }
 ```
 
-在函数组件中，没有 `this`，所以我们不能分配或读取 `this.state`。在函数中，我们可以直接用 `count`:
+**在函数组件中，没有 `this`**，所以我们不能分配或读取 `this.state`。在函数中，我们可以直接用 `count`:
 
 ```jsx
 <p>You clicked {count} times</p>
@@ -75,7 +73,7 @@ function ExampleWithManyStates() {
 
 ### `useEffect`
 
-> `useEffect` 就是一个 Effect Hook，给函数组件增加了操作副作用**(在 React 组件中执行过数据获取、订阅或者手动修改过 DOM)**的能力。
+> `useEffect` 就是一个 Effect Hook，给函数组件增加了操作<u>副作用</u>**(在 React 组件中执行过数据获取、订阅或者手动修改过 DOM)**的能力。
 >
 >  `useEffect` Hook 是 class 组件中 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合，因此具有更好的**代码复用**和**代码管理**
 
@@ -94,7 +92,7 @@ function FriendStatusWithCounter(props) {
   const [isOnline, setIsOnline] = useState(null);
   useEffect(() => {
     ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
-    return () => {
+    return () => { // 可选的清除函数
       ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
     };
   });
@@ -105,4 +103,16 @@ function FriendStatusWithCounter(props) {
   // ...
 ```
 
-## 自定义Hook
+#### 为什么使用`useEffect`?
+
+1. **关注点分离**
+
+   为了解决在使用`class` 创建组件的时候，class 中生命周期函数经常包含不相关的逻辑，但又把相关逻辑分离到了几个不同方法中的问题。
+
+   而使用多个`useEffect`实现关注点分离，把相关逻辑代码组合在一起，方便查找，类比于Vue3的`setup`
+
+#### 为什么每次更新的时候都要运行 Effect？
+
+
+
+### `useContext`
