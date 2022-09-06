@@ -43,6 +43,25 @@ Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：
 
   不要在其他 JavaScript 函数中调用。
 
+> 安装名为 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks) 的 ESLint 插件来强制执行这两条规则（注意：**自定义 Hook 必须以 “`use`” 开头**，这个约定非常重要。不遵循的话，由于无法判断某个函数是否包含对其内部 Hook 的调用，React 将无法自动检查你的 Hook 是否违反了Hook的规则）
+>
+> `npm install eslint-plugin-react-hooks --save-dev`
+>
+> ```json
+> // 你的 ESLint 配置
+> {
+>   "plugins": [
+>     // ...
+>     "react-hooks"
+>   ],
+>   "rules": {
+>     // ...
+>     "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
+>     "react-hooks/exhaustive-deps": "warn" // 检查 effect 的依赖
+>   }
+> }
+> ```
+
 ## 什么时候用Hook?
 
 如果你在编写函数组件并意识到需要向其添加一些 `state`，以前的做法是必须将其转化为 `class`。
@@ -173,3 +192,151 @@ useEffect(() => {
 2. 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（`[]`）作为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值，effect 内部的 props 和 state 就会一直拥有其初始值，所以它永远都不需要重复执行，传入 `[]` 作为第二个参数更接近大家更熟悉的 `componentDidMount` 和 `componentWillUnmount` 思维模式。
 
 ### `useContext`
+
+> `const contextValue = useContext(MyContext);` 
+>
+> 接收一个 context 对象（`React.createContext` 的返回值）并返回该 context 的当前值。
+>
+>  context 的当前值由上层组件中距离当前组件最近的 `<MyContext.Provider>` 的 `value` prop 决定。
+
+ `useContext`需要配合**Context.Provider**使用，调用了 `useContext` 的组件总会在 context 值变化时重新渲染。如果重渲染组件的开销较大，你可以 [通过使用 memoization 来优化](https://github.com/facebook/react/issues/15156#issuecomment-474590693)。
+
+
+
+```react
+const themes = {
+  light: {
+    foreground: "#000000",
+    background: "#eeeeee"
+  },
+  dark: {
+    foreground: "#ffffff",
+    background: "#222222"
+  }
+};
+
+const ThemeContext = React.createContext(themes.light);
+
+function App() {
+  return (
+    <ThemeContext.Provider value={themes.dark}>
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+
+function Toolbar(props) {
+  return (
+    <div>
+      <ThemedButton />
+    </div>
+  );
+}
+
+function ThemedButton() {
+  const theme = useContext(ThemeContext);
+  return (
+    <button style={{ background: theme.background, color: theme.foreground }}>
+      I am styled by theme context!
+    </button>
+  );
+}
+```
+
+## 额外的 Hook
+
+### useReducer : `useState`的替代方案
+
+```react
+const [state, dispatch] = useReducer(reducer, initialArg, init);
+```
+
+在某些场景下，`useReducer` 会比 `useState` 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等。并且，使用 `useReducer` 还能给那些会触发深更新的组件做性能优化，因为[你可以向子组件传递 `dispatch` 而不是回调函数](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-to-avoid-passing-callbacks-down) 。
+
+```react
+const initialState = {count: 0};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
+  );
+}
+```
+
+##### 第三参数：惰性初始化
+
+你可以选择惰性地创建初始 state。为此，需要将 `init` 函数作为 `useReducer` 的第三个参数传入，这样初始 state 将被设置为 `init(initialArg)`。
+
+这么做可以将用于计算 state 的逻辑提取到 reducer 外部，这也为将来对重置 state 的 action 做处理提供了便利：
+
+```react
+function init(initialCount) {
+  return {count: initialCount};
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
+    case 'reset':
+      return init(action.payload);
+    default:
+      throw new Error();
+  }
+}
+
+function Counter({initialCount}) {
+  const [state, dispatch] = useReducer(reducer, initialCount, init);
+  return (
+    <>
+      Count: {state.count}
+      <button
+        onClick={() => dispatch({type: 'reset', payload: initialCount})}>
+        Reset
+      </button>
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
+  );
+}
+```
+
+##### 跳过 dispatch
+
+> 如果 Reducer Hook 的返回值与当前 state 相同（使用 [`Object.is` 比较算法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) 来比较），React 将跳过子组件的渲染及副作用的执行
+
+### useCallback
+
+### useMemo
+
+### useRef
+
+### useImperativeHandle
+
+### useLayoutEffect
+
+### useDebugValue
+
+### useDeferredValue
+
+### useTransition
+
+### useId
