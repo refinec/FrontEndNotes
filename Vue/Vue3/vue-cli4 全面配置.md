@@ -9,6 +9,7 @@ const IS_PROD = ['production', 'prod'].includes(process.env.NODE_ENV)
 module.exports = {
     publicPath: './',      // 编译后的地址，可以根据环境进行设置
     // assetsDir: 'assets',   // 静态文件目录
+    // outputDir:"dist",   // 输出目录
     lintOnSave: true,      // 是否开启编译时是否不符合eslint提示
     productionSourceMap: !IS_PROD, // 生产环境的 source map
     parallel: require('os').cpus().length > 1,
@@ -173,9 +174,10 @@ const IS_PROD = ["production", "prod"].includes(process.env.NODE_ENV);
 
 module.exports = {
   publicPath: IS_PROD ? process.env.VUE_APP_PUBLIC_PATH : "./", // 默认'/'，部署应用包时的基本 URL
-  // outputDir: process.env.outputDir || 'dist', // 'dist', 生产环境构建文件的目录
+  // outputDir: process.env.outputDir || 'dist', // 'dist', 生产环境构建文件的输出目录
   // assetsDir: "", // 相对于outputDir的静态资源(js、css、img、fonts)目录
-  lintOnSave: false,
+  lintOnSave: false, // 控制项目的eslint的检验是否开启。true: 开启eslint检验 但不是强约束 代码保存时 界面上不会有eslint的错误提示，"error": 开启eslint检验 是强约束 代码保存时 界面上会有eslint的错误提示
+  
   runtimeCompiler: true, // 是否使用包含运行时编译器的 Vue 构建版本
   productionSourceMap: !IS_PROD, // 生产环境的 source map
   parallel: require("os").cpus().length > 1,
@@ -470,6 +472,7 @@ module.exports = {
 
 ```js
 module.exports = {
+  // webpack-dev-server 所有的配置
   devServer: {
     // overlay: { // 让浏览器 overlay 同时显示警告和错误
     //   warnings: true,
