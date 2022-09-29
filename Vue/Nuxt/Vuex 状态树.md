@@ -175,3 +175,45 @@ export const mutations = {
   }
 }
 ```
+
+## fetch 方法
+
+fetch 方法会在渲染页面前被调用，作用是填充状态树 (store) 数据，与 asyncData 方法类似，不同的是它不会设置组件的数据。
+
+参考 [页面 fetch 方法 API](https://www.nuxtjs.cn/api/pages-fetch)。
+
+## nuxtServerInit 方法
+
+> 该方法只有在使用**状态树模块化**的模式，并且在主模块（即 `store/index.js`）内时才会被调用（其他模块设置了也不会被调用）。
+
+如果在状态树中指定了 `nuxtServerInit` 方法，Nuxt.js 调用它时会将**页面的上下文对象**作为第 2 个参数传给它（**仅服务端调用时**）。当我们想将服务端的一些数据传到客户端时，这个方法是灰常好用的。
+
+举个例子，假设我们服务端的会话状态树里可以通过 `req.session.user` 来访问当前登录的用户。将该登录用户信息传给客户端的状态树，我们只需更新 `store/index.js` 如下：
+
+```js
+actions: {
+  nuxtServerInit ({ commit }, { req }) {
+    if (req.session.user) {
+      commit('user', req.session.user)
+    }
+  }
+}
+```
+
+这时[context](https://www.nuxtjs.cn/api/context)被赋予`nuxtServerInit`作为第二个参数，它与`asyncData`或`fetch`方法相同，除了不包括 `context.redirect()` 和 `context.error()`。
+
+> 注意：异步`nuxtServerInit`操作必须返回 Promise 来通知`nuxt`服务器等待它们。
+
+```js
+actions: {
+  async nuxtServerInit({ dispatch }) {
+    await dispatch('core/load')
+  }
+}
+```
+
+## Vuex 严格模式
+
+默认情况下，在开发模式下启用严格模式，在生产模式下关闭模式。要在 dev 中禁用严格模式。
+
+**`export const strict = false`**
