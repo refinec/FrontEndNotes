@@ -52,7 +52,7 @@
 
 ## 基本案例
 
-```
+```sh
 .DS_Store
 node_modules
 /dist

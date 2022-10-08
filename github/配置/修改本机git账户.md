@@ -99,7 +99,7 @@ $ ssh-keygen -t rsa -C "your_email@example.com"
  Enter same passphrase again: 再次输入密码
 ```
 
-![](../assets/github/ssh.jpg)
+![](../../assets/github/ssh.jpg)
 
 **id_rsa** 文件是私有密钥，**id_rsa.pub** 是公开密钥
 
