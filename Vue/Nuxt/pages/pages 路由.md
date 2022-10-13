@@ -100,6 +100,47 @@ export default {
 
 如果校验方法返回的值不为 `true`或`Promise`中 resolve 解析为`false`或抛出 Error ， Nuxt.js 将自动加载显示 404 错误页面或 500 错误页面。
 
+```vue
+<template>
+  <div class="user">
+    <h3>{{ name }}</h3>
+    <h4>@{{ username }}</h4>
+    <p>Email : {{ email }}</p>
+    <p>
+      <NuxtLink to="/">
+        List of users
+      </NuxtLink>
+    </p>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  validate ({ params }) {
+    return !isNaN(+params.id)
+  },
+  async asyncData ({ params, error }) {
+    try {
+      const { data } = await axios.get(`https://jsonplaceholder.typicode.com/users/${+params.id}`)
+      return data
+    } catch (e) {
+      error({ message: 'User not found', statusCode: 404 })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.user {
+  text-align: center;
+  margin-top: 100px;
+  font-family: sans-serif;
+}
+</style>
+```
+
 ### SPA fallback
 
 您也可以为动态路由启用`SPA fallback`。在使用`mode:'spa'`模式下，Nuxt.js 将输出一个与`index.html`相同的额外文件。如果没有文件匹配，大多数静态托管服务可以配置为使用 SPA 模板。生成文件不包含头信息或任何 HTML，但它仍将解析并加载 API 中的数据。
@@ -271,6 +312,8 @@ pages/
 ### 命名视图
 
 要渲染命名视图，您可以在**`布局(layout) / 页面(page)`**中使用 **`<nuxt name="top"/>`** 或 **`<nuxt-child name="top"/>`** 组件。要指定页面的**命名视图**，我们需要在**`nuxt.config.js`**文件中扩展路由器配置：
+
+[命名视图示例](https://www.nuxtjs.cn/examples/named-views)
 
 ```js
 export default {
