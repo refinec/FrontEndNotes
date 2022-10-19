@@ -132,7 +132,7 @@ $total = computed<number>(() => {
 
 ## 二、watch 与 watchEffect 侦听器
 
-### watch 侦听器
+### 1.watch 侦听器
 
 > 参数一：监听源
 >
@@ -211,7 +211,7 @@ watch(()=> message.name, (newVal, oldVal) => {
 })
 ```
 
-### watchEffect 高级侦听器
+### 2.watchEffect 高级侦听器
 
 > `watchEffect` 它与 `watch` 的区别主要有以下几点：
 >
@@ -700,3 +700,4 @@ const state = toRaw(obj) // 响应式对象转化为普通对象
 
 </script>
 ```
+
