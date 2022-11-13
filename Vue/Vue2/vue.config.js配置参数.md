@@ -14,7 +14,7 @@ module.exports = {
     filenameHashing:true, // boolean类型，默认值true.静态资源在文件名中包含的 hash值，控制缓存
     pages:{ // 构建多页应用时使用，默认值undefined。
     	index: {
-   			 entry: 'src/index/main.js', // page 的入口
+   			entry: 'src/index/main.js', // page 的入口
     		template: 'public/index.html', // 模板来源
     		filename: 'index.html', // 在 dist/index.html 的输出
     		// 当使用 title 选项时，
