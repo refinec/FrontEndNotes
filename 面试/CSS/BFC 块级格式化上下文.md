@@ -4,29 +4,24 @@
 
 ## BFC的规则
 
-1. `BFC`就是一个块级元素，块级元素会在垂直方向一个接一个的排列
+1. `BFC`就是页面中的一个隔离的**独立容器**，**容器内外的元素互不影响**
 
-2. `BFC`就是页面中的一个隔离的独立容器，容器内外的元素互不影响
+2. `BFC`就是一个块级元素，块级元素会在垂直方向一个接一个的排列
 
 3. 垂直方向的距离由margin决定。**属于同一个BFC的两个相邻Box的margin会发生重叠 **
 
    ```html
    <!--属于同一个BFC的两个相邻的Box会发生margin重叠，所以我们可以设置，两个不同的BFC，也就是我们可以让把第二个p用div包起来，然后激活它使其成为一个BFC -->
    <style>
-       *{
-           margin: 0;
-           padding: 0;
-       }
        p {
-           color: #f55;
+           margin: 30px;
            background: yellow;
            width: 200px;
            line-height: 100px;
            text-align:center;
-           margin: 30px;
        }
        div{
-           overflow: hidden;
+           overflow: hidden; /* 激活为BFC */
        }
    </style>
    <body>

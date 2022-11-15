@@ -24,21 +24,20 @@ box-sizing：border-box    //怪异盒模型
 **内联元素**，**宽度默认就是内容的宽度**，只需要给父级添加text-align
 
 ```css
-.wrapper{text-align: center;}
+.wrapper { text-align: center; }
 ```
 
-**块级元素**，将它的margin-left和margin-right设置为auto，并且块级元素一定要设置宽度，否则元素默认为100%宽度，不需要居中。
+**块级元素**，将它的`margin-left`和`margin-right`设置为`auto`，并且块级元素一定要设置宽度，否则元素默认为100%宽度，不需要居中。
 
 ```css
-.inner{
+.inner {
     display: block;
-    width: 150px;
+    width: 150px; /* 一定要设置宽度，不然就不需要局中了 */
     margin: 0 auto;
 }
-// 一定要设置宽度，不然就不需要局中了
 ```
 
-两个以上的水平局中，可以将其设置为`display:inline-block`，在设置父级text-align
+两个以上的水平局中，可以将其设置为`display:inline-block`，在设置父级`text-align`
 
 ### 垂直居中
 
@@ -62,18 +61,18 @@ box-sizing：border-box    //怪异盒模型
 
 **块级元素**
 
-宽高确定情况下，实用 **position absolute + 负margin**
+宽高确定情况下，实用 **`position absolute + 负margin`**
 
-宽高不确定的情况下，实用**position absolute + transform**
+宽高不确定的情况下，实用**`position absolute + transform`**
 
 **垂直水平局中**
 
-子元素宽高确定的情况下，使用**position absolute + 负margin**
+子元素宽高确定的情况下，使用**`position absolute + 负margin`**
 
-子元素宽高不确定的，使用**position absolute + transform**
+子元素宽高不确定的，使用**`position absolute + transform`**
 
 ```css
-.inner{
+.inner {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -94,9 +93,9 @@ box-sizing：border-box    //怪异盒模型
     width: 100px;
     height: 100%;
 }
-.rigth{
+.right{
+    margin-left: 100px; /* 大于等于#left的宽度 */
     height: 100%;
-    margin-left: 100px; /*大于等于#left的宽度*/
 }
 ```
 
@@ -105,25 +104,28 @@ box-sizing：border-box    //怪异盒模型
 **float+overflow**
 
 ```html
-<div class="wrapper">
-        <div class="rigth"></div>
-        <div class="left"></div>
+<div>
+    <div class="right"></div>
+    <div class="left"></div>
 </div>
 ```
 
 ```css
-.left {
-    overflow: hidden;
-    /*触发bfc*/
-    height: 100%;
-}
-.rigth {
-    margin-left: 10px;
-    /*margin需要定义在#right中*/
-    float: right;
-    width: 100px;
-    height: 100%;
-}
+<style>
+    .left {
+        overflow: hidden; /* 触发bfc */
+        height: 100px;
+        background: red;
+    }
+
+    .right {
+        float: right;
+        margin-left: 10px; /* margin需要定义在right中 */
+        width: 100px;
+        height: 100px;
+        background: yellow;
+    }
+</style>
 ```
 
 ## 三列布局
@@ -147,34 +149,36 @@ box-sizing：border-box    //怪异盒模型
 }
 
 .left {
+    float: left;
     margin-left: 10px;
-    float: left; /*浮动*/
     width: 100px;
     height: 100%;
-}
-.main{
-    float: left; /*浮动*/
-    width: 100px;
-    height: 100%;
-    margin-left: 20px;
-}
-.rigth {
-    margin-left: 230px;  /*等于#left和#center的宽度之和加上间隔,多出来的就是#right和#center的间隔*/
-    height: 100%;
-    background-color: blue;
+    background: red;
 }
 
+.main {
+    float: left;
+    margin-left: 20px;
+    width: 100px;
+    height: 100%;
+    background: yellow;
+}
+
+.rigth {
+    /*等于 left 和 main 的宽度之和加上间隔,多出来的就是 right 和 main的间隔*/
+    margin-left: 230px;
+    height: 100%;
+    background: blue;
+}
 ```
 
-### 间列自适应宽度，旁边两侧固定宽度
+### (双飞翼布局) 间列自适应宽度，旁边两侧固定宽度
 
-双飞翼布局
+实现步骤:
 
-实现步骤
-
-- 三个部分都设定为左浮动，然后设置center的宽度为100%，此时，left和right部分会跳到下一行；
-- 通过设置margin-left为负值让left和right部分回到与center部分同一行；
-- center部分增加一个内层div，并设margin: 0 200px；
+1. 三个部分都设定为左浮动，然后设置`main`的宽度为100%，此时，`left`和`right`部分会跳到下一行；
+2. 通过设置margin-left为负值让left和right部分回到与center部分同一行；
+3. center部分增加一个内层div，并设margin: 0 200px；
 
 ```html
 <div class="wrapper">
@@ -188,25 +192,24 @@ box-sizing：border-box    //怪异盒模型
 
 ```css
 .wrapper {
-    /* //确保中间内容可以显示出来，两倍left宽+right宽 */
+    /* 确保中间内容可以显示出来，两倍left宽+right宽 */
     min-width: 600px; 
 }
 
 .left {
-    float: left; /*浮动*/
+    float: left;
     width: 200px;
     margin-left: -100%;
     height: 500px;
 }
 .right {
-    float: left; /*浮动*/
+    float: left;
     width: 200px;
     margin-left: -200px;
     height: 500px;
 }
-
 .main {
-    float: left; /*浮动*/
+    float: left;
     width: 100%; 
     height: 500px;
 }
@@ -308,37 +311,34 @@ animation: move 1s linear forwards;
 
 ## 清除浮动
 
-第一种父级元素添加伪元素
+1. 父级元素添加伪元素
 
-```css
-.clearfix:after{
-  content: "";
-  display: block;
-  clear: both; 
-}
-
- .clearfix{
-     zoom: 1; /* IE 兼容*/
- }
-
-```
-
-第二种给父级元素添加 `overflow:hidden` 或者 `auto` 样式
-
-第三种给所有浮动标签后面添加一个空的 div,给 div 添加 clear:both 属性
-
-```html
-<div class="clear"> </div>
-<style>
-    .clear {
-        clear:both;
-        margin:0;
-        padding:0;
+   ```css
+   .clearfix:after{
+     content: "";
+     display: block;
+     clear: both; 
+   }
+   
+    .clearfix{
+        zoom: 1; /* IE 兼容*/
     }
-</style>
-```
+   ```
 
+2. 给父级元素添加 `overflow:hidden` 或者 `auto` 样式
 
+3. 给所有浮动标签后面添加一个空的 div,给 div 添加 `clear:both` 属性
+
+    ```html
+    <div class="clear"> </div>
+    <style>
+        .clear {
+            clear:both;
+            margin:0;
+            padding:0;
+        }
+    </style>
+    ```
 
 ## 三种定位方案
 
@@ -404,7 +404,7 @@ CSS hack书写顺序，一般是将适用范围广、被识别能力强的CSS定
 1. 从属关系区别：
    link属于html标签，而@import是css提供的。
 2. 加载顺序区别：
-   页面被加载时，link会同时被加载，而**@import引用的css会等到页面被加载完再加载 **。
+   页面被加载时，link会同时被加载，而**<u>@import引用的css会等到页面被加载完再加载</u> **。
 3. 兼容性区别：
    import只在IE5以上才能识别，而link是html标签，无兼容问题。
 4. dom可操作性区别：
@@ -415,9 +415,9 @@ CSS hack书写顺序，一般是将适用范围广、被识别能力强的CSS定
 
 ## 伪类和伪元素
 
-伪类：:active :focus :hover :link :visited :first-child 
+伪类：`:active` `:focus` `:hover` `:link` `:visited` `:first-child `
 
-伪元素：:before :after :first-letter :first-line
+伪元素：`:before` `:after` `:first-letter` `:first-line`
 
 ## svg和canvas的区别
 
