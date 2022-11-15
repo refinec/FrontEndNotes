@@ -207,7 +207,130 @@ setTimeout(function() {
 - 输出12。
 - 第三轮事件循环结束，第三轮输出9，11，10，12。
 
-整段代码，共进行了三次事件循环，完整的输出为1，7，6，8，2，4，3，5，9，11，10，12。 (请注意，node环境下的事件监听依赖libuv与前端环境不完全相同，输出顺序可能会有误差)
+整段代码，共进行了三次事件循环，完整的输出为`1，7，6，8，2，4，3，5，9，11，10，12`。 (请注意，node环境下的事件监听依赖libuv与前端环境不完全相同，输出顺序可能会有误差)
+
+## `async/await`
+
+```js
+async function async1() {
+       console.log('async1 start')
+       await async2()
+       console.log('async1 end')         // 1
+   }
+    
+   async function async2() {
+       console.log('async2')
+   }
+    
+  console.log('script start')
+    
+  async1()
+    
+  setTimeout(() => {                    // 2
+      console.log('setTimeout')
+  }, 0)
+    
+  new Promise((resolve) => {
+      console.log('promise')
+      resolve()
+  }).then(function () {                 // 3
+      console.log('promise1 start')
+      return 'promise1 end'
+  }).then(res => {                      // 4
+      console.log(res)
+  }).then(res => {                      // 5
+      console.log(res)
+  })
+    
+  console.log('script end')
+```
+
+输出结果：
+
+```
+script start
+async1 start
+async2
+promise
+script end
+async1 end
+promise1 start
+promise1 end
+undefined
+setTimeout
+```
+
+`await async2()` 相当于
+
+```js
+new Promise(resolve => {
+    async2()
+    resolve()
+}).then(() => {
+    console.log('async1 end')
+})
+```
+
+`async`标记的函数返回一个Promise对象，因此，我们又可以看成
+
+```js
+await async2().then(() => { // 微任务1
+    console.log('async1 end')
+})
+```
+
+**关于多个`then`:**
+
+1. 上一个then回调代码都是同步执行，执行结束后下一个then可以加入到微任务队列中；
+2. 上一个then回调有return关键字时，需要等待return的内容完全执行完毕后，下一个then才能加入到微任务队列中
+
+**再举一个例子：**
+
+```js
+async function async1() {
+  console.log('async1 start')
+  await async2()
+  console.log('async1 end')           // 1
+  new Promise(resolve => {
+    console.log('async promise')
+    resolve('async promise start')
+  }).then(res => {                    // 2
+    console.log(res)
+  })
+}
+
+async function async2() {
+  console.log('async2')
+}
+
+async1()
+
+new Promise((resolve) => {
+  console.log('promise')
+  resolve()
+}).then(function () {                 // 3
+  console.log('promise1 start')
+  return 'promise1 end'
+}).then(res => {                      // 4
+  console.log(res)
+}).then(res => {                      // 5
+  console.log(res)
+})
+```
+
+输出结果：
+
+```
+async1 start
+async2
+promise
+async1 end
+async promise
+promise1 start
+async promise start
+promise1 end
+undefined
+```
 
 ## 其他
 
@@ -233,7 +356,7 @@ setTimeout(function() {
 
 #### MacroTask（宏任务）
 
-`script`全部代码、`setTimeout`、`setInterval`、`setImmediate`（浏览器暂时不支持，只有IE10支持，具体可见[`MDN`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate)）、`I/O`、`UI Rendering`、`MessageChannel`。
+`script`全部代码、`setTimeout`、`setInterval`、`Ajax`、`I/O`、`UI Rendering`、`setImmediate`（浏览器暂时不支持，只有IE10支持，具体可见[`MDN`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate)）、`MessageChannel`。
 
 #### MicroTask（微任务）
 
