@@ -94,7 +94,7 @@ var Vnode = {
 
 ### 4.具体分析
 
-**patch**
+1.**`patch`**
 
 patch函数接收两个参数`oldVnode`和`Vnode`分别代表新的节点和之前的旧节点
 
@@ -106,7 +106,7 @@ patch函数接收两个参数`oldVnode`和`Vnode`分别代表新的节点和之�
 
 虽然这两个节点不一样但是他们的子节点一样怎么办？别忘了，diff可是逐层比较的，如果第一层不一样那么就不会继续深入比较第二层了。
 
-**patchVnode **
+2.**`patchVnode `**
 
 当我们确定两个节点值得比较之后我们会对两个节点指定`patchVnode`方法。
 
@@ -119,7 +119,7 @@ patch函数接收两个参数`oldVnode`和`Vnode`分别代表新的节点和之�
 - 如果`oldVnode`没有子节点而`Vnode`有，则将`Vnode`的子节点真实化之后添加到`el`
 - 如果两者都有子节点，则执行`updateChildren`函数比较子节点，这一步很重要
 
-**updateChildren**
+3.**`updateChildren`**
 
 先说一下这个函数做了什么
 
