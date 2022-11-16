@@ -14,7 +14,7 @@
 
 ## router和route的区别：
 
-**$router：**是VueRouter的一个**实例**，是一个**全局的对象**，主要**实现路由的跳转使用**。常用的router.push()和router.replace()方法。
+**$router：**是VueRouter的一个**实例**，是一个**全局的对象**，主要**实现路由的跳转使用**。常用的`router.push()`和`router.replace()`方法。
 
 push方法会像浏览器的history栈添加一个新纪录。
 
