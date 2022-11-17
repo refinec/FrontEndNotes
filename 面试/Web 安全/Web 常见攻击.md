@@ -21,7 +21,7 @@
 - **反射型 `XSS ` 攻击**
 - **基于 DOM 的 `XSS` 攻击**
 
-#### 1.存储型 `XSS` 攻击
+#### 1.存储型 `XSS` 攻击(存数据库)
 
 **存储型 XSS 攻击大致步骤如下**：
 
@@ -33,13 +33,13 @@
 
 > 在评论区提交一份脚本代码，假设前后端没有做好转义工作，那内容上传到服务器，在页面渲染的时候就会`直接执行`，相当于执行一段未知的JS代码。这就是存储型 XSS 攻击。
 
-#### 2.反射型 `XSS ` 攻击
+#### 2.反射型 `XSS ` 攻击(作为网络请求一部分)
 
 > **反射型 XSS 攻击**指的就是恶意脚本作为**「网络请求的一部分」**，随后网站又把恶意的JavaScript脚本返回给用户，当恶意 JavaScript 脚本在用户页面中被执行时，黑客就可以利用该脚本做一些恶意操作。
 
 举个例子:
 
-```
+```http
 http://xxx.com?query=<script>alert("你受到了XSS攻击")</script>
 ```
 
@@ -47,7 +47,7 @@ http://xxx.com?query=<script>alert("你受到了XSS攻击")</script>
 
 这也就是反射型名字的由来，将恶意脚本作为参数，通过网络请求，最后经过服务器，在反射到HTML文档中，执行解析。
 
-#### 3.基于 DOM 的 `XSS` 攻击
+#### 3.基于 DOM 的 `XSS` 攻击(网络数据包劫持)
 
 > **基于 DOM 的 `XSS` 攻击是不牵涉到页面 Web 服务器的**。具体来讲，黑客通过各种手段将恶意脚本注入用户的页面中，在数据传输的时候劫持网络数据包
 
@@ -58,31 +58,33 @@ http://xxx.com?query=<script>alert("你受到了XSS攻击")</script>
 
 ### 如何预防？阻止 XSS 攻击的策略
 
-1. **对输入脚本进行过滤或转码**
+> 除了以下策略之外，我们还可以通过添加**<u>验证码</u>**防止脚本冒充用户提交危险操作。
+>
+> 而对于一些不受信任的输入，还可以**<u>限制其输入长度</u>**，这样可以增大 XSS 攻击的难度。
 
-2. **使用Cookie的`HttpOnly`属性**
+#### 1. **对输入脚本进行过滤或转码**
 
-   由于很多 XSS 攻击都是来盗用 Cookie 的，因此还可以通过使用 HttpOnly 属性来保护我们 Cookie 的安全。这样子的话，JavaScript 便无法读取 Cookie 的值。这样也能很好的防范 XSS 攻击。
+#### 2. 使用Cookie的`HttpOnly`属性
 
-   通常服务器可以将某些 Cookie 设置为 HttpOnly 标志，HttpOnly 是服务器通过 HTTP 响应头来设置的，下面是打开 Google 时，HTTP 响应头中的一段：
+由于很多 XSS 攻击都是来盗用 Cookie 的，因此还可以通过使用 HttpOnly 属性来保护我们 Cookie 的安全。这样子的话，JavaScript 便无法读取 Cookie 的值。这样也能很好的防范 XSS 攻击。
 
-   ```http
-   set-cookie: NID=189=M8l6-z41asXtm2uEwcOC5oh9djkffOMhWqQrlnCtOI; expires=Sat, 18-Apr-2020 06:52:22 GMT; path=/; domain=.google.com; HttpOnly
-   ```
+通常服务器可以将某些 Cookie 设置为 HttpOnly 标志，HttpOnly 是服务器通过 HTTP 响应头来设置的，下面是打开 Google 时，HTTP 响应头中的一段：
 
-3. **利用 `CSP`(浏览器中的内容安全策略)：**
+```http
+set-cookie: NID=189=M8l6-z41asXtm2uEwcOC5oh9djkffOMhWqQrlnCtOI; expires=Sat, 18-Apr-2020 06:52:22 GMT; path=/; domain=.google.com; HttpOnly
+```
 
-   该安全策略的实现基于一个称作 `Content-Security-Policy`的 [HTTP](https://developer.mozilla.org/en-US/docs/Glossary/HTTP) 首部。
+#### 3. 利用 `CSP`(浏览器中的内容安全策略)
 
-   `CSP`的核心思想大概就是服务器决定浏览器加载哪些资源，具体来说有几个功能：**<u>限制加载其他域下的资源文件</u>**，这样即使黑客插入了一个 JavaScript 文件，这个 JavaScript 文件也是无法被加载的；
+该安全策略的实现基于一个称作 `Content-Security-Policy`的 [HTTP](https://developer.mozilla.org/en-US/docs/Glossary/HTTP) 首部。
 
-4. **禁止向第三方域提交数据**，这样用户数据也不会外泄；
+`CSP`的核心思想大概就是服务器决定浏览器加载哪些资源，具体来说有几个功能：**<u>限制加载其他域下的资源文件</u>**，这样即使黑客插入了一个 JavaScript 文件，这个 JavaScript 文件也是无法被加载的；
 
-5. **提供上报机制**，能帮助我们及时发现 XSS 攻击。
+#### 4. 禁止向第三方域提交数据，这样用户数据也不会外泄；
 
-6. **禁止执行内联脚本和未授权的脚本**；
+#### 5. 提供上报机制，能帮助我们及时发现 XSS 攻击
 
-​	除了以上策略之外，我们还可以通过添加**验证码**防止脚本冒充用户提交危险操作。而对于一些不受信任的输入，还可以限制其输入长度，这样可以增大 XSS 攻击的难度。
+#### 6. 禁止执行内联脚本和未授权的脚本
 
 ## `CSRF` 跨站请求伪造
 
