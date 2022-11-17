@@ -31,7 +31,7 @@ cookie 还可以限制「时间范围」，通过 Expires、Max-Age 中的一种
 >
 > 如果同时指定了Expires和Max-Age，那么Max-Age的值将优先生效。
 >
-> 如果Set-Cookie字段没有指定Expires或Max-Age属性，那么这个 Cookie 就是 Session Cookie，即它只在本次对话存在，一旦用户关闭浏览器，浏览器就不会再保留这个 Cookie。
+> **如果Set-Cookie字段没有指定Expires或Max-Age属性，那么这个 Cookie 就是 Session Cookie，即它只在本次对话存在，一旦用户关闭浏览器，浏览器就不会再保留这个 Cookie**。
 
 ### **配置：Secure / HttpOnly**
 
@@ -148,7 +148,7 @@ session 的维护给服务端造成很大困扰，我们必须找地方存放它
 
 > 我又想到学校，在没有校园卡技术以前，我们都靠「学生证」。 门卫小哥直接对照我和学生证上的脸，确认学生证有效期、年级等信息，就可以放行了。
 
-回过头来想想，一个登录场景，也不必往 session 存太多东西，那为什么不直接打包到 cookie 中呢？这样服务端不用存了，每次只要核验 cookie 带的「证件」有效性就可以了，也可以携带一些轻量的信息。
+回过头来想想，一个登录场景，也不必往 session 存太多东西，那为什么不直接打包到 cookie 中呢？这样服务端不用存了，每次只要**核验 cookie 带的「证件」有效性**就可以了，也可以携带一些轻量的信息。
 
 这种方式通常被叫做 token。
 
@@ -163,7 +163,7 @@ token 的流程是这样的：
 
 ### **客户端 token 的存储方式**
 
-在前面 cookie 说过，cookie 并不是客户端存储凭证的唯一方式。token 因为它的「无状态性」，有效期、使用限制都包在 token 内容里，对 cookie 的管理能力依赖较小，客户端存起来就显得更自由。但 web 应用的主流方式仍是放在 cookie 里，毕竟少操心。
+在前面 cookie 说过，cookie 并不是客户端存储凭证的唯一方式。token 因为它的「无状态性」，**有效期、使用限制都包在 token 内容里**，对 cookie 的管理能力依赖较小，客户端存起来就显得更自由。但 web 应用的主流方式仍是放在 cookie 里，毕竟少操心。
 
 ### **token 的过期**
 
@@ -192,7 +192,6 @@ token 的流程是这样的：
 ```vbnet
 secret: 'iAmSecret',
 signed: true,
-复制代码
 ```
 
 这样会多种一个 .sig cookie，里面的值就是 `{"userid":"abb”}` 和 `iAmSecret`通过加密算法计算出来的，常见的比如[HMACSHA256 类 (System.Security.Cryptography) | Microsoft Docs](https://link.juejin.cn?target=https%3A%2F%2Fdocs.microsoft.com%2Fzh-cn%2Fdotnet%2Fapi%2Fsystem.security.cryptography.hmacsha256%3Fredirectedfrom%3DMSDN%26view%3Dnetframework-4.8)。
