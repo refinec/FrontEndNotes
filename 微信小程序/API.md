@@ -63,7 +63,7 @@ query.exec()
 // 在目标节点（用选择器 .target-class 指定）每次进入或离开页面显示区域时，触发回调函数。
 Page({
   onLoad: function(){
-   this._observer = wx.createIntersectionObserver().relativeToViewport().observe('.target-class', (res) => {
+    this._observer = wx.createIntersectionObserver().relativeToViewport().observe('.target-class', (res) => {
       res.id // 目标节点 id
       res.dataset // 目标节点 dataset
       res.intersectionRatio // 相交区域占目标节点的布局区域的比例
@@ -74,28 +74,28 @@ Page({
       res.intersectionRect.height // 相交区域的高度
     })
   },
-    onUnload() {
-        if (this._observer) this._observer.disconnect()
-    }
+  onUnload() {
+    if (this._observer) this._observer.disconnect()
+  }
 })
 
 // 在目标节点（用选择器 .target-class 指定）与参照节点（用选择器 .relative-class 指定）在页面显示区域内相交或相离，且相交或相离程度达到目标节点布局区域的20%和50%时，触发回调函数
 Page({
-    onLoad: function(){
-      this._observer = wx.createIntersectionObserver(this, {
-            thresholds: [0.2, 0.5]
-        }).relativeTo('.relative-class').relativeToViewport().observe('.target-class', (res) => {
-            res.intersectionRatio // 相交区域占目标节点的布局区域的比例
-            res.intersectionRect // 相交区域
-            res.intersectionRect.left // 相交区域的左边界坐标
-            res.intersectionRect.top // 相交区域的上边界坐标
-            res.intersectionRect.width // 相交区域的宽度
-            res.intersectionRect.height // 相交区域的高度
-        })
-    },
-    onUnload() {
-        if (this._observer) this._observer.disconnect()
-    }
+  onLoad: function(){
+    this._observer = wx.createIntersectionObserver(this, {
+      thresholds: [0.2, 0.5]
+    }).relativeTo('.relative-class').relativeToViewport().observe('.target-class', (res) => {
+      res.intersectionRatio // 相交区域占目标节点的布局区域的比例
+      res.intersectionRect // 相交区域
+      res.intersectionRect.left // 相交区域的左边界坐标
+      res.intersectionRect.top // 相交区域的上边界坐标
+      res.intersectionRect.width // 相交区域的宽度
+      res.intersectionRect.height // 相交区域的高度
+    })
+  },
+  onUnload() {
+    if (this._observer) this._observer.disconnect()
+  }
 })
 ```
 
