@@ -1,6 +1,6 @@
 # wx
 
-## wx.env
+## 一、wx.env
 
 > **小程序环境变量对象**
 
@@ -9,9 +9,10 @@
   文件系统中的用户目录路径
 
 # WXML 页面相关
-## 获取页面上wxml节点信息
 
-**`wx.createSelectorQuery()`** 用于获取节点属性、样式、在界面上的位置等信息。
+## 一、获取页面wxml节点
+
+> **`wx.createSelectorQuery()`** 用于获取节点属性、样式、在界面上的位置等信息。
 
 在**自定义组件**或**包含自定义组件**的**页面中**，推荐使用 **`this.createSelectorQuery`** 来代替 [wx.createSelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/wx.createSelectorQuery.html) ，这样可以确保在正确的范围内选择节点。
 
@@ -28,14 +29,14 @@ query.exec()
 
  **CSS 的选择器，但仅支持下列语法：**
 
-- ID选择器：#the-id
-- class选择器（可以连续指定多个）：.a-class.another-class
-- 子元素选择器：.the-parent > .the-child
-- 后代选择器：.the-ancestor .the-descendant
-- 跨自定义组件的后代选择器：.the-ancestor >>> .the-descendant
-- 多选择器的并集：#a-node, .some-other-nodes
+- ID选择器：`#the-id`
+- class选择器（可以连续指定多个）：`.a-class.another-class`
+- 子元素选择器：`.the-parent > .the-child`
+- 后代选择器：`.the-ancestor .the-descendant`
+- 跨自定义组件的后代选择器：`.the-ancestor >>> .the-descendant`
+- 多选择器的并集：`#a-node, .some-other-nodes`
 
-## WXML多节点布局相交状态
+## 二、WXML多节点布局相交状态
 
 用于监听**两个**或**多个组件节点**在布局位置上的相交状态。这一组API常常可以用于推断某些节点是否可以被用户看见、有多大比例可以被用户看见。
 
@@ -78,7 +79,9 @@ Page({
     if (this._observer) this._observer.disconnect()
   }
 })
+```
 
+```js
 // 在目标节点（用选择器 .target-class 指定）与参照节点（用选择器 .relative-class 指定）在页面显示区域内相交或相离，且相交或相离程度达到目标节点布局区域的20%和50%时，触发回调函数
 Page({
   onLoad: function(){
