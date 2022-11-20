@@ -1,9 +1,10 @@
-# 拦截器
+## 拦截器
 
-在请求或响应被**then** 或 **catch ** 处理前拦截它们
+> 在**请求**或**响应**被 **`then`** 或 **`catch `** 处理前拦截它们
+
+添加请求拦截器：
 
 ```javascript
-# 添加请求拦截器
 axios.interceptors.request.use(function(config){
     // 在发送请求之前做些什么,如公共配置
     return config;
@@ -11,8 +12,11 @@ axios.interceptors.request.use(function(config){
     // 对请求错误做些什么
     return Promise.reject(error)
 });
+```
 
-# 添加响应拦截器
+添加响应拦截器：
+
+```js
 axios.interceptors.response.use(function(response){
     // 对响应数据做点什么
     return response;
@@ -29,10 +33,12 @@ var myInterceptor = axios.interceptors.request.use(function(){/*..*/})
 axios.interceptors.request.eject(myInterceptor)
 ```
 
+## 示例
+
 ```javascript
 /**
-     * 添加axios请求拦截器
-     */
+ * 添加axios请求拦截器
+ */
 requestInterceptor() {
     HTTP.interceptors.request.use(
         (config) => {
@@ -54,8 +60,8 @@ requestInterceptor() {
 }
 
 /**
-     * 添加axios回复拦截器
-     */
+ * 添加axios响应拦截器
+ */
 responseInterceptor() {
     HTTP.interceptors.response.use(
         (response) => {

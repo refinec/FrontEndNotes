@@ -16,7 +16,7 @@ axios.get('/user/123').catch(function(error){
 })
 ```
 
-使用**validateStatus ** 配置选项定义一个HTTP 状态码的错误范围
+使用**`validateStatus `** 配置选项定义一个HTTP 状态码的错误范围
 
 ```javascript
 axios.get('/user/123',{
@@ -50,7 +50,7 @@ axios.get('/user/123',{
    source.cancel('Operation canceled by the user')
    ```
 
-2. 还可以通过传递一个 executor 函数到 CancelToken 的构造函数来创建 cancel token
+2. 还可以通过传递一个 `executor `函数到 `CancelToken `的构造函数来创建 cancel token
 
    ```javascript
    var CancelToken = axios.CancelToken;
