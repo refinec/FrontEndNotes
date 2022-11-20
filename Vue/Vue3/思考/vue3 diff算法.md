@@ -2,7 +2,7 @@
 
 > 与vue2.x 全量比较 不同的是，vue3.0在创建虚拟DOM的时候，会根据DOM中的内容，会发生变化的，添加静态标记.
 
-![](../../assets/vue3/vue3-diff.jpg)
+![](../../../assets/vue3/vue3-diff.jpg)
 
 ```html
 <!-- 编译前 -->
@@ -14,7 +14,7 @@
 ```
 
 ```js
-# 编译后
+// 编译后
 export function render(_ctx, _cache, $props, $setup, $data, $options){
     return (_openBlock(), _createBlock("div", null, [
         _createBlock("p", null, "哈哈"),
@@ -24,5 +24,5 @@ export function render(_ctx, _cache, $props, $setup, $data, $options){
 }
 ```
 
-![](../../assets/vue3/静态标记类型.jpg)
+![](../../../assets/vue3/静态标记类型.jpg)
 

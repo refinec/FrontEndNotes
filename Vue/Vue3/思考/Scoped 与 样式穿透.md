@@ -2,11 +2,11 @@
 
 ### scoped的原理
 
-> vue中的scoped 通过在**DOM结构**以及**css样式**上加唯一不重复的标记:data-v-[hash](https://so.csdn.net/so/search?q=hash&spm=1001.2101.3001.7020)的方式，以保证唯一（而这个工作是由过`PostCSS`转译实现的），达到样式私有化模块化的目的。
+> vue中的`scoped `通过在**DOM结构**以及**css样式**上加唯一不重复的标记[**`data-v-hash`**](https://so.csdn.net/so/search?q=hash&spm=1001.2101.3001.7020)的方式，以保证唯一（而这个工作是由过`PostCSS`转译实现的），达到样式私有化模块化的目的。
 
 scoped三条渲染规则：
 
-1. 给HTML的DOM节点加一个不重复data属性(形如：data-v-123)来表示他的唯一性
+1. 给HTML的DOM节点加一个不重复data属性(形如`data-v-123`)来表示他的唯一性
 2. 在每句css选择器的末尾（编译后的生成的css语句）加一个当前组件的data属性选择器（如[data-v-123]）来私有化样式
 3. 如果组件内部包含有其他组件，只会给其他组件的最外层标签加上当前组件的data属性
 
@@ -16,15 +16,15 @@ scoped三条渲染规则：
 
 使用Scoped ，在进行PostCss转化的时候把元素选择器默认放在了最后
 
-![img](../../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16.png)
+![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16.png)
 
 Vue 提供了样式穿透`:deep() `他的作用就是用来改变 属性选择器的位置
 
-![img](../../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220609234835989.png)
+![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220609234835989.png)
 
-![img](../../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220609234854147.png)
+![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220609234854147.png)
 
-### :slotted 插槽选择器
+### `:slotted` 插槽选择器
 
 A 组件定义一个插槽
 
@@ -78,7 +78,7 @@ import A from "@/components/A.vue"
 
 解决方案 slotted
 
-```vue
+```css
 <style scoped>
  :slotted(.a) {
     color:red
@@ -141,7 +141,7 @@ const blue = ref({
 
 ### css `module`
 
- `<style module>`标签会被编译为 [CSS Modules](https://github.com/css-modules/css-modules)  并且将生成的 CSS 类作为 $style 对象的键暴露给组件
+ `<style module>`标签会被编译为 [CSS Modules](https://github.com/css-modules/css-modules)  并且将生成的 CSS 类作为 `$style` 对象的键暴露给组件
 
 ```vue
 <template>

@@ -10,7 +10,7 @@
 
 4. `beforeUpdate` 元素被更新之前调用
 
-5. `update` 这个周期方法被移除, 改用updated
+5. `update` 这个周期方法被移除, 改用`updated`
 
 6. `beforeUnmount` 在元素被移除前调用
 
