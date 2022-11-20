@@ -2,9 +2,33 @@
 
 通过`git config --list`来查看你的`git配置信息`
 
-## 1.配置别名
+## 1. 基本设置（初始化）
 
-每次输入我们都需要输入完整的`checkout`、`commit`，很麻烦，我们可以通过设置别名来实现。
+```shell
+#设置用户名
+$ git config --global user.name "你的名字"
+#查看用户名
+$ git config --global user.name
+
+#设置邮箱
+$ git config --global user.email "你的邮箱"
+#查看邮箱
+$ git config --global user.email
+
+#初始化git版本库
+$ git init
+
+#创建.gitignore文件
+$ touch .gitigonre
+# 文件中写入需要忽略的文件名（示例:node_modules /dist .idea ...），如果需要忽略的文件已经提交到仓库，需要删除后，再次提交.gitignore文件才可生效
+
+```
+
+
+
+## 2. 配置别名
+
+> 为常用命令创建别名，可以节省你花在终端的时间。比如我们每次都要输入完整的`checkout`、`commit`，很麻烦，我们可以通过设置别名来实现。
 
 ```shell
 $ git config --global alias.co checkout
@@ -22,9 +46,20 @@ alias.ci=commit
 alias.st=status
 ```
 
-之后你就可以通过`git co <branch>`、`git st`来切换分支、查看状态了..
+之后你就可以通过`git co <branch>`来切换分支、`git st`查看分支状态了.
 
-## 2.配置代理
+你还可以通过直接修改`~/.gitconfig`文件来编辑这些命令或添加更多命令：
+
+```
+[alias]
+    co = checkout
+    ci = commit
+    br = branch
+```
+
+
+
+## 3. 配置代理
 
 因为一些特殊网络原因，我们很多时候上`github`很不稳定，有时候我们推送一些代码会`403`失败。这时我们就可以通过设置代理来解决。
 
@@ -49,27 +84,5 @@ https.proxy=https://127.0.0.1:1080
 ```powershell
 git config --global --unset http.proxy
 git config --global --unset https.proxy
-```
-
-## 3.基本设置（初始化）
-
-```shell
-#设置用户名
-$ git config --global user.name "你的名字"
-#查看用户名
-$ git config --global user.name
-
-#设置邮箱
-$ git config --global user.email "你的邮箱"
-#查看邮箱
-$ git config --global user.email
-
-#初始化git版本库
-$ git init
-
-#创建.gitignore文件
-$ touch .gitigonre
-# 文件中写入需要忽略的文件名（示例:node_modules /dist .idea ...），如果需要忽略的文件已经提交到仓库，需要删除后，再次提交.gitignore文件才可生效
-
 ```
 

@@ -1,4 +1,29 @@
-## `.gitignore`文件
+## 一、设置全局 `.gitignore`
+
+如果你想避免提交像`.DS_Store`或Vim `swp`这样的文件，可以设置一个全局的`.gitignore`文件。
+
+创建文件：
+
+```shell
+touch ~/.gitignore
+```
+
+然后运行：
+
+```shell
+git config --global core.excludesFile ~/.gitignore
+```
+
+或者手动将以下内容添加到`~/.gitconfig`中：
+
+```
+[core]
+  excludesFile = ~/.gitignore
+```
+
+你还可以创建一个列表，列出你希望Git忽略的内容。
+
+## 二、`.gitignore`文件
 
 > 在 Git bash中使用`touch .gitignore`命令生成 `.gitignore`文件
 
@@ -76,3 +101,4 @@ pnpm-debug.log*
 假如我们只需要管理`/mtk/`目录中的`one.txt`文件，这个目录中的其他文件都不需要管理，那么`.gitignore`规则应写为：`/mtk/*`、`!/mtk/one.txt`
 
 **注意：**如果不慎在创建`.gitignore`文件之前就`push`了项目，那么即使你在`.gitignore`文件中写入新的过滤规则，这些规则也不会起作用，Git仍然会对所有文件进行版本管理。简单来说出现这种问题的原因就是Git已经开始管理这些文件了，所以你无法再通过过滤规则过滤它们。当然，**解决办法是清理git 缓存**
+
