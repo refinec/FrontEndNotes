@@ -1,18 +1,16 @@
-# flex布局
+## flex布局
 
-## flex 怎么用，常用属性有哪些？
-
-flex 的核心的概念就是 **容器** 和 **轴**。
+> flex 的核心的概念就是 **容器** 和 **轴**。
 
 ### 父容器
 
 以下6个属性设置在容器上
 
-1. **flex-direction**： row | row-reverse | column | column-reverse;
+1. **`flex-direction`**： row | row-reverse | column | column-reverse;
 
    > 决定主轴的方向（即项目的排列方向）
 
-2. **flex-wrap：** nowrap | wrap | wrap-reverse;
+2. **`flex-wrap`：** nowrap | wrap | wrap-reverse;
 
    > 默认情况下，项目都排在一条线（又称"轴线"）上。`flex-wrap`属性定义，如果**一条轴线排不下，如何换行**
 
@@ -20,18 +18,18 @@ flex 的核心的概念就是 **容器** 和 **轴**。
 
    * `wrap-reverse`：换行，第一行在下方。
 
-3. **flex-flow**：<flex-direction> || <flex-wrap>;
+3. **`flex-flow`**：<flex-direction> || <flex-wrap>;
 
    > **是`flex-direction`属性和`flex-wrap`属性的简写形式，默认值为`row nowrap`**
 
-4. **justify-content：**flex-start | flex-end | center | space-between | space-around;
+4. **`justify-content`：**flex-start | flex-end | center | space-between | space-around;
 
    > **定义了项目在主轴上的对齐方式**
 
    - space-between 子容器沿主轴均匀分布，位于首尾两端的子容器与父容器相切。
    - space-around  子容器沿主轴均匀分布，位于首尾两端的子容器到父容器的距离是子容器间距的一半。
 
-5. **align-items**：flex-start | flex-end | center | baseline | stretch;
+5. **`align-items`**：flex-start | flex-end | center | baseline | stretch;
 
    > **定义项目在交叉轴上如何对齐**
 
@@ -41,7 +39,7 @@ flex 的核心的概念就是 **容器** 和 **轴**。
    - `baseline`: 项目的第一行文字的基线对齐。
    - `stretch`（默认值）：如果项目未设置高度或设为auto，将占满整个容器的高度。
 
-6. **align-content：**flex-start | flex-end | center | space-between | space-around | stretch;
+6. **`align-content`：**flex-start | flex-end | center | space-between | space-around | stretch;
 
    > **定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。**
 
@@ -62,7 +60,7 @@ flex 的核心的概念就是 **容器** 和 **轴**。
 
    > **定义项目的排列顺序。数值越小，排列越靠前，默认为0**
 
-2. **`flex-grow`：** <number>; /* default 0 */
+2. **`flex-grow`：** <number>;  
 
    > **定义项目的放大比例，默认为`0`，即如果存在剩余空间，也不放大**
 
@@ -70,7 +68,7 @@ flex 的核心的概念就是 **容器** 和 **轴**。
 
    <img src="../assets/css/flex-grow.png" style="zoom:67%;" />
 
-3. **`flex-shrink`：** <number>; /* default 1 */
+3. **`flex-shrink`：** <number>;
 
    > **定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。**
 
@@ -81,11 +79,10 @@ flex 的核心的概念就是 **容器** 和 **轴**。
    <img src="../assets/css/flex-shrink.png" style="zoom:67%;" />
 
    
-   
 
 4. **`flex-basis`：** <length> | auto
 
-   > **定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。它的默认值为`auto`，即项目的本来大小。**
+   > **定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。默认值为`auto`，即项目的本来大小。**
 
    它可以设为跟`width`或`height`属性一样的值（比如350px），则项目将占据固定空间。
 
@@ -93,36 +90,31 @@ flex 的核心的概念就是 **容器** 和 **轴**。
 
    > **是`flex-grow`, `flex-shrink` 和 `flex-basis`的简写，默认值为`0 1 auto`。后两个属性可选**
 
-   该属性有两个快捷值：`auto` (`1 1 auto`) 和 none (`0 0 auto`)。
-   建议优先使用这个属性，而不是单独写三个分离的属性，因为浏览器会推算相关值。
+   该属性有两个快捷值：`auto` (`1 1 auto`) 、 none (`0 0 auto`)。建议优先使用这个属性，而不是单独写三个分离的属性，因为浏览器会推算相关值。
+
+   - `flex-grow`： 放大比例 根据所设置的比例分配盒子所剩余的空间
+
+   - `flex-shrink`： 缩小比例 设置元素的收缩比例   多出盒子的部分，按照比例的大小砍掉相应的大小，即比例越大，被砍的越大，默认值是1
+
+   - `flex-basis`：  伸缩基准值 项目占据主轴的空间。 **该属性设置元素的宽度或高度**，当然width也可以用来设置元素宽度，如果元素上同时出现了width 和flex-basis那么flex-basis会覆盖width的值
 
 6. **`align-self`：**auto | flex-start | flex-end | center | baseline | stretch;
 
-   **`align-self`属性允许单个项目有与其他项目不一样的对齐方式，可覆盖`align-items`属性。默认值为`auto`，表示继承父元素的`align-items`属性，如果没有父元素，则等同于`stretch`。**
+   > **`align-self` 单个项目对齐方式**，**`align-self`属性允许单个项目有与其他项目不一样的对齐方式，可覆盖`align-items`属性。**
+   >
+   > **默认值为`auto`，表示继承父元素的`align-items`属性，如果没有父元素，则等同于`stretch`。**
+
+   
 
    <img src="../assets/css/align-self.png" style="zoom: 50%;" />
 
    
 
-**align-self 单个项目对齐方式**
-
-- align-self: auto | flex-start | flex-end | center | baseline | stretch;
-
-**flex：前面三个属性的简写 是flex-grow  flex-shrink flex-basis的简写**
-
-- flex-grow 放大比例 根据所设置的比例分配盒子所剩余的空间
-
-- flex-shrink 缩小比例 设置元素的收缩比例   多出盒子的部分，按照比例的大小砍掉相应的大小，即比例越大，被砍的越大，默认值是1
-
-- flex-basis  伸缩基准值 项目占据主轴的空间。 **该属性设置元素的宽度或高度**，当然width也可以用来设置元素宽度，如果元素上同时出现了width 和flex-basis那么flex-basis会覆盖width的值
-
-  flex: 0 1 auto； 默认主轴是row,那么不会去放大比例，**如果所有的子元素宽度和大于父元素宽度时，就会按照比例的大小去砍掉相应的大小**。
-
-## **对于现代布局，我们应该尽可能的考虑更多的场景。做到：**
+## **现代布局场景**
 
 ![](../assets/css/2621736424-bfe4a4d206cfb155_articlex.png)
 
-### 1.左右两栏，左侧定宽，右侧自适应剩余宽度，并加一个最小的宽度
+### 1. 左右两栏，左侧定宽，右侧自适应剩余宽度，并加一个最小的宽度
 
 ```html
 <div class="g-app-wrapper">
