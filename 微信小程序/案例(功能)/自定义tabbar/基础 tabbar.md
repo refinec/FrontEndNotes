@@ -47,47 +47,178 @@
 
    > 用自定义组件的方式编写即可，该自定义组件完全接管 tabBar 的渲染。另外，自定义组件新增 `getTabBar` 接口，可获取当前页面下的自定义 tabBar 组件实例。
 
-   - `index.json`
+   一、自定义tab 组件
 
-     引入vant组件库里面的 [tab组件](https://vant-contrib.gitee.io/vant-weapp/#/tabbar)：
-
-
+   - `app.json`
+   
      ```json
      {
-         "component": true,
-         "usingComponents": {
-             "van-tabbar": "/miniprogram_npm/@vant/weapp/tabbar/index",
-             "van-tabbar-item": "/miniprogram_npm/@vant/weapp/tabbar-item/index"
-         }
+         "tabBar": {
+         "custom": true,
+         "color": "#7A7E83",
+         "selectedColor": "#3cc51f",
+         "borderStyle": "black",
+         "backgroundColor": "#ffffff",
+         "list": [
+           {
+             "pagePath": "index/index",
+             "iconPath": "image/icon_component.png",
+             "selectedIconPath": "image/icon_component_HL.png",
+             "text": "组件"
+           },
+           {
+             "pagePath": "index/index2",
+             "iconPath": "image/icon_API.png",
+             "selectedIconPath": "image/icon_API_HL.png",
+             "text": "接口"
+           }
+         ]
+       }
      }
      ```
-
-   - `index.wxml`
-
-     在`wxml`中写入 vant官网提供的tabbar标签栏
-
-     ```html
-     <van-tabbar active="{{ active }}" bind:change="onChange">
-       <van-tabbar-item icon="wap-home">首页</van-tabbar-item>
-       <van-tabbar-item icon="shopping-cart" info="5">购物车</van-tabbar-item>
-       <van-tabbar-item icon="manager" dot>我的</van-tabbar-item>
-     </van-tabbar>
+   
+   - `index.json`
+   
+     ```json
+     {
+       "component": true
+     }
      ```
-
+   
    - `index.js`
-
-     在js文件下写入官网提供的变量以及点击切换按钮`change`事件。
-
+   
      ```js
-     Page({
+     Component({
        data: {
-         active: 0,
+         selected: 0,
+         color: "#7A7E83",
+         selectedColor: "#3cc51f",
+         list: [{
+           pagePath: "/index/index",
+           iconPath: "/image/icon_component.png",
+           selectedIconPath: "/image/icon_component_HL.png",
+           text: "组件"
+         }, {
+           pagePath: "/index/index2",
+           iconPath: "/image/icon_API.png",
+           selectedIconPath: "/image/icon_API_HL.png",
+           text: "接口"
+         }]
        },
-       onChange(event) {
-         // event.detail 的值为当前选中项的索引
-         this.setData({ active: event.detail });
+       attached() {
        },
-     });
+       methods: {
+         switchTab(e) {
+           const data = e.currentTarget.dataset
+           const url = data.path
+           wx.switchTab({url})
+           this.setData({
+             selected: data.index
+           })
+         }
+       }
+     })
      ```
-
+   
+   - `index.wxml`
+   
+     ```html
+     <!--miniprogram/custom-tab-bar/index.wxml-->
+     <cover-view class="tab-bar">
+       <cover-view class="tab-bar-border"></cover-view>
+       <cover-view wx:for="{{list}}" wx:key="index" class="tab-bar-item" data-path="{{item.pagePath}}" data-index="{{index}}" bindtap="switchTab">
+         <cover-image src="{{selected === index ? item.selectedIconPath : item.iconPath}}"></cover-image>
+         <cover-view style="color: {{selected === index ? selectedColor : color}}">{{item.text}}</cover-view>
+       </cover-view>
+     </cover-view>
+     ```
+   
+   - `index.wxss`
+   
+     ```css
+     .tab-bar {
+       position: fixed;
+       bottom: 0;
+       left: 0;
+       right: 0;
+       height: 48px;
+       background: white;
+       display: flex;
+       padding-bottom: env(safe-area-inset-bottom);
+     }
      
+     .tab-bar-border {
+       background-color: rgba(0, 0, 0, 0.33);
+       position: absolute;
+       left: 0;
+       top: 0;
+       width: 100%;
+       height: 1px;
+       transform: scaleY(0.5);
+     }
+     
+     .tab-bar-item {
+       flex: 1;
+       text-align: center;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       flex-direction: column;
+     }
+     
+     .tab-bar-item cover-image {
+       width: 27px;
+       height: 27px;
+     }
+     
+     .tab-bar-item cover-view {
+       font-size: 10px;
+     }
+     ```
+   
+   二、使用vant组件库里面的 [tab组件](https://vant-contrib.gitee.io/vant-weapp/#/tabbar)
+   
+   - `index.json`
+   
+     引入vant组件库里面的 [tab组件](https://vant-contrib.gitee.io/vant-weapp/#/tabbar)：
+   
+     ```json
+     {
+          "component": true,
+          "usingComponents": {
+              "van-tabbar": "/miniprogram_npm/@vant/weapp/tabbar/index",
+              "van-tabbar-item": "/miniprogram_npm/@vant/weapp/tabbar-item/index"
+          }
+      }
+     ```
+   
+      - `index.wxml`
+   
+        在`wxml`中写入 vant官网提供的tabbar标签栏
+   
+        ```html
+        <van-tabbar active="{{ active }}" bind:change="onChange">
+          <van-tabbar-item icon="wap-home">首页</van-tabbar-item>
+          <van-tabbar-item icon="shopping-cart" info="5">购物车</van-tabbar-item>
+          <van-tabbar-item icon="manager" dot>我的</van-tabbar-item>
+        </van-tabbar>
+        ```
+   
+   
+      - `index.js`
+   
+        在js文件下写入官网提供的变量以及点击切换按钮`change`事件。
+   
+        ```js
+        Page({
+          data: {
+            active: 0,
+          },
+          onChange(event) {
+            // event.detail 的值为当前选中项的索引
+            this.setData({ active: event.detail });
+          },
+        });
+        ```
+   
+        
