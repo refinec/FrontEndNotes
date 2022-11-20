@@ -25,7 +25,7 @@
 
   * 一种是利用原 Set 结构映射出一个新的结构，然后赋值给原来的 Set 结构；
   
-  * 另一种是利用**Array.from**方法
+  * 另一种是利用**`Array.from`**方法
   
   ```javascript
   // 方法一
@@ -41,19 +41,19 @@
 #### Set 实例的属性和方法
 
 1. **Set.prototype.constructor**：构造函数，默认就是Set函数。
-2. **Set.prototype.size**：返回Set实例的成员总数。
+2. **Set.prototype.`size`**：返回Set实例的成员总数。
 
-3. **Set.prototype.add(value)**：添加某个值，返回 Set 结构本身。
-4. **Set.prototype.delete(value)**：删除某个值，返回一个布尔值，表示删除是否成功。
-5. **Set.prototype.has(value)**：返回一个布尔值，表示该值是否为Set的成员。
-6. **Set.prototype.clear()**：清除所有成员，没有返回值。
+3. **Set.prototype.`add(value)`**：添加某个值，返回 Set 结构本身。
+4. **Set.prototype.`delete(value)`**：删除某个值，返回一个布尔值，表示删除是否成功。
+5. **Set.prototype.`has(value)`**：返回一个布尔值，表示该值是否为Set的成员。
+6. **Set.prototype.`clear()`**：清除所有成员，没有返回值。
 
 #### 遍历操作
 
-1. **Set.prototype.keys()**：返回键名的**遍历器**
-2. **Set.prototype.values()**：返回键值的遍历器
-3. **Set.prototype.entries()**：返回键值对的遍历器
-4. **Set.prototype.forEach()**：使用回调函数遍历每个成员
+1. **Set.prototype.`keys()`**：返回键名的**遍历器**
+2. **Set.prototype.`values()`**：返回键值的遍历器
+3. **Set.prototype.`entries()`**：返回键值对的遍历器
+4. **Set.prototype.`forEach()`**：使用回调函数遍历每个成员
 
 由于 Set 结构没有键名，只有键值（或者说键名和键值是同一个值），所以keys方法和values方法的行为完全一致。
 
@@ -61,15 +61,15 @@
 
 * 与 Set 类似，也是不重复的值的集合。但是，**WeakSet 的成员只能是对象,接受一个数组或类似数组的对象（具有 Iterable 接口）作为参数**，而不能是其他类型的值。注意，是参数数组的成员成为 WeakSet 的成员，而不是参数数组本身。这意味着，**参数数组的成员只能是对象**
 
-* WeakSet 中的对象都是**弱引用**，即垃圾回收机制不考虑 WeakSet 对该对象的引用.也就是说，如果其他对象都不再引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于WeakSet 之中
+* WeakSet 中的对象都是 **弱引用**，即垃圾回收机制不考虑 WeakSet 对该对象的引用.也就是说，如果其他对象都不再引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于WeakSet 之中
 
 * **WeakSet 没有size属性，不可遍历**
 
 #### 方法
 
-- **WeakSet.prototype.add(value)**：向 WeakSet 实例添加一个新成员。
-- **WeakSet.prototype.delete(value)**：清除 WeakSet 实例的指定成员。
-- **WeakSet.prototype.has(value)**：返回一个布尔值，表示某个值是否在 WeakSet 实例之中。
+- **WeakSet.prototype.`add(value)`**：向 WeakSet 实例添加一个新成员。
+- **WeakSet.prototype.`delete(value)`**：清除 WeakSet 实例的指定成员。
+- **WeakSet.prototype.`has(value)`**：返回一个布尔值，表示某个值是否在 WeakSet 实例之中。
 
 #### 作用：
 
@@ -151,11 +151,11 @@ Map 数据结构。**它类似于对象，也是键值对的集合，但是“�
 
 - **`size`属性**返回 Map 结构的成员总数。
 
-- **Map.prototype.set(key, value)**方法设置键名key对应的键值为value，然后返回整个 Map 结构。如果key已经有值，则键值会被更新，否则就新生成该键。
-- **Map.prototype.get(key)**方法读取key对应的键值，如果找不到key，返回undefined。
-- **Map.prototype.has(key)**方法返回一个布尔值，表示某个键是否在当前 Map 对象之中。
-- **Map.prototype.delete(key)**方法删除某个键，返回true。如果删除失败，返回false。
-- **Map.prototype.clear()**方法清除所有成员，没有返回值
+- **Map.prototype.`set(key, value)`**方法设置键名key对应的键值为value，然后返回整个 Map 结构。如果key已经有值，则键值会被更新，否则就新生成该键。
+- **Map.prototype.`get(key)`**方法读取key对应的键值，如果找不到key，返回undefined。
+- **Map.prototype.`has(key)`**方法返回一个布尔值，表示某个键是否在当前 Map 对象之中。
+- **Map.prototype.`delete(key)`**方法删除某个键，返回true。如果删除失败，返回false。
+- **Map.prototype.`clear()`**方法清除所有成员，没有返回值
 
 #### 遍历方法
 
@@ -168,13 +168,13 @@ Map 数据结构。**它类似于对象，也是键值对的集合，但是“�
 
 ##### 1. Map 转为数组
 
-​	使用扩展运算符（...）
+​	使用扩展运算符`...`
 
 ##### 2. **数组 转为** **Map**
 
 ​	将数组传入 Map 构造函数，就可以转为 Map。但**至少是二维数组 **，每个元素数组包含2个元素
 
-##### 3.**Map** 转为对象(使用for..of)
+##### 3.**Map** 转为对象(使用`for..of`)
 
 ​	如果所有 Map 的键都是字符串，它可以无损地转为对象。如果有非字符串的键名，那么这个键名会被转成字符串，再作为对象的键名。
 
@@ -192,7 +192,7 @@ const myMap = new Map()
 strMapToObj(myMap)
 // { yes: true, no: false }
 ```
-##### 4. **对象转为** Map(使用Object.entries())
+##### 4. **对象转为** Map(使用`Object.entries()`)
 
 对象转为 Map 可以通过`Object.entries()`
 

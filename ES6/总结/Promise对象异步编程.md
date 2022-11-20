@@ -20,15 +20,24 @@
 
 3. **调用resolve或reject并不会终结 Promise 内语句的执行，并且同步语句会先于resolve或reject执行**，因为立即 resolved 的 **Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务**。所以，最好**在它们前面加上return语句**，这样就不会有意外。
 
+   ```js
+   new Promise((resolve, reject) =>{
+       console.log(1)
+       resolve(2)
+       console.log(3)
+   }).then(d=>{console.log(d)})
+   // 输出：1 3 2
+   ```
+
 ### promise实例方法
 
 #### 1. Promise.prototype.then()
 
 #### 2. Promise.prototype.catch()
 
-​	跟传统的try/catch代码块不同的是，**如果没有使用catch方法指定错误处理的回调函数，Promise 对象抛出的错误不会传递到外层代码**，即不会有任何反应。这就是说，**Promise 内部的错误不会影响到 Promise 外部的代码**，通俗的说法就是“Promise 会吃掉错误”。
+> 跟传统的`try/catch`代码块不同的是，**如果没有使用`catch`方法指定错误处理的回调函数，Promise 对象抛出的错误不会传递到外层代码**，即不会有任何反应。这就是说，**Promise 内部的错误不会影响到 Promise 外部的代码**，通俗的说法就是“Promise 会吃掉错误”。
 
-不过，**Node** 有一个**unhandledRejection **事件，专门监听未捕获的reject错误，上面的脚本会触发这个事件的监听函数，可以在监听函数里面抛出错误。
+不过，**Node** 有一个**`unhandledRejection `**事件，专门监听未捕获的reject错误，上面的脚本会触发这个事件的监听函数，可以在监听函数里面抛出错误。
 
 ```javascript
 // unhandledRejection事件的监听函数有两个参数，第一个是错误对象，第二个是报错的 Promise 实例，它可以用来了解发生错误的环境信息
@@ -102,15 +111,34 @@ Promise.all([p1, p2])
 
 #### 5.Promise.race()
 
-将多个 Promise 实例，包装成一个新的 Promise 实例。只要**各个Promise 实例之中有一个有一个实例率先改变状态`Promise.race()`的状态就跟着改变，那个率先改变的 Promise 实例的返回值，就传递给p的回调函数**
+> 将多个 Promise 实例，包装成一个新的 Promise 实例。
+>
+> 只要**各个Promise 实例之中有一个有一个实例率先改变状态(不管状态时`fulfilled`还是`rejected`)，`Promise.race()`的状态就跟着改变，那个率先改变的 Promise 实例的返回值，就传递给p的回调函数**
 
 * Promise.race()方法的参数与Promise.all()方法一样，如果不是 Promise 实例，就会先调用下面讲到的Promise.resolve()方法，将参数转为 Promise 实例，再进一步处理
 
+```js
+const p1 = new Promise((resolve, reject) => {
+    resolve('hello');
+})
+
+const p2 = new Promise((resolve, reject) => {
+    throw new Error('报错了');
+})
+
+Promise.all([p1, p2])
+    .then(result => console.log(result))
+    .catch(e => console.log(e));
+// 'hello'
+```
+
 #### 6. Promise.allSettled()
 
-接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。只有等到所有这些参数实例都返回结果，不管是fulfilled还是rejected，包装实例才会结束。
+> 接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。
+>
+> 只有等到所有这些参数实例都返回结果，不管是`fulfilled`还是`rejected`，包装实例才会结束。
 
-**该方法返回的新的 Promise 实例，一旦结束，状态总是fulfilled **，不会变成rejected。状态变成fulfilled后，Promise 的监听函数接收到的参数是一个数组，每个成员对应一个传入Promise.allSettled()的 Promise 实例
+**该方法返回的新的 Promise 实例，一旦结束，状态总是`fulfilled `**，不会变成`rejected`。状态变成`fulfilled`后，Promise 的监听函数接收到的参数是一个数组，每个成员对应一个传入Promise.allSettled()的 Promise 实例
 
 ```javascript
 const resolved = Promise.resolve(42);
@@ -127,9 +155,11 @@ allSettledPromise.then(function (results) {
 
 #### 7. Promise.any()
 
-接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。**只要参数实例有一个变成fulfilled状态 **，包装实例就会变成fulfilled状态；如果所有参数实例都变成rejected状态，包装实例就会变成rejected状态
+> 接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。
+>
+> **只要参数实例有一个变成`fulfilled`状态 **，包装实例就会变成`fulfilled`状态；如果所有参数实例都变成`rejected`状态，包装实例就会变成`rejected`状态
 
-**Promise.any()跟Promise.race()方法很像，只有一点不同，就是不会因为某个 Promise 变成rejected状态而结束**
+**`Promise.any()`跟`Promise.race()`方法很像，只有一点不同，就是不会因为某个 Promise 变成rejected状态而结束**
 
 #### 8. Promise.resolve()
 
@@ -165,7 +195,7 @@ new Promise(resolve => resolve('foo'))
 
 * **不带有任何参数**
 
-  直接返回一个resolved状态的 Promise 对象
+  > 直接返回一个resolved状态的 Promise 对象
 
   需要注意的是，立即resolve()的 Promise 对象，是在本轮“事件循环”（event loop）的结束时执行，而不是在下一轮“事件循环”的开始时。下面代码中，setTimeout(fn, 0)在下一轮“事件循环”开始时执行，Promise.resolve()在本轮“事件循环”结束时执行，console.log('one')则是立即执行，因此最先输出。
 
@@ -184,7 +214,8 @@ new Promise(resolve => resolve('foo'))
 
 #### 9. Promise.reject()
 
-​	返回一个新的 Promise 实例，该实例的状态为rejected
+> 返回一个新的 Promise 实例，该实例的状态为rejected
+>
 
 ​	Promise.reject()方法的参数，**会原封不动地作为reject的理由 **，变成后续方法的参数。这一点与Promise.resolve方法不一致
 
@@ -205,7 +236,7 @@ Promise.reject(thenable)
 
 #### 10. Promise.try()
 
-不知道或者不想区分，函数f是同步函数还是异步操作，但是想用 Promise 来处理它。因为这样就可以不管f是否包含异步操作，都用then方法指定下一步流程，用catch方法处理f抛出的错误。一般就会采用下面的写法。
+不知道或者不想区分，函数`f`是同步函数还是异步操作，但是想用 Promise 来处理它。因为这样就可以不管f是否包含异步操作，都用then方法指定下一步流程，用catch方法处理f抛出的错误。一般就会采用下面的写法。
 
 **(重要)** **`new Promise()`和 `async`函数让同步函数同步执行，异步函数异步执行，并且让它们具有统一的 API** 
 

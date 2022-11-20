@@ -255,44 +255,43 @@ person.sayName(); // "张三"
           // ...
       }
       ```
-
-
-      2. **使用箭头函数**
-    
-         **箭头函数内部的this总是指向定义时所在的对象**。下面代码中，箭头函数位于构造函数内部，它的定义生效的时候，是在构造函数执行的时候。这时，箭头函数所在的运行环境，肯定是实例对象，所以this会总是指向实例对象。
-    
-         ```javascript
-         class Obj {
-             constructor() {
-                 this.getThis = () => this;
-             }
-         }
-         const myObj = new Obj();
-         myObj.getThis() === myObj // true
-         ```
-
-   3. **使用Proxy，获取方法的时候，自动绑定this**
-
-      ```js
-      function selfish (target) {
-          const cache = new WeakMap();
-          const handler = {
-              get (target, key) {
-                  const value = Reflect.get(target, key);
-                  if (typeof value !== 'function') {
-                      return value;
-                  }
-                  if (!cache.has(value)) {
-                      cache.set(value, value.bind(target));
-                  }
-                  return cache.get(value);
-              }
-          };
-          const proxy = new Proxy(target, handler);
-          return proxy;
+   
+   2. **使用箭头函数**
+   
+      > **箭头函数内部的this总是指向定义时所在的对象**。下面代码中，箭头函数位于构造函数内部，它的定义生效的时候，是在构造函数执行的时候。这时，箭头函数所在的运行环境，肯定是实例对象，所以this会总是指向实例对象。
+   
+      ```javascript
+      class Obj {
+          constructor() {
+              this.getThis = () => this;
+          }
       }
-      const logger = selfish(new Logger());
+      const myObj = new Obj();
+      myObj.getThis() === myObj // true
       ```
+   
+      3. **使用Proxy，获取方法的时候，自动绑定this**
+   
+         ```js
+         function selfish (target) {
+             const cache = new WeakMap();
+             const handler = {
+                 get (target, key) {
+                     const value = Reflect.get(target, key);
+                     if (typeof value !== 'function') {
+                         return value;
+                     }
+                     if (!cache.has(value)) {
+                         cache.set(value, value.bind(target));
+                     }
+                     return cache.get(value);
+                 }
+             };
+             const proxy = new Proxy(target, handler);
+             return proxy;
+         }
+         const logger = selfish(new Logger());
+         ```
 
 #### 静态方法、属性（static）
 
@@ -477,8 +476,9 @@ Bar.classMethod() // 'hello'
 
    * **私有属性和私有方法前面，也可以加上static关键字，表示这是一个静态的私有属性或私有方法**
 
+     下面代码中，`#totallyRandomNumber`是私有属性，`#computeRandomNumber()`是私有方法，只能在FakeMath这个类的内部调用，外部调用就会报错。
+     
      ```javascript
-     // 下面代码中，#totallyRandomNumber是私有属性，#computeRandomNumber()是私有方法，只能在FakeMath这个类的内部调用，外部调用就会报错。
      class FakeMath {
          static PI = 22 / 7;
          static #totallyRandomNumber = 4;
@@ -504,7 +504,7 @@ new是从构造函数生成实例对象的命令
 
 * ES6 为new命令引入了一个`new.target`属性，**该属性一般用在构造函数之中，返回new命令作用于的那个构造函数 **
 
-* 如果构造函数不是通过`new命令`或`Reflect.construct()`调用的，**`new.target`会返回undefined**，因此**这个属性可以用来确定构造函数是怎么调用的**。
+* 如果构造函数不是通过`new命令`或`Reflect.construct()`调用的，**`new.target`会返回`undefined`**，因此**这个属性可以用来确定构造函数是怎么调用的**。
 
   下面代码确保构造函数只能通过new命令调用
 
@@ -580,7 +580,7 @@ new是从构造函数生成实例对象的命令
 
 ### Class的继承
 
-> 通过extends关键字实现继承
+> 通过`extends`关键字实现继承
 
 ```javascript
 class ColorPoint extends Point {
@@ -626,7 +626,7 @@ class ColorPoint extends Point {
 
 1. **super作为函数调用时，代表父类的构造函数**。ES6 要求，子类的构造函数必须执行一次super函数
 
-   super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此super()在这里相当于**`A.prototype.constructor.call(this)` **。**作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。**
+   super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此`super()`在这里相当于**`A.prototype.constructor.call(this)` **。**作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。**
 
    ```javascript
    // new.target指向当前正在执行的函数。可以看到，在super()执行时，它指向的是子类B的构造函数，而不是父类A的构造函数。也就是说，super()内部的this指向的是B。

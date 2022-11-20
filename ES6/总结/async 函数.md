@@ -1,6 +1,6 @@
 # async 函数
 
-> async 函数是 Generator 函数的语法糖,它将 Generator 函数的星号（*）替换成async，将yield替换成await
+> async 函数是 Generator 函数的语法糖,它将 Generator 函数的`星号*`替换成`async`，将`yield`替换成`await`
 
 **async函数对 Generator 函数的改进：**
 
@@ -100,7 +100,7 @@ asyncPrint('hello world', 50);
   }
   ```
 
-* **希望多个请求并发执行，可以使用Promise.all方法**。当三个请求都会resolved时，下面两种写法效果相同
+* **希望多个请求并发执行，可以使用`Promise.all`方法**。当三个请求都会resolved时，下面两种写法效果相同
 
   ```javascript
   async function dbFuc(db) {
