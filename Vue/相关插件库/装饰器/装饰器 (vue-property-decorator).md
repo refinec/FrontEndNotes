@@ -1,5 +1,7 @@
 # `vue-property-decorator`
 
+> 👉🏻[详细阅读](https://github.com/kaorun343/vue-property-decorator)
+
 - [`@Prop`](https://github.com/kaorun343/vue-property-decorator#Prop)
 - [`@PropSync`](https://github.com/kaorun343/vue-property-decorator#PropSync)
 - [`@Model`](https://github.com/kaorun343/vue-property-decorator#Model)

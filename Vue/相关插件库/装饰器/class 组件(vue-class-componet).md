@@ -1,6 +1,6 @@
 # `vue-class-componet`
 
-> 以`class`类样式的语法创建`Vue`组件
+> 以`class`类样式的语法创建`Vue`组件，👉🏻[详细阅读](https://github.com/vuejs/vue-class-component)
 
 ## 一、装饰器
 
