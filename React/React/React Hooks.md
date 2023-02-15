@@ -81,7 +81,7 @@ function ExampleWithManyStates() {
   const [fruit, setFruit] = useState('banana');
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
   // ...
-  setCount(1)
+  setCount(1) // 函数异步执行
   console.log(count)
 }
 ```
