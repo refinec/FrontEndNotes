@@ -91,12 +91,20 @@ render() {
 
 ### createElement()
 
-```jsx
-React.createElement(
-  type,
-  [props],
-  [...children]
-)
+> 格式：`React.createElement(type /* type 必须是字母小写的标签名 */, [props], [...children])`
+
+```react
+const button = React.createElement('button', {
+  id: 'btn',
+  className: 'btn',
+  onClick: () => { console.log('btn.'); } // 事件名驼峰形式
+}, '按钮');
+const div = React.createElement('div', null, ['div:', button])
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(div)
+
+// 老版本
+// ReactDOM.render(div, document.getElementById('root'))
 ```
 
 ### createFactory() - 已废弃

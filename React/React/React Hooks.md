@@ -81,6 +81,8 @@ function ExampleWithManyStates() {
   const [fruit, setFruit] = useState('banana');
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
   // ...
+  setCount(1)
+  console.log(count)
 }
 ```
 
@@ -323,9 +325,7 @@ function Counter({initialCount}) {
 
 > 如果 Reducer Hook 的返回值与当前 state 相同（使用 [`Object.is` 比较算法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) 来比较），React 将跳过子组件的渲染及副作用的执行
 
-如果你在渲染期间执行了高开销的计算，则可以使用 `useMemo` 来进行优化。
-
-### useCallback
+### useCallback 类似vue `computed`
 
 ```react
 const memoizedCallback = useCallback(
@@ -342,7 +342,9 @@ const memoizedCallback = useCallback(
 
 推荐启用 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks#installation) 中的 [`exhaustive-deps`](https://github.com/facebook/react/issues/14920) 规则。此规则会在添加错误依赖时发出警告并给出修复建议
 
-### useMemo
+### useMemo  类似vue `computed`
+
+> 如果你在渲染期间执行了高开销的计算，则可以使用 `useMemo` 来进行优化。
 
 `const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);`
 

@@ -1,5 +1,7 @@
 # ReactDOM
 
+> `react-dom`是`react`的`DOM`包，使用react开发 WEB应用时必须引入，但是开发`React Native` 就不需要引入。
+
 **引入：**`import * as ReactDOM from 'react-dom';`
 
 
