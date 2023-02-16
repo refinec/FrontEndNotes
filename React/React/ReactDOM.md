@@ -16,7 +16,7 @@
 
 > 创建 portal。[Portal](https://zh-hans.reactjs.org/docs/portals.html) 提供了一种将子节点渲染到已 DOM 节点中的方式，该节点存在于 DOM 组件的层次结构之外。
 
-通常用来把`Modal`弹窗渲染到与根元素同级的兄弟元素上。
+实际应用是通常把`Modal`弹窗渲染到与根元素同级的兄弟元素上。
 
 ```jsx
 import ReactDOM from "react-dom";
