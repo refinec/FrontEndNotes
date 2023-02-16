@@ -82,7 +82,10 @@ function ExampleWithManyStates() {
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
   // ...
   setCount(1) // 函数异步执行
-  console.log(count)
+	// 要想正确更新数据，则使用函数
+  setCount((preCount) => {
+    return preCount + 1
+  })
 }
 ```
 
@@ -247,7 +250,7 @@ function ThemedButton() {
 
 ## 二、额外的 Hook
 
-### useReducer : `useState`的替代方案
+### `useReducer` : `useState`的替代方案
 
 ```react
 const [state, dispatch] = useReducer(reducer, initialArg, init);
@@ -325,7 +328,7 @@ function Counter({initialCount}) {
 
 > 如果 Reducer Hook 的返回值与当前 state 相同（使用 [`Object.is` 比较算法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) 来比较），React 将跳过子组件的渲染及副作用的执行
 
-### useCallback 类似vue `computed`
+### `useCallback` 类似vue **computed**
 
 ```react
 const memoizedCallback = useCallback(
@@ -342,7 +345,7 @@ const memoizedCallback = useCallback(
 
 推荐启用 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks#installation) 中的 [`exhaustive-deps`](https://github.com/facebook/react/issues/14920) 规则。此规则会在添加错误依赖时发出警告并给出修复建议
 
-### useMemo  类似vue `computed`
+### `useMemo`  类似vue computed
 
 > 如果你在渲染期间执行了高开销的计算，则可以使用 `useMemo` 来进行优化。
 
@@ -350,9 +353,9 @@ const memoizedCallback = useCallback(
 
 返回一个 [memoized](https://en.wikipedia.org/wiki/Memoization) 值。把**“创建”函数**和**依赖项数组**作为参数传入 `useMemo`，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。如果没有提供**依赖项数组**，`useMemo` 在每次渲染时都会计算新的值。
 
-### useRef
+### `useRef`
 
-`const refContainer = useRef(initialValue);` 
+> `const refContainer = useRef(initialValue);`  创建一个存储DOM对象的容器
 
 `useRef` 返回一个可变的 ref 对象，其 `.current` 属性被初始化为传入的参数（`initialValue`）。返回的 ref 对象在组件的整个生命周期内持续存在。
 
@@ -417,9 +420,9 @@ function MeasureExample() {
 }
 ```
 
-### useImperativeHandle
+### `useImperativeHandle`
 
-`useImperativeHandle(ref, createHandle, [deps])`
+格式：`useImperativeHandle(ref, createHandle, [deps])`
 
 `useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值。`useImperativeHandle` 应当与 [`forwardRef`](https://zh-hans.reactjs.org/docs/react-api.html#reactforwardref) 一起使用：
 
@@ -438,7 +441,7 @@ function FancyInput(props, ref) {
 FancyInput = forwardRef(FancyInput);
 ```
 
-### useLayoutEffect
+### `useLayoutEffect`
 
 > 尽可能使用 `useEffect` 以避免阻塞视觉更新
 
@@ -450,7 +453,7 @@ FancyInput = forwardRef(FancyInput);
 * 如果你使用服务端渲染，请记住，*无论* `useLayoutEffect` *还是* `useEffect` 都无法在 Javascript 代码加载完成之前执行。这就是为什么在服务端渲染组件中引入 `useLayoutEffect` 代码时会触发 React 告警。解决这个问题，需要将代码逻辑移至 `useEffect` 中（如果首次渲染不需要这段逻辑的情况下），或是将该组件延迟到客户端渲染完成后再显示（如果直到 `useLayoutEffect` 执行之前 HTML 都显示错乱的情况下）
 * 若要从服务端渲染的 HTML 中排除依赖布局 effect 的组件，可以通过使用 `showChild && <Child />` 进行条件渲染，并使用 `useEffect(() => { setShowChild(true); }, [])` 延迟展示组件。这样，在客户端渲染完成之前，UI 就不会像之前那样显示错乱了
 
-### useDebugValue
+### `useDebugValue`
 
 `useDebugValue(value)` : `useDebugValue` 可用于在 React 开发者工具中显示自定义 hook 的标签。
 
@@ -475,9 +478,9 @@ function useFriendStatus(friendID) {
 
 `useDebugValue(date, date => date.toDateString());`
 
-### useDeferredValue
+### `useDeferredValue`
 
-`const deferredValue = useDeferredValue(value);`
+格式：`const deferredValue = useDeferredValue(value);`
 
 `useDeferredValue` 接受一个值，并返回该值的新副本，该副本将推迟到更紧急地更新之后。如果当前渲染是一个紧急更新的结果，比如用户输入，React 将返回之前的值，然后在紧急渲染完成后渲染新的值。
 
@@ -510,9 +513,9 @@ function Typeahead() {
 
 记忆该子组件告诉 React 它仅当 `deferredQuery` 改变而不是 `query` 改变的时候才需要去重新渲染。这个限制不是 `useDeferredValue` 独有的，它和使用防抖或节流的 hooks 使用的相同模式。
 
-### useTransition
+### `useTransition`
 
-`const [isPending, startTransition] = useTransition();` 返回一个状态值表示过渡任务的等待状态，以及一个启动该过渡任务的函数
+> `const [isPending, startTransition] = useTransition();` 返回一个状态值表示过渡任务的等待状态，以及一个启动该过渡任务的函数
 
 `startTransition` 允许你通过标记更新将提供的回调函数作为一个过渡任务：
 
@@ -550,9 +553,9 @@ function App() {
 
 * 过渡任务中的更新将不会展示由于再次挂起而导致降级的内容。这个机制允许用户在 React 渲染更新的时候继续与当前内容进行交互。
 
-### useId
+### `useId`
 
-`const id = useId();`
+> `const id = useId();`
 
 `useId` 是一个用于生成横跨服务端和客户端的稳定的唯一 ID 的同时避免 hydration 不匹配的 hook。但`useId` 不用于生成列表中的键。键应该从数据中生成。
 

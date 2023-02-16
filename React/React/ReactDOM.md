@@ -14,9 +14,27 @@
 
 ## `createPortal(child, container)`
 
-> 创建 portal。[Portal](https://zh-hans.reactjs.org/docs/portals.html) 提供了一种将子节点渲染到已 DOM 节点中的方式，该节点存在于 DOM 组件的层次结构之外
+> 创建 portal。[Portal](https://zh-hans.reactjs.org/docs/portals.html) 提供了一种将子节点渲染到已 DOM 节点中的方式，该节点存在于 DOM 组件的层次结构之外。
 
+通常用来把`Modal`弹窗渲染到与根元素同级的兄弟元素上。
 
+```jsx
+import ReactDOM from "react-dom";
+
+// 获得根元素的兄弟元素
+const rootSibling = document.getElementById("rootSibling");
+
+const Modal = (props) => {
+    return ReactDOM.createPortal(
+        <div>
+            {props.children}
+        </div>,
+        rootSibling
+    )
+}
+
+export default Modal;
+```
 
 ## `flushSync(callback)`
 
