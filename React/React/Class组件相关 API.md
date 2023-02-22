@@ -92,6 +92,17 @@ const App = () => {
 }
 ```
 
+`React.Fragment`组件相当于如下代码：
+
+```react
+import React from 'react';
+
+const Fragment = (props) => {
+  return props.children;
+}
+export default Fragment;
+```
+
 但是使用 `<> </>`，不支持 **key** 或 **属性**
 
 #### 带 key 的 Fragments
