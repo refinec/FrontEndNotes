@@ -5,9 +5,9 @@
 * `React.memo`：把组件定义为可被包装的函数
 * `React.Fragment`：是一个用于减少不必要嵌套的组件
 
-### React.Component
+### 1.`React.Component`
 
-### React.PureComponent
+### 2.`React.PureComponent`
 
 > `React.PureComponent` 与 `React.Component` 很相似。两者的区别在于 `React.Component` 并未实现 `shouldComponentUpdate()`，而 `React.PureComponent` 中以浅层对比 **prop** 和 **state** 的方式来实现了该函数。
 
@@ -23,7 +23,7 @@
 
 此外，`React.PureComponent` 中的 `shouldComponentUpdate()` 将跳过所有子组件树的 prop 更新。因此，请确保所有子组件也都是“纯”的组件。
 
-### React.memo
+### 3.`React.memo`
 
 ```jsx
 const MyComponent = React.memo(function MyComponent(props) {
@@ -67,12 +67,12 @@ export default React.memo(MyComponent, areEqual);
 >
 > 与 class 组件中 [`shouldComponentUpdate()`](https://zh-hans.reactjs.org/docs/react-component.html#shouldcomponentupdate) 方法不同的是，如果 props 相等，`areEqual` 会返回 `true`；如果 props 不相等，则返回 `false`。这与 `shouldComponentUpdate` 方法的返回值相反。
 
-### React.Fragment
+### 4.`React.Fragment` 片段
 
-> `React.Fragment` 组件能够在不额外创建 DOM 元素的情况下，让 `render()` 方法中返回多个元素。
+> React 中的一个常见模式是一个组件返回多个元素(因为React组件的定义只能返回单根元素 )。`Fragments ` 允许你将子列表分组，而无需向 DOM 添加额外节点。
 
 ```jsx
-render() {
+const App = () => {
   return (
     <React.Fragment>
       Some text.
@@ -80,7 +80,43 @@ render() {
     </React.Fragment>
   );
 }
+
+// 简写方式
+const App = () => {
+  return (
+    <>
+      Some text.
+      <h2>A heading</h2>
+    </>
+  );
+}
 ```
+
+但是使用 `<> </>`，不支持 **key** 或 **属性**
+
+#### 带 key 的 Fragments
+
+> 使用显式 `<React.Fragment>` 语法声明的片段可能具有 `key`。一个使用场景是将一个集合映射到一个 Fragments 数组。
+>
+> 举个例子，创建一个描述列表：
+
+```jsx
+function Glossary(props) {
+  return (
+    <dl>
+      {props.items.map(item => (
+        // 没有`key`，React 会发出一个关键警告
+        <React.Fragment key={item.id}>
+          <dt>{item.term}</dt>
+          <dd>{item.description}</dd>
+        </React.Fragment>
+      ))}
+    </dl>
+  );
+}
+```
+
+`key` 是唯一可以传递给 `Fragment` 的属性。未来我们可能会添加对其他属性的支持，例如事件。
 
 ## 二、创建 React 元素
 
@@ -89,7 +125,7 @@ render() {
 - `createElement()`
 - `createFactory()`
 
-### createElement()
+### 1. ` createElement()`
 
 > 格式：`React.createElement(type /* type 必须是字母小写的标签名 */, [props], [...children])`
 
@@ -107,7 +143,7 @@ root.render(div)
 // ReactDOM.render(div, document.getElementById('root'))
 ```
 
-### createFactory() - 已废弃
+### 2. `createFactory()` - 已废弃
 
 > 返回用于生成指定类型 React 元素的函数。与 [`React.createElement()`](https://zh-hans.reactjs.org/docs/react-api.html#createelement) 相似的是，类型参数既可以是标签名字符串（像是 `'div'` 或 `'span'`），也可以是 [React 组件](https://zh-hans.reactjs.org/docs/components-and-props.html) 类型 （class 组件或函数组件），或是 [React fragment](https://zh-hans.reactjs.org/docs/react-api.html#reactfragment) 类型。
 
@@ -123,7 +159,7 @@ React.createFactory(type)
 - `isValidElement()`
 - `React.Children`
 
-### cloneElement()
+### 1.`cloneElement()`
 
 ```jsx
 React.cloneElement(
@@ -145,7 +181,7 @@ React.cloneElement(
 
 但是，这也保留了组件的 `ref`。这意味着当通过 `ref` 获取子节点时，你将不会意外地从你祖先节点上窃取它。相同的 `ref` 将添加到克隆后的新元素中。如果存在新的 `ref` 或 `key` 将覆盖之前的。
 
-### isValidElement()
+### 2`.isValidElement()`
 
 > 验证对象是否为 React 元素，返回值为 `true` 或 `false`
 
@@ -153,7 +189,7 @@ React.cloneElement(
 React.isValidElement(object)
 ```
 
-### React.Children
+### 3.`React.Children`
 
 > 提供了用于处理 `this.props.children` 不透明数据结构的实用方法
 
@@ -208,7 +244,7 @@ React.Children.toArray(children)
 - `React.createRef`
 - `React.forwardRef`
 
-### React.createRef
+### 1.`React.createRef`
 
 > `React.createRef` 创建一个能够通过 ref 属性附加到 React 元素的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html)。
 
@@ -230,7 +266,7 @@ class MyComponent extends React.Component {
 }
 ```
 
-### React.forwardRef
+### 2.`React.forwardRef`
 
 `React.forwardRef` 会创建一个React组件，这个组件能够将其接受的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html) 属性转发到其组件树下的另一个组件中。它在以下两种场景中特别有用：
 
@@ -260,7 +296,7 @@ const ref = React.createRef();
 - `React.lazy`
 - `React.Suspense`
 
-### React.lazy
+### 1.`React.lazy`
 
 > `React.lazy()` 允许你定义一个动态加载的组件。这有助于缩减 bundle 的体积，并延迟加载在初次渲染时未用到的组件。
 
@@ -273,7 +309,7 @@ const SomeComponent = React.lazy(() => import('./SomeComponent'));
 
 这是指定加载指示器（loading indicator）的方式。
 
-### React.Suspense
+### 2.`React.Suspense`
 
 `React.Suspense` 可以指定加载指示器，以防其组件树中的某些子组件尚未具备渲染条件。
 
@@ -316,7 +352,7 @@ Suspense 边界依赖于它们的父边界，在它们可以 hydrate 前被 hydr
 - `React.startTransition`
 - `React.useTransition`
 
-### React.startTransition
+### 1.`React.startTransition`
 
 ```jsx
 React.startTransition(callback)
@@ -332,7 +368,7 @@ React.startTransition(callback)
 >
 > `React.startTransition` 不提供 `isPending` 的标志。要跟踪过渡的待定状态，请参阅`React.useTransition`
 
-### React.useTransition
+### 2.`React.useTransition`
 
 ```jsx
 const [isPending, startTransition] = useTransition();
