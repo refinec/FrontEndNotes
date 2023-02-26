@@ -23,9 +23,7 @@
 
 ## **使用Hook的原因是什么？**
 
-1. class 是学习 React 的一大屏障，你必须去理解 JavaScript 中 `this` 的工作方式。还不能忘记绑定事件处理器
-
-   而Hook 解决了这一点
+1. class 是学习 React 的一大屏障，你必须去理解 JavaScript 中 `this` 的工作方式。还不能忘记绑定事件处理器，而Hook 解决了这一点
 
 2. 代码复用和代码管理
 
@@ -95,13 +93,29 @@ function ExampleWithManyStates() {
 <p>You clicked {count} times</p>
 ```
 
+#### setState的执行流程
+
+setState的执行流程(函数组件)：
+
+1. 先判断组件当前处于什么状态
+   * 渲染阶段：不会检查state值是否相同
+   * 非渲染阶段(渲染结束)：会检查state值是否相同
+2. 在非渲染阶段
+   * 如果值不相同，则对组件进行重渲染
+   * 如果值相同，则不对组件进行重渲染
+     * 但是在某些情况下，如果值相同，React会继续执行当前组件的重渲染，但这个渲染不会触发其子组件的重渲染，这次渲染不会产生实际的效果
+
 ### `useEffect`
 
 > `useEffect` 就是一个 Effect Hook，给函数组件增加了操作<u>副作用</u>**(在 React 组件中执行过数据获取、订阅或者手动修改过 DOM)**的能力。
 >
->  `useEffect` Hook 是 class 组件中 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合，因此具有更好的**代码复用**和**代码管理**
+> 专门用来处理那些不能直接写在组件内部的代码，比如：**ajax请求数据、记录日志、检查登录、设置定时器等**，总的来说，就是那些和组件渲染无关的，但可能对组件产生副作用的代码。
 
-- 当你调用 `useEffect` 时，就是在告诉 React 在完成对 DOM 的更改后运行你的“副作用”函数。副作用函数通过返回一个函数来指定如何“**清除**”副作用。
+> `useEffect` Hook 是 class 组件中 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合，因此具有更好的**代码复用**和**代码管理**
+
+ `useEffect` 中的回调函数，在每次组件渲染完毕后执行。回调函数通过返回一个函数来指定如何“**清除**”副作用。
+
+**格式**：`useEffect(() => { /* 编写那些会产生副作用的代码 */ }, deps)`
 
 下面的示例中，React 会在组件销毁时取消对 `ChatAPI` 的订阅。
 
@@ -158,7 +172,7 @@ ChatAPI.unsubscribeFromFriendStatus(300, handleStatusChange); // 清除最后一
 
 此默认行为保证了一致性，避免了在 class 组件中因为没有处理更新逻辑而导致常见的 bug。
 
-#### 通过跳过 Effect 进行性能优化 (使用`useEffect`的第二参数)
+#### 通过跳过 Effect 进行性能优化 (使用`useEffect`的第二参数，依赖项)
 
 在某些情况下，每次渲染后都执行清理或者执行 effect 可能会导致性能问题。在 class 组件中，我们可以通过在 `componentDidUpdate` 中添加对 `prevProps` 或 `prevState` 的比较逻辑解决：
 
@@ -192,7 +206,7 @@ useEffect(() => {
 
 **注意📢：**
 
-1. 要使用此优化方式，请确保数组中包含了**所有外部作用域中会随时间变化并且在 effect 中使用的变量**，否则你的代码会引用到先前渲染中的旧变量。
+1. 要使用此优化方式，请确保数组中包含了**<u>所有</u>外部作用域中会随时间变化并且在 effect 中使用的变量**，否则你的代码会引用到先前渲染中的旧变量。
 
 2. 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（`[]`）作为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值，effect 内部的 props 和 state 就会一直拥有其初始值，所以它永远都不需要重复执行，传入 `[]` 作为第二个参数更接近大家更熟悉的 `componentDidMount` 和 `componentWillUnmount` 思维模式。
 
@@ -251,6 +265,8 @@ function ThemedButton() {
 ## 二、额外的 Hook
 
 ### `useReducer` : `useState`的替代方案
+
+> 即把对state的相关操作，全部放在一个作用域内
 
 ```react
 const [state, dispatch] = useReducer(reducer, initialArg, init);
@@ -328,20 +344,34 @@ function Counter({initialCount}) {
 
 > 如果 Reducer Hook 的返回值与当前 state 相同（使用 [`Object.is` 比较算法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) 来比较），React 将跳过子组件的渲染及副作用的执行
 
-### `useCallback` 类似vue **computed**
+### `useCallback`
 
-```react
-const memoizedCallback = useCallback(
-  () => {
-    doSomething(a, b);
-  },
-  [a, b], // 所有回调函数中引用的值都应该出现在依赖项数组中。
-);
-```
+> 为什么使用`useCallback`？当`state`发生变化时，组件会重新渲染，并且组件内的函数、方法也会重新创建，这是没有必要的，所以需要`useCallback`进行优化
+
+**格式：**`useCallback(fn, deps)` 相当于 `useMemo(() => fn, deps)`
+
+> 如果不提供参数`deps`,那么使用`useCallback`毫无意义，当`state`发生变化时，组件会重新渲染，回调函数`fn`也会重新创建。所以使用`useCallback`提供`deps`是必要的，所有回调函数`fn`中引用的值都应该出现在依赖项数组`deps`中。
+>
+> 另外，如果提供的`deps`为`[]`,那么回调函数`fn`只会在组件初始化的时候创建，内部依赖将始终为初始值。
+
+**示例：**
 
 把内联**回调函数**及**依赖项数组**作为参数传入 `useCallback`，返回一个 [memoized](https://en.wikipedia.org/wiki/Memoization) 回调函数。该内联回调函数仅在某个依赖项改变时才会更新
 
-`useCallback(fn, deps)` 相当于 `useMemo(() => fn, deps)`
+```react
+const App = () => {
+  const memoizedCallback = useCallback(
+    () => {
+      doSomething(a, b);
+    },
+    [a, b], // 所有回调函数中引用的值都应该出现在依赖项数组中。
+  );
+  return (
+  	<button onClick={memoizedCallback}></button>
+  )
+}
+export default App;
+```
 
 推荐启用 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks#installation) 中的 [`exhaustive-deps`](https://github.com/facebook/react/issues/14920) 规则。此规则会在添加错误依赖时发出警告并给出修复建议
 
@@ -579,7 +609,7 @@ function NameFields() {
 
 > 注意：
 >
-> `useId` 生成一个包含 `:` 的字符串 token。这有助于确保 token 是唯一的，但在 CSS 选择器或 `querySelectorAll` 等 API 中不受支持。
+> `useId` 生成一个包含 `:` 的字符串 token。这有助于确保 token 是唯一的，但在` CSS 选择器`或 `querySelectorAll` 等 API 中不受支持。
 >
 > `useId` 支持 `identifierPrefix` 以防止在多个根应用的程序中发生冲突。 要进行配置，请参阅 [`hydrateRoot`](https://zh-hans.reactjs.org/docs/react-dom-client.html#hydrateroot) 和 [`ReactDOMServer`](https://zh-hans.reactjs.org/docs/react-dom-server.html) 的选项。
 
@@ -592,3 +622,21 @@ function NameFields() {
 
 
 ### useinsertioneffect
+
+
+
+# 自定义Hooks
+
+> 自定义Hook就是一个普通函数，该函数名称以`use`开头，本质是一个调用其他钩子函数的钩子函数
+
+```react
+export default function useFetch() {
+  const [data, setData] = useState({ name: '', age: 0 });
+  ...
+  
+  return {
+    data
+  }
+}
+```
+
