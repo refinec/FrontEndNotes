@@ -25,7 +25,8 @@
     "usingComponents":{}, // 页面自定义组件配置
     "initialRenderingCache": , //页面初始渲染缓存配置
     "style": "default", // 启用新版的组件样式
-    "singlePage" : {} // 单页模式相关配置
+    "singlePage": {} // 单页模式相关配置
+		"initialRenderingCache": "static", // 启用该页面初始渲染缓存
 }
 ```
 

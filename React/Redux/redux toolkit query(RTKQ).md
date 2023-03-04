@@ -15,6 +15,7 @@ const studentApi = createApi({
   reducerPath: 'studentApi', //Api的标识，不能和其他Api或reducer重复
   baseQuery: featchBaseQuery({baseUrl: "http://localhost:1337/api/"}), // 指定查询的基础信息
   // endpoints用来指定Api中的各种功能，是一个方法，需要一个对象作为返回值。
+  tagTypes: ['student'], // 用来指定Api中的标签类型
   endpoints(build){
     // build是请求的构建器，通过build来设置请求的相关信息
     return {
@@ -26,7 +27,8 @@ const studentApi = createApi({
         // transformResponse 用来转换响应数据格式
         transformResponse(baseQueryReturnValue){
           return baseQueryReturnValue.data;
-        }
+        },
+        providesTags: ['student'], // 被调者
       }),
       getStudentById: build.query({
         query(id){
@@ -37,6 +39,34 @@ const studentApi = createApi({
           return baseQueryReturnValue.data;
         },
         keepUnusedDataFor: 0, // 设置数据缓存的时间，单位(秒)。默认是60秒
+        providesTags: (result, error, id) => {
+          return [{
+          type: 'student',
+          id,
+        }]
+        }
+      }),
+      delStudent: build.mutation({
+        query(id){
+          return {
+            url: `students/${id}`,
+            method: 'delete'
+          }
+        }
+      }),
+      updateStudent: build.mutation({
+        query(stu){
+          return {
+            url: `students/${stu.id}`,
+            method: 'put',
+            body: {
+              data: stu.data
+            }
+          }
+        },
+        invalidatesTags: (result, error, stu) => {
+          return [{ type: 'student', id: stu.id }], // 调用者
+        }
       })
     }
   }
@@ -76,12 +106,35 @@ export const store = configureStore({
 `App.js`
 
 ```react
-import { useGetStudentsQuery } from 'store/studentApi';
+import { useGetStudentsQuery, useGetStudentByIdQuery, useDelStudentMutation, useUpdateStudentMutation } from 'store/studentApi';
 const App = (props) => {
   // 调用Api中的钩子查询数据
   // 这个钩子函数返回一个对象作为返回值，请求过程中的相关数据都存储在该对象中
   const { data, isSuccess, isLoading } = useGetStudentsQuery();
   const { data, isSuccess, isLoading } = useGetStudentByIdQuery(props.id); // 更具id获取数据
+  const { data, isSuccess, isLoading } = useGetStudentByIdQuery(props.id, {
+    // useQuery 还可以接受一个对象作为第二个参数，通过该对象可以对请求进行配置。
+    selectFromResult: result => result, // 用来指定useQuery的返回结果
+    pollingInterval: 0, // 设置轮询的间隔，单位ms,为0则不轮询
+    skip: !props.id, // 设置是否跳过当前请求，默认 false
+    
+    // 一、值为boolean, 表示设置是否每一次都重新加载数据。false:正常使用缓存，true:每次重载数据。
+    // 二、值为number，表示数据缓存(有效期)的时间，单位(秒)
+    refetchOnMountOrArgChange: false, 
+    refetchOnFocus: false, // 设置是否在页面重新获取焦点时请求数据
+    refetchOnReconnect: true, // 设置是否在网络重连后请求数据
+  });
+  
+  // useMutation钩子返回的是一个数组：[操作的触发器，请求返回的结果集]
+  const { delStudent, result } = useDelStudentMutation();
+  const { updateStudent, result } = useUpdateStudentMutation()
+  const handler = () => {
+    delStudent(props.id);
+    updateStudent({
+      id: xx,
+      data: xxx
+    })
+  }
   return (
   	<div>
       { isLoading && <p>数据加载中...</p> }
@@ -90,5 +143,7 @@ const App = (props) => {
   )
 }
 export default App;
+
+// 更新后
 ```
 

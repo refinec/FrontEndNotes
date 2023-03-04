@@ -38,7 +38,8 @@
     "enablePullDownRefresh": false, // 是否开启全局的下拉刷新, 详见 Page.onPullDownRefresh
     "onReachBottomDistance": 50, //页面上拉触底事件触发时距页面底部距离，单位为 px。详见 Page.onReachBottom
     "pageOrientation": "portrait", // 屏幕旋转,支持 auto / portrait(竖) / landscape(横)
-    "restartStrategy": "homePage" // 重新启动策略,'homePage'下次将从首页冷启动;'homePageAndLatestPage'如果从这个页面退出小程序，下次冷启动后立刻加载这个页面，页面的参数保持不变（不可用于 tab 页）
+    "restartStrategy": "homePage", // 重新启动策略,'homePage'下次将从首页冷启动;'homePageAndLatestPage'如果从这个页面退出小程序，下次冷启动后立刻加载这个页面，页面的参数保持不变（不可用于 tab 页）
+    "initialRenderingCache": "static", // 启用所有页面初始渲染缓存
   },
 }
 ```
@@ -157,6 +158,7 @@
     "kbone": true,
     "weui": true
   },
+
 
   // 聊天位置消息用打车类小程序打开
   "entranceDeclare":{ 

@@ -138,18 +138,6 @@ Page({
 })
 ```
 
-##  `Page.route`页面路由信息
-
-到当前页面的路径，类型为`String`。
-
-```javascript
-Page({
-  onShow: function() {
-    console.log(this.route)
-  }
-})
-```
-
 ## `page`页面间通信
 
 如果一个页面由另一个页面通过 [`wx.navigateTo`](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html) 打开，这两个页面间将建立一条数据通道：
@@ -226,3 +214,38 @@ Page({
 })
 ```
 
+## 页面路由
+
+### 方法：`getCurrentPages()`
+
+> `getCurrentPages`方法用于获取当前页面栈，可以用来浏览历史回退
+
+###  `Page.route`页面路由信息
+
+到当前页面的路径，类型为`String`。
+
+```javascript
+Page({
+  onShow: function() {
+    console.log(this.route)
+  }
+})
+```
+
+### 路由方式
+
+* 打开新页面： [wx.navigateTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html)
+* 页面重定向：[wx.redirectTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.redirectTo.html)
+* 页面返回：[wx.navigateBack](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateBack.html)
+* Tab切换：[wx.switchTab](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.switchTab.html)
+* 重启动：[wx.reLaunch](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.reLaunch.html)
+
+具体使用方式：https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/route.html
+
+##### 注意事项
+
+- `navigateTo`, `redirectTo` 只能打开非 tabBar 页面。
+- `switchTab` 只能打开 tabBar 页面。
+- `reLaunch` 可以打开任意页面。
+- 页面底部的 tabBar 由页面决定，即只要是定义为 tabBar 的页面，底部都有 tabBar。
+- 调用页面路由带的参数可以在目标页面的`onLoad`中获取。

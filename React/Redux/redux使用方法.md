@@ -9,6 +9,12 @@ const reducer = (state = 5) => {
 let store = Redux.createStore(reducer);
 ```
 
+[`createStore()`](https://www.redux.org.cn/docs/api/createStore.html) 的第二个参数是可选的, 用于设置 state 初始状态。这对开发同构应用时非常有用，服务器端 redux 应用的 state 结构可以与客户端保持一致, 那么客户端可以将从网络接收到的服务端 state 直接用于本地数据初始化。
+
+```react
+let store = createStore(reducer, window.STATE_FROM_SERVER)
+```
+
 ## 二、访问数据
 
 #### 1.获取状态 `store.getState()`
@@ -42,92 +48,118 @@ const store = Redux.createStore(reducer);
 
 let count = 0;
 const addOne = () => (count += 1);
-store.subscribe(addOne);
+// 注意 subscribe() 返回一个函数用来注销监听器
+const unsubscribe = store.subscribe(addOne);
 
 store.dispatch({type: 'ADD'});
 console.log(count);
 store.dispatch({type: 'ADD'});
 console.log(count);
+
+// 停止监听 state 更新
+unsubscribe();
 ```
 
-## 三、Action(Reducer)
+## 三、Action
 
-`reducer` 将 `state` 和 `action` 作为参数，并且它总是返回一个新的 `state`。 要知道这是 reducer 的**唯一**的作用。 
+> Action 本质上是 JavaScript 普通对象。我们约定，action 内必须使用一个字符串类型的 `type` 字段来表示将要执行的动作。
+>
+> 当应用规模越来越大时，建议使用单独的模块或文件来存放 action。
 
-它不应有任何其他的作用：比如它不应调用 API 接口，也不应存在任何潜在的副作用。 reducer 只是一个接受状态和动作，然后返回新状态的纯函数。
+`actions.js`
 
-Redux 的另一个关键原则是 `state` 是只读的。 换句话说，`reducer` 函数必须**始终**返回一个新的 `state`，并且永远不会直接修改状态。
+```js
+/*
+ * action 类型
+ */
+
+export const ADD_TODO = 'ADD_TODO';
+export const TOGGLE_TODO = 'TOGGLE_TODO'
+export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
+
+/*
+ * 其它的常量
+ */
+
+export const VisibilityFilters = {
+  SHOW_ALL: 'SHOW_ALL',
+  SHOW_COMPLETED: 'SHOW_COMPLETED',
+  SHOW_ACTIVE: 'SHOW_ACTIVE'
+}
+
+/*
+ * action 创建函数
+ */
+
+export function addTodo(text) {
+  return { type: ADD_TODO, text }
+}
+
+export function toggleTodo(index) {
+  return { type: TOGGLE_TODO, index }
+}
+
+export function setVisibilityFilter(filter) {
+  return { type: SET_VISIBILITY_FILTER, filter }
+}
+```
+
+### reducer
+
+>  `reducer` 只是一个接受状态和动作，然后返回新状态的纯函数。它将 `state` 和 `action` 作为参数，并总是返回一个新的 `state`。
+
+**永远不要**在 reducer 里做这些操作：
+
+- 修改传入参数；
+- 执行有副作用的操作，如 **API 请求**和**路由跳转**；
+- 调用非纯函数，如 `Date.now()` 或 `Math.random()`。
+
+**只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。**
 
 ```react
-const defaultState = {
-  login: false
-};
+import {
+  ADD_TODO,
+  TOGGLE_TODO,
+  SET_VISIBILITY_FILTER,
+  VisibilityFilters
+} from './actions'
 
-const reducer = (state = defaultState, action) => {
-  if (action.type === 'LOGIN') return ({
-    login: true
-  });
-  else return state;
-};
-
-const store = Redux.createStore(reducer);
-
-const loginAction = () => {
-  return {
-    type: 'LOGIN'
+function todoApp(state = initialState, action) {
+  switch (action.type) {
+    case SET_VISIBILITY_FILTER:
+      return Object.assign({}, state, {
+        visibilityFilter: action.filter
+      })
+    case ADD_TODO:
+      return Object.assign({}, state, {
+        todos: [
+          ...state.todos,
+          {
+            text: action.text,
+            completed: false
+          }
+        ]
+      })
+    case TOGGLE_TODO:
+      return Object.assign({}, state, {
+        todos: state.todos.map((todo, index) => {
+          if (index === action.index) {
+            return Object.assign({}, todo, {
+              completed: !todo.completed
+            })
+          }
+          return todo
+        })
+      })
+    default:
+      return state
   }
-};
+}
 ```
 
 ### `dispatch` 分发
 
-调用 `store.dispatch()` 将从 `action` 发送给 store。
-
-```react
-const LOGIN = "LOGIN";
-const LOGOUT = "LOGOUT";
-
-const defaultState = {
-  authenticated: false
-};
-
-const authReducer = (state = defaultState, action) => {
-  switch (action.type) {
-    case LOGIN: 
-      return {
-        authenticated: true
-      }
-    case LOGOUT: 
-      return {
-        authenticated: false
-      }
-    default:
-      return state;
-  }
-};
-
-const store = Redux.createStore(authReducer);
-
-const loginUser = () => {
-  return {
-    type: 'LOGIN'
-  }
-};
-
-const logoutUser = () => {
-  return {
-    type: 'LOGOUT'
-  }
-};
-```
-
-```react
-store.dispatch(loginUser()); // store.dispatch({ type: 'LOGIN' });
-```
-
-### `dispatch` 分发并包含数据
-
-> 把 action 和特定数据一起发送。
+> 调用 `store.dispatch()` 把 action 和特定数据一起发送。
 
 ```react
 const ADD_NOTE = 'ADD_NOTE';
@@ -203,5 +235,67 @@ const rootReducer = Redux.combineReducers({
 });
 
 const store = Redux.createStore(rootReducer);
+```
+
+## 五、redux中异步请求 `middleware`
+
+> Redux 中间件又称为Redux Thunk 中间件
+
+要使用 Redux Thunk 中间件，请将其作为参数传递给 `Redux.applyMiddleware()`。 然后将此函数作为第二个可选参数提供给 `createStore()` 函数， 看一下编辑器底部的代码。 然后，要创建一个异步的 action，需要在 action creator 中返回一个以 `dispatch` 为参数的函数。 在这个函数中，可以 dispatch action 并执行异步请求。
+
+在此示例中，使用 `setTimeout()` 模拟异步请求。 通常在执行异步行为之前 dispatch action，以便应用程序状态知道正在请求某些数据（例如，这个状态可以显示加载图标）。 然后，一旦收到数据，就会发送另一个 action，该 action 的 data 是请求返回的数据同时也代表 API 操作完成。
+
+请记住，正在将 `dispatch` 作为参数传递给这个特殊的 action creator。 需要 dispatch action 时只需将 action 直接传递给 dispatch，中间件就可以处理其余的部分。
+
+```react
+const REQUESTING_DATA = 'REQUESTING_DATA'
+const RECEIVED_DATA = 'RECEIVED_DATA'
+
+const requestingData = () => { return {type: REQUESTING_DATA} }
+const receivedData = (data) => { return {type: RECEIVED_DATA, users: data.users} }
+
+const handleAsync = () => {
+  return function(dispatch) {
+ 
+
+    dispatch(requestingData());
+
+    setTimeout(function() {
+      let data = {
+        users: ["Jeff", "William", "Alice"]
+      };
+  
+
+      dispatch(receivedData(data));
+    }, 2500);
+  }
+};
+
+const defaultState = {
+  fetching: false,
+  users: []
+};
+
+const asyncDataReducer = (state = defaultState, action) => {
+  switch(action.type) {
+    case REQUESTING_DATA:
+      return {
+        fetching: true,
+        users: []
+      }
+    case RECEIVED_DATA:
+      return {
+        fetching: false,
+        users: action.users
+      }
+    default:
+      return state;
+  }
+};
+
+const store = Redux.createStore(
+  asyncDataReducer,
+  Redux.applyMiddleware(ReduxThunk.default)
+);
 ```
 

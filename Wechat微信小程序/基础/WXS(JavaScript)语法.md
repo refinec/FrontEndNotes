@@ -1,4 +1,4 @@
-# WXS(JavaScript) 语法
+# WXS(WeiXin Script) 语法
 
 ## 模块
 
