@@ -1,5 +1,3 @@
-# Less
-
 ## 变量(@、@{})
 
 变量以**@**开头
@@ -335,7 +333,24 @@ spin(@color, -10); /* 返回的颜色在@color基础上色调减少10 */
 mix(@color1, @color2); /* 返回的颜色是@color1和@color2两者的混合色 */
 ```
 
+## 函数
 
+```less
+.remMixin() {
+@functions: ~`(function() {
+  var clientWidth = '375px';
+  function convert(size) {
+    return typeof size === 'string' ? 
+      +size.replace('px', '') : size;
+  }
+  this.rem = function(size) {
+    return convert(size) / convert(clientWidth) * 10 + 'rem';
+  }
+})()`;
+}
+
+.remMixin();
+```
 
 
 
