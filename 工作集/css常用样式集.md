@@ -33,7 +33,7 @@
 
 隐藏`div`元素的滚动条
 
-```
+```css
 div::-webkit-scrollbar {
     display: none;
 }
