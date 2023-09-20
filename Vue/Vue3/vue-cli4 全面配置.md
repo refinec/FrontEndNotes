@@ -210,7 +210,7 @@ module.exports = {
 
 如图，`css`从`app.js`文件中单独分离出来
 
-![img](../../assets/vue/extract_css.webp)
+![img](../../assets/vue/extract_css.jpg)
 
 ### **添加别名 alias
 
