@@ -47,7 +47,7 @@ https://demo.fastadmin.net
 提　示：演示站数据无法进行修改，请下载源码安装体验全部功能
 
 ## 界面截图
-![控制台](https://gitee.com/uploads/images/2017/0411/113717_e99ff3e7_10933.png "控制台")
+![控制台](https://gitee.com/uploads/images/2017/0411/113717_e99ff3e7_10933.png)
 
 Github: https://github.com/karsonzhang/fastadmin
 
