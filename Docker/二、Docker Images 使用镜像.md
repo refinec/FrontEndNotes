@@ -2,9 +2,10 @@
 
 ### 搜索镜像
 
-| 命令                         | 说明         |
-| ---------------------------- | ------------ |
-| `docker search <名称关键字>` | 搜索镜像仓库 |
+| 命令                                          | 说明                              |
+| --------------------------------------------- | --------------------------------- |
+| `docker search <名称关键字>`                  | 搜索镜像                          |
+| `docker search <名称关键字> --filter=stars=N` | 搜索显示收藏数量为 `N` 以上的镜像 |
 
 ### 下载/上传镜像
 
@@ -12,6 +13,29 @@
 | ------------------------------ | -------- |
 | `docker pull <镜像名:tag版本>` | 下载镜像 |
 | `docker push <镜像名:tag版本>` | 上传镜像 |
+
+* **上传镜像**
+
+  > 以下命令中的 `username` 请替换为你的 Docker 账号用户名
+
+  ```sh
+  $ docker tag ubuntu:18.04 username/ubuntu:18.04
+  
+  $ docker image ls
+  
+  REPOSITORY                                               TAG                    IMAGE ID            CREATED             SIZE
+  ubuntu                                                   18.04                  275d79972a86        6 days ago          94.6MB
+  username/ubuntu                                          18.04                  275d79972a86        6 days ago          94.6MB
+  
+  $ docker push username/ubuntu:18.04
+  
+  $ docker search username
+  
+  NAME                      DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED
+  username/ubuntu
+  ```
+
+  
 
 ### 列出/查看镜像
 
