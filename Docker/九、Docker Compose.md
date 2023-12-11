@@ -122,3 +122,18 @@ $ sudo pip uninstall docker-compose
    ```
 
    此时访问本地 `5000` 端口，每次刷新页面，计数就会加 1。
+
+## 四、命令说明
+
+参考链接：https://yeasy.gitbook.io/docker_practice/compose/commands
+
+## 五、Compose 模板文件
+
+参考链接：https://yeasy.gitbook.io/docker_practice/compose/compose_file
+
+## 六、实战
+
+1. [实战 Django](https://yeasy.gitbook.io/docker_practice/compose/django)
+2. [实战 Rails](https://yeasy.gitbook.io/docker_practice/compose/rails)
+3. [实战 WordPress](https://yeasy.gitbook.io/docker_practice/compose/wordpress)
+4. [实战 LNMP](https://yeasy.gitbook.io/docker_practice/compose/lnmp)
