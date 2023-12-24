@@ -18,7 +18,7 @@
 
    * `wrap-reverse`：换行，第一行在下方。
 
-3. **`flex-flow`**：<flex-direction> || <flex-wrap>;
+3. **`flex-flow`**：flex-direction | flex-wrap;
 
    > **是`flex-direction`属性和`flex-wrap`属性的简写形式，默认值为`row nowrap`**
 
@@ -56,11 +56,11 @@
 
 以下6个属性设置在项目上。
 
-1. **`order`：** <integer>
+1. **`order`：** number
 
    > **定义项目的排列顺序。数值越小，排列越靠前，默认为0**
 
-2. **`flex-grow`：** <number>;  
+2. **`flex-grow`：** number  
 
    > **定义项目的放大比例，默认为`0`，即如果存在剩余空间，也不放大**
 
@@ -68,7 +68,7 @@
 
    <img src="../assets/css/flex-grow.png" style="zoom:67%;" />
 
-3. **`flex-shrink`：** <number>;
+3. **`flex-shrink`：** number
 
    > **定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。**
 
@@ -80,13 +80,13 @@
 
    
 
-4. **`flex-basis`：** <length> | auto
+4. **`flex-basis`：** length | auto
 
    > **定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。默认值为`auto`，即项目的本来大小。**
 
    它可以设为跟`width`或`height`属性一样的值（比如350px），则项目将占据固定空间。
 
-5. **`flex`：** none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
+5. **`flex`：** none | [ flex-grow flex-shrink || flex-basis ]
 
    > **是`flex-grow`, `flex-shrink` 和 `flex-basis`的简写，默认值为`0 1 auto`。后两个属性可选**
 

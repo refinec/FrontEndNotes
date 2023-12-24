@@ -10,7 +10,7 @@
   * `shell 格式`：`RUN <命令>`，就像直接在命令行中输入的命令一样。刚才写的 Dockerfile 中的 `RUN` 指令就是这种格式
 
     ```dockerfile
-    RUN echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
+    RUN echo 'Hello, Docker!' > /usr/share/nginx/html/index.html
     ```
 
   * `exec 格式`：`RUN ["可执行文件", "参数1", "参数2"]`，这更像是函数调用中的格式
@@ -110,7 +110,7 @@ $ docker build - < context.tar.gz
 > 格式：
 >
 > * `COPY [--chown=<user>:<group>] <源路径>... <目标路径>`
-> * ``COPY [--chown=<user>:<group>] ["<源路径1>",... "<目标路径>"]`
+> * `COPY [--chown=<user>:<group>] ["<源路径1>",... "<目标路径>"]`
 
 `COPY` 指令将从构建上下文目录中 `<源路径>` 的文件/目录复制到新的一层的镜像内的 `<目标路径>` 位置。比如：
 

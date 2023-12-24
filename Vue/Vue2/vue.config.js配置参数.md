@@ -248,7 +248,7 @@ module.exports = {
 
 * 该选项仅影响由 `html-webpack-plugin` 在构建时注入的标签。直接写在模版 (`public/index.html`) 中的标签不受影响
 
-在HTML5中，一些 HTML 元素提供了对 [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) 的支持， 例如 <audio>、<img>、<link>、<script> 和 <video>均有一个跨域属性 (`crossOrigin` property)，它允许你配置元素获取数据的 CORS 请求。 
+在HTML5中，一些 HTML 元素提供了对 [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) 的支持， 例如 `<audio>`、`<img>`、`<link>`、`<script>` 和 `<video>`均有一个跨域属性 (`crossOrigin` property)，它允许你配置元素获取数据的 CORS 请求。 
 
 这些属性是枚举的，并具有以下可能的值：
 
@@ -260,7 +260,7 @@ module.exports = {
 
 默认情况下（即未指定 crossOrigin 属性时），CORS 根本不会使用。在非同源情况下，设置 "anonymous" 关键字将不会通过 cookies，客户端 SSL 证书或 HTTP 认证交换用户凭据。即使是无效的关键字和空字符串也会被当作 `anonymous` 关键字使用。
 
-* 如使用下面的<script>元素告诉浏览器执行来自 `https://example.com/example-framework.js` 的脚本且不发送用户凭据。
+* 如使用下面的`<script>`元素告诉浏览器执行来自 `https://example.com/example-framework.js` 的脚本且不发送用户凭据。
 
   ```javascript
   <script src="https://example.com/example-framework.js" crossorigin="anonymous"></script>

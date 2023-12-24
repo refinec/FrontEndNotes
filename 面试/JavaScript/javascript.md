@@ -399,8 +399,11 @@ function sort(arr) {
 ## js哪些操作会造成内存泄露？
 
 * **意外的全局变量**引起的内存泄露
-  function leak(){ leak=“xxx”;//leak成为一个全局变量，不会被回收 }
+
+  `function leak(){ leak=“xxx”;//leak成为一个全局变量，不会被回收 }`
+
 * **被遗忘的定时器**或者**回调**
+
 * **闭包**引起的内存泄漏
 
 ## $(document).ready() 方法和`window.onload` 有什么区别？
@@ -580,7 +583,7 @@ rAF(requestAnimationFrame) 最大的优势+是**「由系统来决定回调函�
 
 或者
 
-Document对象的body属性对应HTML文档的<body>标签
+Document对象的body属性对应HTML文档的`<body>`标签
 
 • document.body.clientHeight
 

@@ -9,7 +9,7 @@
 - val() - 设置或返回表单字段的值
 
 ```javascript
-# 获取
+// 获取
 $(document).ready(function(){
   $("#btn1").click(function(){
     alert("Text: " + $("#test").text());
@@ -18,7 +18,7 @@ $(document).ready(function(){
     alert("HTML: " + $("#test").html());
   });
 });
-# 设置
+// 设置
 $(document).ready(function(){
   $("#btn1").click(function(){
     $("#test1").text("Hello world!");
@@ -56,18 +56,18 @@ $(document).ready(function(){
 ## 获取/设置属性 - attr()、prop()
 
 ```javascript
-# 获取
+// 获取
 <a href="//www.runoob.com" id="runoob">菜鸟教程</a>
 $("#runoob").attr("href")
 
-# 设置
+// 设置
 $(document).ready(function(){
   $("button").click(function(){
     $("#runoob").attr("href","http://www.runoob.com/jquery");
   });
 });
 
-# 同时设置多个属性
+// 同时设置多个属性
 $(document).ready(function(){
   $("button").click(function(){
     $("#runoob").attr({
@@ -91,7 +91,7 @@ $(document).ready(function(){
 
    1.如果有相应的属性，返回指定属性值。
 
-   2.如果没有相应的属性，返回值是 undefined。
+   2.如果没有相应的属性，返回值是 `undefined`。
 
 对于HTML元素本身就带有的固有属性，在处理时，使用**prop方法 **。
 
@@ -103,13 +103,13 @@ $(document).ready(function(){
 <a href="https://www.runoob.com" target="_self" class="btn">菜鸟教程</a>
 ```
 
-这个例子里 **<a>** 元素的 DOM 属性有: **href、target** 和 **class**，这些属性就是 **<a>** 元素本身就带有的属性，也是 W3C 标准里就包含有这几个属性，或者说在 IDE 里能够智能提示出的属性，这些就叫做固有属性。处理这些属性时，建议使用 **prop** 方法。
+这个例子里 `a` 元素的 DOM 属性有: **href、target** 和 **class**，这些属性就是 `a` 元素本身就带有的属性，也是 W3C 标准里就包含有这几个属性，或者说在 IDE 里能够智能提示出的属性，这些就叫做固有属性。处理这些属性时，建议使用 **prop** 方法。
 
 ```html
 <a href="#" id="link1" action="delete" rel="nofollow">删除</a>
 ```
 
-这个例子里 **<a>** 元素的 DOM 属性有: **href、id** 和 **action**，很明显，前两个是固有属性，而后面一个 **action** 属性是我们自己自定义上去的，**<a>** 元素本身是没有这个属性的。这种就是自定义的 DOM 属性。处理这些属性时，建议使用 **attr** 方法。
+这个例子里`a` 元素的 DOM 属性有: **href、id** 和 **action**，很明显，前两个是固有属性，而后面一个 **action** 属性是我们自己自定义上去的，`a` 元素本身是没有这个属性的。这种就是自定义的 DOM 属性。处理这些属性时，建议使用 **attr** 方法。
 
 ### attr() 的回调函数
 
@@ -258,7 +258,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
 - addClass() - 向被选元素添加一个或多个类
 
   ```javascript
-  # 添加类时，也可以选取多个元素
+  // 添加类时，也可以选取多个元素
   $(document).ready(function(){
       $("button").click(function(){
           $("h1,h2,p").addClass("blue");
@@ -266,7 +266,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
       });
   });
   
-  # 在 addClass() 方法中规定多个类
+  // 在 addClass() 方法中规定多个类
   $(document).ready(function(){
       $("button").click(function(){
           $("body div:first").addClass("important blue");
@@ -277,7 +277,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
 - removeClass() - 从被选元素删除一个或多个类
 
   ```javascript
-  # 在不同的元素中删除指定的 class 属性
+  // 在不同的元素中删除指定的 class 属性
   $(document).ready(function(){
       $("button").click(function(){
           $("h1,h2,p").removeClass("blue");
@@ -288,7 +288,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
 - toggleClass() - 对被选元素进行添加/删除类的切换操作
 
   ```javascript
-  # 对被选元素进行添加/删除类的切换操作
+  // 对被选元素进行添加/删除类的切换操作
   $(document).ready(function(){
       $("button").click(function(){
           $("h1,h2,p").toggleClass("blue");
@@ -307,8 +307,8 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
     ```javascript
     $("p").css("background-color")
     
-    # 获取指定 p 的背景颜色
-    # 但要注意 :nth-child() 选择器默认以 body 作为父标签
+    // 获取指定 p 的背景颜色
+    // 但要注意 :nth-child() 选择器默认以 body 作为父标签
     <body>
     <h2>这是一个标题</h2>
     <p style="background-color:#ff0000">这是一个段落。</p>
@@ -322,7 +322,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
         alert("p3背景颜色 = " + $("p:nth-child(4)").css("background-color"));
     });
     
-    # 使用children()方法来获取指定的p
+    // 使用children()方法来获取指定的p
     <div class="getColor">
       <p class="a">first</p>
       <p class="b">second</p>
@@ -334,7 +334,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
         }); 
     });
     
-    # 使用eq()方法获取指定的 p
+    // 使用eq()方法获取指定的 p
     $("p").eq(N).css('background-color') // N 是索引号，从 0 开始
     $(function() {
         $("button").click(function() {
@@ -348,7 +348,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
 
   * **设置指定的 CSS 属性**
 
-    css("*propertyname*","*value*");
+    `css("propertyname","value");`
 
     ```javascript
     $("p").css("background-color","yellow");
@@ -356,7 +356,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
 
   * **设置多个 CSS 属性**
 
-    css({"*propertyname*":"*value*","*propertyname*":"*value*",...});
+    `css({"propertyname":"value","propertyname":"value",...});`
 
     ```javascript
     $(document).ready(function(){
@@ -368,7 +368,7 @@ toggleClass('c1 c2 ...' | function(i, c), switch?) -- 切换一个或多个类�
 
 ## 元素和浏览器窗口的尺寸
 
-  ![jQuery Dimensions](https://www.runoob.com/images/img_jquerydim.gif)
+![jQuery Dimensions](https://www.runoob.com/images/img_jquerydim.gif)
 
   - width() ： 设置或返回元素的宽度（不包括内边距、边框或外边距）
 

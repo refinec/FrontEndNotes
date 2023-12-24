@@ -175,8 +175,11 @@ Vue CLI 会产生两个应用的版本：一个现代版的包，面向支持 [E
 
 对于一个 Hello World 应用来说，现代版的包已经小了 16%。在生产环境下，现代版的包通常都会表现出显著的解析速度和运算速度，从而改善应用的加载性能。
 
+```
 <script type="module"> 需要配合始终开启的 CORS 进行加载。这意味着你的服务器必须返回诸如 Access-Control-Allow-Origin: * 的有效的 CORS 头。如果你想要通过认证来获取脚本，可使将 crossorigin 选项设置为 use-credentials。
 同时，现代浏览器使用一段内联脚本来避免 Safari 10 重复加载脚本包，所以如果你在使用一套严格的 CSP，你需要这样显性地允许内联脚本：
+```
+
 
 ```text
 Content-Security-Policy: script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkOInieXK1NUMBmQI='
@@ -200,7 +203,7 @@ Content-Security-Policy: script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkO
 
 ### Preload
 
-<link rel="preload">是一种 resource hint，用来**指定页面加载后很快会被用到的资源，所以在页面加载的过程中，我们希望在浏览器开始主体渲染之前尽早 preload**。
+`<link rel="preload">`是一种 resource hint，用来**指定页面加载后很快会被用到的资源，所以在页面加载的过程中，我们希望在浏览器开始主体渲染之前尽早 preload**。
 
 默认情况下，一个 Vue CLI 应用会为所有初始化渲染需要的文件自动生成 preload 提示。
 
@@ -208,7 +211,7 @@ Content-Security-Policy: script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkO
 
 ###  Prefetch
 
-<link rel="prefetch"> 是一种 resource hint，用来告诉浏览器**在页面加载完成后，利用空闲时间提前获取用户未来可能会访问的内容**。
+`<link rel="prefetch">`是一种 resource hint，用来告诉浏览器**在页面加载完成后，利用空闲时间提前获取用户未来可能会访问的内容**。
 
 默认情况下，一个 Vue CLI 应用会为所有作为 async chunk 生成的 JavaScript 文件 ([通过动态 `import()` 按需 code splitting](https://webpack.js.org/guides/code-splitting/#dynamic-imports) 的产物) 自动生成 prefetch 提示。
 

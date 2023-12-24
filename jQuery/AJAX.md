@@ -13,7 +13,7 @@
 - 可选的 *callback* 参数是 load() 方法完成后所执行的函数名称。
 
 ```javascript
-# 把文件 "demo_test.txt" 的内容加载到指定的 <div> 元素中
+// 把文件 "demo_test.txt" 的内容加载到指定的 div 元素中
 $(document).ready(function(){
 	$("button").click(function(){
 		$("#div1").load("/try/ajax/demo_test.txt");
@@ -24,7 +24,7 @@ $(document).ready(function(){
 * **可以把 jQuery 选择器添加到 URL 参数**
 
   ```javascript
-  # 把 "demo_test.txt" 文件中 id="p1" 的元素的内容，加载到指定的 <div> 元素中
+  // 把 "demo_test.txt" 文件中 id="p1" 的元素的内容，加载到指定的 div 元素中
   $(document).ready(function(){
     $("button").click(function(){
       $("#div1").load("/try/ajax/demo_test.txt #p1");

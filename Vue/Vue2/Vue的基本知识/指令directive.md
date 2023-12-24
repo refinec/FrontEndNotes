@@ -355,7 +355,7 @@
 
 v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
-- v-model 指令在表单 <input>、<textarea> 及 <select> 元素上创建双向数据绑定。
+- v-model 指令在表单 `<input>`、`<textarea>` 及 `<select> `元素上创建双向数据绑定。
 
 - v-model 会忽略所有表单元素的 **value、checked、selected  **属性的初始值而总是将 Vue 实例的数据作为数据来源。
 
@@ -377,7 +377,7 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
   ![image-20201121194036891](../../../assets/vue/image-20201121194036891.png)
 
-  为了让它正常工作，这个组件内的 <input> 必须：
+  为了让它正常工作，这个组件内的 `<input>` 必须：
 
 - 将其 value attribute 绑定到一个名叫 value 的 prop 上
 
@@ -387,7 +387,7 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
   * **model 选项可以用来避免这样的冲突**
 
-    这里的 lovingVue 的值将会传入这个名为 checked 的 prop。同时当 <base-checkbox> 触发一个 change 事件并附带一个新的值的时候，这个 lovingVue 的 property 将会被更新
+    这里的 lovingVue 的值将会传入这个名为 checked 的 prop。同时当` <base-checkbox> `触发一个 change 事件并附带一个新的值的时候，这个 lovingVue 的 property 将会被更新
 
     ![image-20201121200503336](../../../assets/vue/image-20201121200503336.png)
 
@@ -444,7 +444,7 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
 ### 9. v-slot
 
-> 插槽就是Vue实现的一套内容分发的API，将<slot></slot>元素作为承载分发内容的出口.
+> 插槽就是Vue实现的一套内容分发的API，将`<slot></slot>`元素作为承载分发内容的出口.
 
 > 可放置在函数参数位置的 JavaScript 表达式 (在[支持的环境下](https://cn.vuejs.org/v2/guide/components-slots.html#解构插槽-Props)可使用解构)。可选，即只需要在为插槽传入 prop 的时候使用。
 
@@ -467,7 +467,7 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
 * **具名插槽：** `用属性name`
 
-  不带 name 的 <slot> 出口会带有隐含的名字 `default`
+  不带 name 的 `<slot>` 出口会带有隐含的名字 `default`
 
   ```vue
   <template>
@@ -480,9 +480,9 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
   </template>
   ```
 
-  在一个 <template> 元素上使用 v-slot 指令，并以 v-slot 的**参数的形式提供其名称**:
+  在一个 `<template>` 元素上使用 v-slot 指令，并以 v-slot 的**参数的形式提供其名称**:
 
-  **注意:** <u> **v-slot 只能添加在 <template> 上**</u>
+  **注意:** <u> **v-slot 只能添加在 `<template> `上**</u>
 
   ```vue
   <template>
@@ -500,9 +500,9 @@ v-bind 指令只能单向绑定数据，v-model 可以双向绑定
 
 * **作用域插槽**
 
-  > **在父级组件中，让插槽内容能够访问子组件中的数据**。**说白了就是我在子组件<slot>上绑定的属性，可以在父组件内使用**！
+  > **在父级组件中，让插槽内容能够访问子组件中的数据**。**说白了就是我在子组件`<slot>`上绑定的属性，可以在父组件内使用**！
 
-  1. 第一步：将 user 作为 <slot> 元素的一个 attribute 绑定，该 attribute 被称为**插槽 prop**
+  1. 第一步：将 user 作为 `<slot>` 元素的一个 attribute 绑定，该 attribute 被称为**插槽 prop**
 
      ```vue
      <template>

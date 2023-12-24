@@ -393,7 +393,6 @@
 }
 ```
 
-![img](../assets/css/17389591ccc256d1~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
 
 ## `repeat` +` auto-fit` 固定列宽，改变列数量
 
