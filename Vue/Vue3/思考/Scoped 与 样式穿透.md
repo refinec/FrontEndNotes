@@ -16,13 +16,13 @@ scoped三条渲染规则：
 
 使用Scoped ，在进行PostCss转化的时候把元素选择器默认放在了最后
 
-![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16.png)
+![img](../../../assets/vue3/scoped.png)
 
 Vue 提供了样式穿透`:deep() `他的作用就是用来改变 属性选择器的位置
 
-![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220609234835989.png)
+![img](../../../assets/vue3/20220609234835989.png)
 
-![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220609234854147.png)
+![img](../../../assets/vue3/20220609234854147.png)
 
 ### `:slotted` 插槽选择器
 

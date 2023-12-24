@@ -26,4 +26,4 @@ const { current, name } = storeToRefs(Test)
 
 循环store 通过 `isRef`, `isReactive` 判断，如果是响应式对象直接拷贝一份给refs 对象，将其原始对象包裹`toRef` 使其变为响应式对象
 
-![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220610155617918.png)
+![img](../../../assets/vue3/20220610155617918.png)

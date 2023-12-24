@@ -158,15 +158,15 @@ interface HTMLElementTagNameMap {
 
 如果我们不指定返回的类型TS是推断不出来返回的是什么类型
 
-![img](../assets/TypeScript/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAcXExMTk1NTY2MzEz,size_20,color_FFFFFF,t_70,g_se,x_16.png)
+![img](../assets/TypeScript/64723234.png)
 
 指定返回的类型
 
-![img](../assets/TypeScript/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAcXExMTk1NTY2MzEz,size_20,color_FFFFFF,t_70,g_se,x_16-20220612234910349.png)
+![img](../assets/TypeScript/20220612234910349.png)
 
 函数定义返回promise 语法规则:`Promise<T>` 类型 
 
-![img](../assets/TypeScript/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAcXExMTk1NTY2MzEz,size_20,color_FFFFFF,t_70,g_se,x_16-20220612234935363.png)
+![img](../assets/TypeScript/20220612234935363.png)
 
 ```ts
 function promise():Promise<number>{

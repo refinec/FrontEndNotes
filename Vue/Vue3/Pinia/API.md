@@ -24,7 +24,7 @@ Test.$subscribe((args,state)=>{
 
 返回值
 
-![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220610162430725.png)
+![img](../../../assets/vue3/20220610162430725.png)
 
 第二个参数
 
@@ -50,4 +50,4 @@ Test.$onAction((args)=>{
 })
 ```
 
-![img](../../../assets/vue3/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220610162556173.png)
+![img](../../../assets/vue3/20220610162556173.png)

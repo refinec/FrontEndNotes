@@ -190,7 +190,7 @@ B.com 免登效果:
 
 > 在一个子系统中注销，所有子系统的会话都将被销毁，用下面的图来说明
 
-![image.png](../assets/%E9%9D%A2%E8%AF%95/logout.awebp)
+![image.png](../assets/%E9%9D%A2%E8%AF%95/logout.jpg)
 
 sso认证中心一直监听全局会话的状态，一旦全局会话销毁，监听器将通知所有注册系统执行注销操作
 

@@ -22,9 +22,9 @@
 
 ### [webpack](https://so.csdn.net/so/search?q=webpack&spm=1001.2101.3001.7020)与rollup打包对比
 
-![img](../assets/TypeScript/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220613192752947.png)
+![img](../assets/TypeScript/20220613192752947.png)
 
-![img](../assets/TypeScript/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_20,color_FFFFFF,t_70,g_se,x_16-20220613192808218.png)
+![img](../assets/TypeScript/20220613192808218.png)
 
 ### 配置json文件
 

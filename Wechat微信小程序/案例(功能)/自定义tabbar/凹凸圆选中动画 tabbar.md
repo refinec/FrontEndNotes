@@ -1,6 +1,6 @@
 ## 实现效果
 
-![](../../../assets/微信小程序/9723f9376fc44709bcf66cca40e41324tplv-k3u1fbpfcp-zoom-in-crop-mark4536000.gif)
+![](../../../assets/微信小程序/9723.gif)
 
 ## 实现原理
 

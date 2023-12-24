@@ -55,4 +55,4 @@ module.exports = {
 
 ### 目录结构
 
-![img](../assets/TypeScript/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP5ruhenM=,size_12,color_FFFFFF,t_70,g_se,x_16.png)
+![img](../assets/TypeScript/52416452345.png)
