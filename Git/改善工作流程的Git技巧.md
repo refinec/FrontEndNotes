@@ -49,18 +49,6 @@ $ git config --global fetch.prune true
   prune = true
 ```
 
-## 3. `git blame` 查看谁更改了文件中某一行代码
-
-`git blame`是一种发现 **谁更改了文件中某一行代码** 的便捷方式。你可以根据你要显示的内容，传递不同的标志：
-
-```sh
-$ git blame -w  # ignores white space
-
-$ git blame -M  # ignores moving text
-
-$ git blame -C  # ignores moving text into other files
-```
-
 ## 4. `HEAD `的别名
 
 `@`与`HEAD`相同。在`rebase`期间使用`@`可以帮上大忙：

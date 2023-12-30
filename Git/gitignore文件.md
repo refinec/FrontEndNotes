@@ -1,33 +1,10 @@
-## 一、设置全局 `.gitignore`
+## `.gitignore`文件
 
-如果你想避免提交像`.DS_Store`或Vim `swp`这样的文件，可以设置一个全局的`.gitignore`文件。
+> 在github上可以找到各种语言的git忽略模板: [gitignore-template](https://github.com/github/gitignore)
+>
+> 在 `Git bash`中使用`touch .gitignore`命令生成 `.gitignore`文件
 
-创建文件：
-
-```shell
-touch ~/.gitignore
-```
-
-然后运行：
-
-```shell
-git config --global core.excludesFile ~/.gitignore
-```
-
-或者手动将以下内容添加到`~/.gitconfig`中：
-
-```
-[core]
-  excludesFile = ~/.gitignore
-```
-
-你还可以创建一个列表，列出你希望Git忽略的内容。
-
-## 二、`.gitignore`文件
-
-> 在 Git bash中使用`touch .gitignore`命令生成 `.gitignore`文件
-
-### 基本案例
+### 基本规则
 
 ```sh
 .DS_Store
@@ -55,9 +32,11 @@ pnpm-debug.log*
 *.sw?
 ```
 
-### 忽略规则
+### 匹配规则
 
-> **在该文件中，在每一行指定一个忽略规则。**
+> 在`.gitignore`文件中，每一行指定一个匹配规则。
+>
+> 查看 [Git官网匹配规则](https://git-scm.com/docs/gitignore)
 
 | 规则           | 说明                                                         |
 | :------------- | ------------------------------------------------------------ |
@@ -102,3 +81,27 @@ pnpm-debug.log*
 
 **注意：**如果不慎在创建`.gitignore`文件之前就`push`了项目，那么即使你在`.gitignore`文件中写入新的过滤规则，这些规则也不会起作用，Git仍然会对所有文件进行版本管理。简单来说出现这种问题的原因就是Git已经开始管理这些文件了，所以你无法再通过过滤规则过滤它们。当然，**解决办法是清理git 缓存**
 
+## 设置全局 `.gitignore`
+
+如果你想避免提交像`.DS_Store`或Vim `swp`这样的文件，可以设置一个全局的`.gitignore`文件。
+
+创建文件：
+
+```shell
+touch ~/.gitignore
+```
+
+然后运行：
+
+```shell
+git config --global core.excludesFile ~/.gitignore
+```
+
+或者手动将以下内容添加到`~/.gitconfig`中：
+
+```
+[core]
+  excludesFile = ~/.gitignore
+```
+
+你还可以创建一个列表，列出你希望Git忽略的内容。
