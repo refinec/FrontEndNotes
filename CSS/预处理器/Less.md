@@ -352,5 +352,39 @@ mix(@color1, @color2); /* 返回的颜色是@color1和@color2两者的混合色 
 .remMixin();
 ```
 
+```less
+.vwMixin() {
+    @functions: ~`(function() {
+        var clientWidth = '1920px';
+        function convert(size) {
+            return typeof size === 'string' ? 
+                +size.replace('px', '') : size;
+        }
+        this.vw = function(size) {
+            return convert(size) / convert(clientWidth) * 100 + 'vw';
+        }
+    })()`;
+}
+.vhMixin() {
+    @functions: ~`(function() {
+        var clientWidth = '1080px';
+        function convert(size) {
+            return typeof size === 'string' ? 
+                +size.replace('px', '') : size;
+        }
+        this.vh = function(size) {
+            return convert(size) / convert(clientWidth) * 100 + 'vh';
+        }
+    })()`;
+}
+.vwMixin();
+.vhMixin();
+// 使用方式示例
+// .el-function {
+//     width: ~`vw("300px")`;
+//     height: ~`vh(150)`;
+// }
+```
+
 
 
