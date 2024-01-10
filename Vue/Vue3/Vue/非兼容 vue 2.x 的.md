@@ -366,6 +366,18 @@ app.directive('highlight', {
 })
 ```
 
+在`setup`中定义局部指令
+
+```js
+// 注册一个局部的自定义指令，需要以小写v开头
+const vFocus = {
+	mounted(el) {
+    // 获取input，并调用其focus()方法
+    el.focus()
+  }
+}
+```
+
 #### **边界情况：访问组件实例**
 
 在 Vue 3 中，实例现在是 `binding` 参数的一部分：
