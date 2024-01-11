@@ -180,6 +180,16 @@
 * **利用条件表达式来控制模式匹配**
 
   ```less
+  .w(@value){
+      // 检查传入的变量值是否大于0
+      & when (@value > 0) {
+          // 如果大于0，则生成width样式
+          width: unit(@value, px);
+      }
+  }
+  ```
+
+  ```less
   .mixin (@a) when (@a >=10) {
       background-color: black;
   }
