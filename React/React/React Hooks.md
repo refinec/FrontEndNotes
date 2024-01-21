@@ -383,7 +383,7 @@ export default App;
 
 返回一个 [memoized](https://en.wikipedia.org/wiki/Memoization) 值。把**“创建”函数**和**依赖项数组**作为参数传入 `useMemo`，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。如果没有提供**依赖项数组**，`useMemo` 在每次渲染时都会计算新的值。
 
-### `useRef`
+### `useRef` 获取/操作DOM
 
 > `const refContainer = useRef(initialValue);`  创建一个存储DOM对象的容器
 
