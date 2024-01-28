@@ -36,6 +36,10 @@ let currentState = store.getState();
 这个方法的一个简单用途是为 store 订阅一个函数，它只是在每次收到一个 `action` 并且更新 store 时记录一条消息。
 
 ```react
+// 1. 定义reducer函数
+// 作用：根据不同的action对象，返回不同的新的state
+// state: 管理的数据初始状态
+// action：对象 type 标记当前想要做什么样的修改
 const reducer = (state = 0, action) => {
   switch(action.type) {
     case 'ADD':
@@ -44,15 +48,18 @@ const reducer = (state = 0, action) => {
       return state;
   }
 };
+
+// 2. 使用reducer函数生成store实例
 const store = Redux.createStore(reducer);
 
 let count = 0;
 const addOne = () => (count += 1);
+
+// 3. 通过store实例的subscribe订阅数据变化
 // 注意 subscribe() 返回一个函数用来注销监听器
 const unsubscribe = store.subscribe(addOne);
 
-store.dispatch({type: 'ADD'});
-console.log(count);
+// 4. 通过store实例的dispatch函数提交action更改状态
 store.dispatch({type: 'ADD'});
 console.log(count);
 
