@@ -629,13 +629,21 @@ function NameFields() {
 
 > 自定义Hook就是一个普通函数，该函数名称以`use`开头，本质是一个调用其他钩子函数的钩子函数
 
+使用规则：
+
+1. 只能在组件中或者其他自定义Hook函数中调用
+2. 只能在组件的顶层调用，不能嵌套在`if`、`for`、`其他函数中`
+
 ```react
-export default function useFetch() {
-  const [data, setData] = useState({ name: '', age: 0 });
-  ...
+export default function useToggle() {
+  // 可复用的逻辑代码
+  const [value, setValue] = useState(true);
+  const toggle = () => setValue(!value);
   
+  // 哪些状态和回调函数需要在 其他组件或自定义hook 中使用的就return出去
   return {
-    data
+    value,
+    toggle
   }
 }
 ```

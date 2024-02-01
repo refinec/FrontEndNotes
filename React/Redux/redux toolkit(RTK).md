@@ -1,10 +1,12 @@
-> redux工具包，RTK可以帮助我们处理使用redux过程中的重复性工作，简化Redux中的各种操作。
+> 在react中使用redux，官方要求安装两个其他插件：`Redux Toolkit` 和 `react-redux`
+>
+> 安装：`npm install react-redux @reduxjs/toolkit -S`
 
-安装：
+![image-20240128133421972](../../assets/react/image-20240128133421972.png)
 
-`npm install react-redux @reduxjs/toolkit -S`
+## 1. 用RTK创建store
 
-## 用RTK创建store
+`store/index.js`
 
 ```react
 import { createSlice } from '@reduxjs/toolkit';
@@ -18,7 +20,7 @@ const stuSlice = createSlice({
   },
   reducers: { // 指定state的各种操作
     setName(state, action) {
-      state.name = action;
+      state.name = action.payload;
     }
   }
 });
@@ -39,7 +41,7 @@ const store = configureStore({
 export default store;
 ```
 
-## 使用store
+## 2. 为React注入store
 
 `index.js`
 
@@ -47,7 +49,7 @@ export default store;
 import { Provider } from 'react-redux';
 import store from './store'
 
-...
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   /*注入*/
 	<Provider store={store}>
@@ -55,6 +57,12 @@ root.render(
   </Provider>
 )
 ```
+
+## 3. React组件使用store中的数据
+
+> `useSelector`钩子函数的作用 是把store中的数据映射到组件中
+>
+> `useDispatch`函数的作用是生成提交action对象的dispatch函数
 
 `App.js`
 
