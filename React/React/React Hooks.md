@@ -346,7 +346,7 @@ function Counter({initialCount}) {
 
 ### `useCallback`
 
-> 为什么使用`useCallback`？当`state`发生变化时，组件会重新渲染，并且组件内的函数、方法也会重新创建，这是没有必要的，所以需要`useCallback`进行优化
+> 为什么使用`useCallback`？当`state`发生变化时，组件会重新渲染，并且组件内的函数、方法也会重新创建，这是没有必要的，所以需要`useCallback`进行优化，保持引用稳定。
 
 **格式：**`useCallback(fn, deps)` 相当于 `useMemo(() => fn, deps)`
 
@@ -452,23 +452,31 @@ function MeasureExample() {
 
 ### `useImperativeHandle`
 
-格式：`useImperativeHandle(ref, createHandle, [deps])`
-
-`useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值。`useImperativeHandle` 应当与 [`forwardRef`](https://zh-hans.reactjs.org/docs/react-api.html#reactforwardref) 一起使用：
+> 格式：`useImperativeHandle(ref, createHandle, [deps])`
+>
+> `useImperativeHandle` 可以让你在使用 `ref` 时暴露子组件中的方法给父组件。
+>
+> `useImperativeHandle` 应当与 [`forwardRef`](https://zh-hans.reactjs.org/docs/react-api.html#reactforwardref) 一起使用：
 
 渲染 `<FancyInput ref={inputRef} />` 的父组件可以调用 `inputRef.current.focus()`。
 
 ```react
-function FancyInput(props, ref) {
+import { forwardRef } from "react";
+
+const FancyInput = forwardRef(function FancyInput(props, ref) {
   const inputRef = useRef();
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current.focus();
+  // 实现聚焦逻辑函数
+  const focusHandler = () => {
+    inputRef.current.focus();
+  }
+  // 暴露函数给父组件调用
+  useImperativeHandle(ref, () => {
+    return {
+      focusHandler
     }
-  }));
+  });
   return <input ref={inputRef} ... />;
-}
-FancyInput = forwardRef(FancyInput);
+});
 ```
 
 ### `useLayoutEffect`
