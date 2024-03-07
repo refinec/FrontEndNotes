@@ -1,27 +1,29 @@
-## 数据监听器 observers
+> 数据监听器可以用于监听和响应任何属性和数据字段的变化。从小程序基础库版本 [2.6.1](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 开始支持。
 
-> 用于监听和响应任何属性和数据字段的变化，类似**`Vue`**中的**`watch`**
+数据监听在`observers`中定义:
 
-```js
-Component({
-  attached: function() {
-    this.setData({
-      numberA: 1,
-      numberB: 2,
-    })
-  },
-  observers: {
-    'numberA, numberB': function(numberA, numberB) {
-      // 在 numberA 或者 numberB 被设置时，执行这个函数
-      this.setData({
-        sum: numberA + numberB
-      })
-    }
-  }
-})
-```
+1. **同时监听多个数据字段**
 
-1. 支持监听**属性**或**内部数据的变化**，可以同时**监听多个**，**监听子数据字段**。一次 `setData` 最多触发每个监听器一次。
+   ```js
+   Component({
+     attached: function() {
+       this.setData({
+         numberA: 1,
+         numberB: 2,
+       })
+     },
+     observers: {
+       'numberA, numberB': function(numberA, numberB) {
+         // 在 numberA 或者 numberB 被设置时，执行这个函数
+         this.setData({
+           sum: numberA + numberB
+         })
+       }
+     }
+   })
+   ```
+
+2. **监听子数据字段**
 
    ```js
    Component({
@@ -40,7 +42,7 @@ Component({
    })
    ```
 
-2. **监听所有子数据字段的变化**，可以使用**通配符 `**`** 
+3. **监听所有子数据字段的变化（使用通配符 `**` ）**
 
    ```js
    Component({
@@ -68,6 +70,8 @@ Component({
    })
    ```
 
+4. 使用通配符 `**` 可以监听全部 `setData `
+
    ```js
    Component({
      observers: {
@@ -78,11 +82,11 @@ Component({
    })
    ```
 
-   **注意：**
+**注意：**
 
-   1. 数据监听器监听的是 `setData` 涉及到的数据字段，即使这些数据字段的值没有发生变化，数据监听器依然会被触发。
+1. 数据监听器监听的是 `setData` 涉及到的数据字段，即使这些数据字段的值没有发生变化，数据监听器依然会被触发。
 
-   2. 如果在数据监听器函数中使用 `setData` 设置本身监听的数据字段，可能会导致死循环，需要特别留意。
+2. 如果在数据监听器函数中使用 `setData` 设置本身监听的数据字段，可能会导致死循环，需要特别留意。
 
-   2. 数据监听器和属性的 observer 相比，数据监听器更强大且通常具有更好的性能。
+2. 数据监听器和属性的 observer 相比，数据监听器更强大且通常具有更好的性能。
 

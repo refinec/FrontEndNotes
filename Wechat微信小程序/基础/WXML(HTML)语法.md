@@ -1,6 +1,4 @@
-# WXML(HTML)常用语法
-
-## 1.`wx:for`
+## 一、`wx:for`/`wx:key`
 
 可以将 `wx:for` 用在`<block/>`标签上，以渲染一个包含**多节点**的结构块
 
@@ -11,19 +9,19 @@
 </block>
 ```
 
-### `wx:key`
+`wx:key`
 
-如果列表中项目的位置会动态改变或者有新的项目添加到列表中，并且希望列表中的项目保持自己的特征和状态（如 [input](https://developers.weixin.qq.com/miniprogram/dev/component/input.html) 中的输入内容，[switch](https://developers.weixin.qq.com/miniprogram/dev/component/switch.html) 的选中状态），需要使用 `wx:key` 来指定列表中项目的唯一的标识符。
+> 如果列表中项目的位置会动态改变或者有新的项目添加到列表中，并且希望列表中的项目保持自己的特征和状态（如 [input](https://developers.weixin.qq.com/miniprogram/dev/component/input.html) 中的输入内容，[switch](https://developers.weixin.qq.com/miniprogram/dev/component/switch.html) 的选中状态），需要使用 `wx:key` 来指定列表中项目的唯一的标识符。
 
 `wx:key` 的值以**两种形式**提供:
 
 1. **字符串**
 
-   > 代表在 for 循环的 array 中 item 的某个 property，该 property 的值需要是列表中唯一的字符串或数字，且不能动态改变。
+   代表在 for 循环的 array 中 item 的某个 property，该 property 的值需要是列表中唯一的字符串或数字，且不能动态改变。
 
 2. **保留关键字**`*this`
 
-   > 其代表在 for 循环中的 item 本身，这种表示需要 item 本身是一个唯一的**字符串**或者**数字**。
+   其代表在 for 循环中的 item 本身，这种表示需要 item 本身是一个唯一的**字符串**或者**数字**。
 
 ```html
 <switch wx:for="{{objectArray}}" wx:key="unique" style="display: block;"> {{item.id}} </switch>
@@ -76,13 +74,15 @@ Page({
 })
 ```
 
-## 2.`wx:if` vs `hidden`
+## 二、`wx:if` 、 `hidden`
 
 >  类似 Vue中的 `v-if`和`v-show`
 
-## template 模板
+## 三、`template` 模板
 
-> 可以在模板中定义代码片段，然后在不同的地方调用
+> 在`template`中定义可复用的代码片段。
+>
+> `template`有自己的作用域，只能使用 `data` 传入的数据以及`template`定义时文件中定义的 `<wxs />` 模块
 
 ```html
 <template name="msgItem">
@@ -107,7 +107,7 @@ Page({
 })
 ```
 
-**`is` 属性可以使用 Mustache(双大括号插值) 语法，来动态决定具体需要渲染哪个模板：**
+使用`is` 属性配合 Mustache(双大括号插值) 语法，来动态决定具体需要渲染哪个模板：
 
 ```html
 <block wx:for="{{[1, 2, 3, 4, 5]}}">
@@ -115,13 +115,11 @@ Page({
 </block>
 ```
 
-**模板拥有自己的作用域，只能使用 data 传入的数据以及模板定义文件中定义的 `<wxs />` 模块。**
 
-### 引用方式(2种)
 
-**WXML 提供两种文件引用方式`import`和`include`**
+> **WXML 提供2种文件引用方式`import`和`include`**
 
-#### 1.`import`
+### `import`
 
 > **`import`可以在该文件中使用目标文件定义的`template`**。
 >
@@ -140,7 +138,7 @@ Page({
 <template is="item" data="{{text: 'forbar'}}"/>
 ```
 
-#### 2.`include`
+### `include`
 
 > `include` 可以将目标文件**除了** `<template/>`、`<wxs/>` 外的整个代码引入，相当于是拷贝到 `include` 位置
 

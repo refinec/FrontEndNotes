@@ -1,14 +1,6 @@
-# WXS(WeiXin Script) 语法
-
-## 模块
-
-- WXS 代码可以编写在 wxml 文件中的 `<wxs>` 标签内，或以 `.wxs` 为后缀名的文件内。
-
 - 每一个 `.wxs` 文件和 `<wxs>` 标签都是一个单独的模块。
 
-- 一个模块要想对外暴露其内部的**私有变量**与**函数**，只能通过 `module.exports` 实现。
-
-  而在`.wxs`模块中引用其他 `wxs` 文件模块，使用 `require` 函数。
+- 一个模块要想对外暴露其内部的**私有变量**与**函数**，只能通过 `module.exports` 实现。再使用 `require` 函数在`.wxs`模块中引用其他 `wxs` 文件模块。
 
   引用的时候，要注意如下几点：
 
@@ -49,13 +41,10 @@
   <view> {{tools.bar(tools.FOO)}} </view>
   ```
 
-## 注意📢
+> 注意📢：
+>
+> 1. `<wxs>` 模块只能在定义模块的 WXML 文件中被访问到。使用 `<include>` 或 `<import>` 时，`<wxs>` 模块不会被引入到对应的 WXML 文件中。
+> 2. 在`<template>` 内只能使用 定义该 `<template>` 的 WXML 文件中 定义的 `<wxs>` 模块。
 
-- `<wxs>` 模块只能在定义模块的 WXML 文件中被访问到。
 
-  使用 `<include>` 或 `<import>` 时，`<wxs>` 模块不会被引入到对应的 WXML 文件中。
-
-- `<template>` 标签中，只能使用定义该 `<template>` 的 WXML 文件中定义的 `<wxs>` 模块。
-
-# WXS响应事件
 

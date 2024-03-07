@@ -1,6 +1,4 @@
-## 
-
-window 对象
+## window 对象
 
 <img src="../../assets/JavaScript/window方法.png" style="zoom:50%;" />
 
