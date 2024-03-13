@@ -129,7 +129,7 @@ const p2 = new Promise((resolve, reject) => {
 Promise.all([p1, p2])
     .then(result => console.log(result))
     .catch(e => console.log(e));
-// 'hello'
+// '报错了'
 ```
 
 #### 6. Promise.allSettled()

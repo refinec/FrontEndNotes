@@ -139,7 +139,7 @@ interface ImportMeta {
 }
 ```
 
-###  **配置路径别名 alias
+###  配置路径别名 alias
 
 ```ts
 // vite.config.ts
@@ -212,7 +212,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
 }
 ```
 
-### **SFC 支持 name 属性
+### SFC 支持 name 属性
 
  [vite-plugin-vue-setup-extend](https://github.com/anncwb/vite-plugin-vue-setup-extend)支持`<script setup>`新增 name 属性
 

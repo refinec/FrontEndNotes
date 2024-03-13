@@ -1,7 +1,7 @@
 ## 一、值改变或状态改变都显示弹窗（这能省掉很多不必要的逻辑）
 
 ```js
-# Visible.js
+// Visible.js
 import { ref, toValue, watchEffect } from 'vue'
 
 export function useVisible(watchRef) {
