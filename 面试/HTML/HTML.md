@@ -1,38 +1,42 @@
-# HTML
-
 ## meta viewport 是做什么用的，怎么写
 
 > 通常viewport是指视窗、视口。浏览器上(也可能是一个app中的webview)用来显示网页的那部分区域。在移动端和pc端视口是不同的，**pc端的视口是浏览器窗口区域**，而在**移动端**有三个不同的视口概念：**布局视口、视觉视口、理想视口**
 
-1. **meta有两个属性name 和 http-equiv**
+1. **`meta`有两个属性`name` 和 `http-equiv`**
 
-   **name(7个):**
+   **`name`(7个):**
 
-   * keywords(关键字) 告诉搜索引擎，你网页的关键字
+   * `keywords`(关键字)
 
-   * description(网站内容描述) 用于告诉搜索引擎，你网站的主要内容
+     告诉搜索引擎，你网页的关键字
 
-   * viewport(移动端的窗口) 
+   * `description`(网站内容描述)
 
-   * robots(定义搜索引擎爬虫的索引方式) robots用来告诉爬虫哪些页面需要索引，哪些页面不需要索引
+     用于告诉搜索引擎，你网站的主要内容
 
-   * author(作者)
+   * `viewport`(移动端的窗口) 
 
-   * generator(网页制作软件）
+   * `robots`(定义搜索引擎爬虫的索引方式)
 
-   * copyright(版权)
+     robots用来告诉爬虫哪些页面需要索引，哪些页面不需要索引
 
-   **http-equiv： **http-equiv顾名思义，相当于http的文件头作用
+   * `author`(作者)
 
-   * content-Type 设定网页字符集
+   * `generator`(网页制作软件）
 
-   * X-UA-Compatible(浏览器采用哪种版本来渲染页面)
+   * `copyright`(版权)
 
-     //指定IE和Chrome使用最新版本渲染当前页面
+   **`http-equiv`： **`http-equiv`顾名思义，相当于http的文件头作用
 
-   * cache-control（请求和响应遵循的缓存机制）
+   * `content-Type` 设定网页字符集
 
-   * expires(网页到期时间)
+   * `X-UA-Compatible`(浏览器采用哪种版本来渲染页面)
+   
+     指定IE和Chrome使用最新版本渲染当前页面
+   
+   * `cache-control`（请求和响应遵循的缓存机制）
+   
+   * `expires`(网页到期时间)
 
 ```html
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

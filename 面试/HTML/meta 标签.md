@@ -1,5 +1,3 @@
-# meta 标签
-
 > meta是**文档级元数据元素**，用来表示那些不能由其它 HTML 元相关元素（`<base>`、`<link>`, `<script>`、`<style>`或 `<title>`）之一表示的任何元数据
 
 常见`meta` 元素定义的元数据的类型：
@@ -199,10 +197,6 @@
 ```html
 <a href="http://www.baidu.com" referrerpolicy="no-referrer">百度</a>
 ```
-
-
-
-
 
 ## http-equiv 属性
 
