@@ -1,5 +1,3 @@
-#  WebWorker
-
 > `Web Worker`分为`Dedicated Web Worker`和`Shared Web Worker`两类.
 
 1. `Dedicated Web Worker`仅为创建它的JSVM进程服务，当其所属的JSVM进程结束该`Dedicated Web Worker`线程也将结束；
@@ -265,7 +263,7 @@ const worker = new SharedWorker('./worker.js')
 worker.port.addEventListener('message', e => {
     console.log('SUM:', e.data)
 }, false)
-worker.port.start() // 连接worker线程                                                                                                                                                                                                     
+worker.port.start() // 连接worker线程
 
 const button = document.createElement('button')
 button.textContent = 'Increment'

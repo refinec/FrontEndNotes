@@ -1,5 +1,3 @@
-# Web 常见攻击
-
 ##  `XSS` 跨站脚本
 
 > XSS 全称是 `Cross Site Scripting` ,为了与`CSS`区分开来，故简称 `XSS`，翻译过来就是“***跨站脚本***”
