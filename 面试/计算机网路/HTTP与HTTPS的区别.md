@@ -1,5 +1,3 @@
-# HTTP与HTTPS的区别
-
 ## HTTPS
 
 HTTPS是以安全为目标的 HTTP 通道，是 HTTP 的安全版。HTTPS 的安全基础是 SSL。SSL 协议位于 TCP/IP 协议与各种应用层协议之间，为数据通讯提供安全支持。

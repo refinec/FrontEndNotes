@@ -165,6 +165,8 @@ token 的流程是这样的：
 
 在前面 cookie 说过，cookie 并不是客户端存储凭证的唯一方式。token 因为它的「无状态性」，**有效期、使用限制都包在 token 内容里**，对 cookie 的管理能力依赖较小，客户端存起来就显得更自由。但 web 应用的主流方式仍是放在 cookie 里，毕竟少操心。
 
+**简单 token 的组成：** uid(用户唯一的身份标识)、time(当前时间的时间戳)、sign（签名，token 的前几位以哈希算法压缩成的一定长度的十六进制字符串）
+
 ### **token 的过期**
 
 那我们如何控制 token 的有效期呢？很简单，把「过期时间」和数据一起塞进去，验证时判断就好。
@@ -219,6 +221,16 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJhIiwiaWF0IjoxNTUxOTUxOTk4fQ.
 类型、加密算法的选项，以及 JWT 标准数据字段，可以参考 [RFC 7519 - JSON Web Token (JWT)](https://link.juejin.cn/?target=https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc7519%23section-4.1)
 
 node 上同样有相关的库实现：[express-jwt - npm](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fexpress-jwt) 、[koa-jwt - npm](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fkoa-jwt)
+
+#### 总结
+
+* `header`是一个json字符串，并用base64把该字符串编码，内容包括签名算法和字符串类型
+
+​	`payload`是一个json字符串，并用base64把该字符串编码，内容包括用户的身份信息
+
+​	`signature`是一个字符串，主要用编码后的`header`+`payload`字符串结合**加密算法和秘钥**生成加密字符串，并把该字符串用base64编码后得到
+
+* JWT会将用户信息加密到Token里，服务器并不保存任何用户信息。服务器通过使用保存的密钥验证JWT Token的正确性，只要正确即通过验证。相比之下，传统的Token往往需要查询数据库获取用户信息以确认其有效性。 在这方面，JWT能够提供一种减少数据库查询，更为高效的验证方式
 
 ### refresh token
 
