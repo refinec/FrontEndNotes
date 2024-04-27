@@ -1,9 +1,3 @@
-# Promise对象异步编程
-
-
-
-## 总结
-
 ### Promise对象的两个特点
 
 1. **对象的状态不受外界影响。Promise对象代表一个异步操作，有三种状态：`pending`（进行中）、`fulfilled`（已成功）和`rejected`（已失败）**
@@ -14,7 +8,7 @@
 
 ### 基本用法
 
-​	1. **promise内是同步，then内是异步 **
+1. **promise内是同步，then内是异步 **
 
 2. **reject函数的参数通常是Error对象的实例**，表示抛出的错误；**resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例**
 
@@ -29,7 +23,7 @@
    // 输出：1 3 2
    ```
 
-### promise实例方法
+### Promise实例方法
 
 #### 1. Promise.prototype.then()
 
@@ -59,7 +53,9 @@ promise
     .finally(() => {···});
 ```
 
-#### 4. Promise.all()
+### Promise 类方法
+
+#### 1. Promise.all()
 
 > 用于将多个 Promise 实例，包装成一个新的 Promise 实例
 
@@ -109,13 +105,13 @@ Promise.all([p1, p2])
 // ["hello", Error: 报错了]
 ```
 
-#### 5.Promise.race()
+#### 2.Promise.race()
 
 > 将多个 Promise 实例，包装成一个新的 Promise 实例。
 >
-> 只要**各个Promise 实例之中有一个有一个实例率先改变状态(不管状态时`fulfilled`还是`rejected`)，`Promise.race()`的状态就跟着改变，那个率先改变的 Promise 实例的返回值，就传递给p的回调函数**
+> 只要**各个Promise 实例之中有一个实例率先改变状态(不管状态时`fulfilled`还是`rejected`)，`Promise.race()`的状态就跟着改变，那个率先改变的 Promise 实例的返回值，就传递给p的回调函数**
 
-* Promise.race()方法的参数与Promise.all()方法一样，如果不是 Promise 实例，就会先调用下面讲到的Promise.resolve()方法，将参数转为 Promise 实例，再进一步处理
+* `Promise.race()`方法的参数与`Promise.all()`方法一样，如果不是 Promise 实例，就会先调用下面讲到的`Promise.resolve()`方法，将参数转为 Promise 实例，再进一步处理
 
 ```js
 const p1 = new Promise((resolve, reject) => {
@@ -126,19 +122,19 @@ const p2 = new Promise((resolve, reject) => {
     throw new Error('报错了');
 })
 
-Promise.all([p1, p2])
+Promise.race([p1, p2])
     .then(result => console.log(result))
     .catch(e => console.log(e));
-// '报错了'
+// 'hello'
 ```
 
-#### 6. Promise.allSettled()
+#### 3. Promise.allSettled()
 
 > 接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。
 >
 > 只有等到所有这些参数实例都返回结果，不管是`fulfilled`还是`rejected`，包装实例才会结束。
 
-**该方法返回的新的 Promise 实例，一旦结束，状态总是`fulfilled `**，不会变成`rejected`。状态变成`fulfilled`后，Promise 的监听函数接收到的参数是一个数组，每个成员对应一个传入Promise.allSettled()的 Promise 实例
+**该方法返回的新的 Promise 实例，一旦结束，状态总是`fulfilled `**，不会变成`rejected`。状态变成`fulfilled`后，Promise 的监听函数接收到的参数是一个数组，每个成员对应一个传入`Promise.allSettled()`的 Promise 实例
 
 ```javascript
 const resolved = Promise.resolve(42);
@@ -153,7 +149,7 @@ allSettledPromise.then(function (results) {
 // ]
 ```
 
-#### 7. Promise.any()
+#### 4. Promise.any()
 
 > 接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。
 >
@@ -161,7 +157,7 @@ allSettledPromise.then(function (results) {
 
 **`Promise.any()`跟`Promise.race()`方法很像，只有一点不同，就是不会因为某个 Promise 变成rejected状态而结束**
 
-#### 8. Promise.resolve()
+#### 5. Promise.resolve()
 
 将现有对象转为 Promise 对象，Promise.resolve()方法就起到这个作用
 
@@ -212,7 +208,7 @@ new Promise(resolve => resolve('foo'))
   // three
   ```
 
-#### 9. Promise.reject()
+#### 6. Promise.reject()
 
 > 返回一个新的 Promise 实例，该实例的状态为rejected
 >
@@ -234,7 +230,7 @@ Promise.reject(thenable)
 
 上面代码中，Promise.reject方法的参数是一个thenable对象，执行以后，后面catch方法的参数不是reject抛出的“出错了”这个字符串，而是thenable对象
 
-#### 10. Promise.try()
+#### 7. Promise.try()
 
 不知道或者不想区分，函数`f`是同步函数还是异步操作，但是想用 Promise 来处理它。因为这样就可以不管f是否包含异步操作，都用then方法指定下一步流程，用catch方法处理f抛出的错误。一般就会采用下面的写法。
 

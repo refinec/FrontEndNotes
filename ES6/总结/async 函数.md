@@ -1,6 +1,4 @@
-# async 函数
-
-> async 函数是 Generator 函数的语法糖,它将 Generator 函数的`星号*`替换成`async`，将`yield`替换成`await`
+> async 函数是 Generator 函数的语法糖,它将 Generator 函数的`星号*`替换成`async`，将`yield`替换成`await`。核心逻辑是迭代执行`next`函数。
 
 **async函数对 Generator 函数的改进：**
 
@@ -12,7 +10,7 @@
 
    co模块约定，yield命令后面只能是 Thunk 函数或 Promise 对象，而async函数的await命令后面，可以是 Promise 对象和原始类型的值（数值、字符串和布尔值，但这时会自动转成立即 resolved 的 Promise 对象）
 
-4. **返回值是 Promise **
+4. **返回值是 `Promise` **
 
    **async函数的返回值是 Promise 对象 **，这比 **Generator 函数的返回值是 Iterator 对象 **方便多了。你可以用then方法指定下一步的操作。
 
@@ -174,3 +172,11 @@ async function logInOrder(urls) {
 
 ### 顶层 await
 
+
+
+### 总结
+
+1. `async/await` 是 `Generator` 函数的语法糖,它将 `Generator` 函数的`星号*`替换成`async`，将`yield`替换成`await`。核心逻辑是迭代执行`next`函数。
+2. `async` 函数返回一个`Promise` 对象
+3. `async/await` 使用同步的方式去写异步代码
+4. `Promise`通过`then`链来解决多层回调的问题，`async/await` 进一步优化它，使得代码结构更清晰。
