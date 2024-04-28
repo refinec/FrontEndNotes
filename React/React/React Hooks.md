@@ -1,4 +1,4 @@
-# Hooks
+## Hooks
 
 > `Hook`可以让你在不编写 `class` 的情况下使用 `state` 以及其他的 React **特性**，所以Hook 在 class 内部是**不**起作用的
 
@@ -21,7 +21,7 @@
   - [`useSyncExternalStore`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usesyncexternalstore)
   - [`useInsertionEffect`](https://zh-hans.reactjs.org/docs/hooks-reference.html#useinsertioneffect)
 
-## **使用Hook的原因是什么？**
+### **为什么要用Hooks？**
 
 1. class 是学习 React 的一大屏障，你必须去理解 JavaScript 中 `this` 的工作方式。还不能忘记绑定事件处理器，而Hook 解决了这一点
 
@@ -29,17 +29,9 @@
 
    通过使用 Hook，你可以把组件内相关的副作用组织在一起（例如创建订阅及取消订阅），而不要把它们拆分到不同的生命周期函数里。
 
-## Hook使用规则
+### Hooks使用规则
 
-Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：
-
-- 只能在**函数最外层**调用 Hook。
-
-  不要在**循环**、**条件判断**或者**子函数**中调用。
-
-- 只能在 **React 的函数组件**和**自定义的 Hook** 中调用 Hook。
-
-  不要在其他 JavaScript 函数中调用。
+只能在 **React 的函数组件**和**自定义的 Hooks** 中调用 Hook。不要在**循环**、**条件判断**或者**子函数**中调用。
 
 > 安装名为 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks) 的 ESLint 插件来强制执行这两条规则（注意：**自定义 Hook 必须以 “`use`” 开头**，这个约定非常重要。不遵循的话，由于无法判断某个函数是否包含对其内部 Hook 的调用，React 将无法自动检查你的 Hook 是否违反了Hook的规则）
 >
@@ -60,15 +52,15 @@ Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：
 > }
 > ```
 
-## 什么时候用Hook?
+### 什么时候用Hook?
 
 如果你在编写函数组件并意识到需要向其添加一些 `state`，以前的做法是必须将其转化为 `class`。
 
 现在你可以在现有的**函数组件**中使用 `Hook`。
 
-## 一、基础 Hook
+### 一、基础 Hook
 
-### `useState `
+#### `useState `
 
 > `useState` 会返回一对值：**当前**状态和一个让你更新它的函数（更新函数类似 **class** 组件的 `this.setState`，但是它不会把新的 `state` 和旧的 `state` 进行合并）
 
@@ -93,7 +85,7 @@ function ExampleWithManyStates() {
 <p>You clicked {count} times</p>
 ```
 
-#### setState的执行流程
+##### setState的执行流程
 
 setState的执行流程(函数组件)：
 
@@ -105,7 +97,7 @@ setState的执行流程(函数组件)：
    * 如果值相同，则不对组件进行重渲染
      * 但是在某些情况下，如果值相同，React会继续执行当前组件的重渲染，但这个渲染不会触发其子组件的重渲染，这次渲染不会产生实际的效果
 
-### `useEffect`
+#### `useEffect`
 
 > `useEffect` 就是一个 Effect Hook，给函数组件增加了操作<u>副作用</u>**(在 React 组件中执行过数据获取、订阅或者手动修改过 DOM)**的能力。
 >
@@ -140,7 +132,7 @@ function FriendStatusWithCounter(props) {
   // ...
 ```
 
-#### 为什么使用`useEffect`?
+##### 为什么使用`useEffect`?
 
 1. **关注点分离**
 
@@ -148,7 +140,7 @@ function FriendStatusWithCounter(props) {
 
    而使用多个`useEffect`实现关注点分离，把相关逻辑代码组合在一起，方便查找，类比于Vue3的`setup`
 
-#### Effect的清除副作用执行时机？
+##### Effect的清除副作用执行时机？
 
 > effect 的清除阶段在每次重新渲染 (`componentDidUpdate`) 时都会执行，而不是仅仅只在卸载组件(`componentWillUnmount`)的时候执行一次
 
@@ -172,7 +164,7 @@ ChatAPI.unsubscribeFromFriendStatus(300, handleStatusChange); // 清除最后一
 
 此默认行为保证了一致性，避免了在 class 组件中因为没有处理更新逻辑而导致常见的 bug。
 
-#### 通过跳过 Effect 进行性能优化 (使用`useEffect`的第二参数，依赖项)
+##### 通过跳过 Effect 进行性能优化 (使用`useEffect`的第二参数，依赖项)
 
 在某些情况下，每次渲染后都执行清理或者执行 effect 可能会导致性能问题。在 class 组件中，我们可以通过在 `componentDidUpdate` 中添加对 `prevProps` 或 `prevState` 的比较逻辑解决：
 
@@ -210,7 +202,7 @@ useEffect(() => {
 
 2. 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（`[]`）作为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值，effect 内部的 props 和 state 就会一直拥有其初始值，所以它永远都不需要重复执行，传入 `[]` 作为第二个参数更接近大家更熟悉的 `componentDidMount` 和 `componentWillUnmount` 思维模式。
 
-### `useContext`
+#### `useContext`
 
 > `const contextValue = useContext(MyContext);` 
 >
@@ -262,9 +254,9 @@ function ThemedButton() {
 }
 ```
 
-## 二、额外的 Hook
+### 二、额外的 Hook
 
-### `useReducer` : `useState`的替代方案
+#### `useReducer` : `useState`的替代方案
 
 > 即把对state的相关操作，全部放在一个作用域内
 
@@ -344,7 +336,7 @@ function Counter({initialCount}) {
 
 > 如果 Reducer Hook 的返回值与当前 state 相同（使用 [`Object.is` 比较算法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) 来比较），React 将跳过子组件的渲染及副作用的执行
 
-### `useCallback`
+#### `useCallback`
 
 > 为什么使用`useCallback`？当`state`发生变化时，组件会重新渲染，并且组件内的函数、方法也会重新创建，这是没有必要的，所以需要`useCallback`进行优化，保持引用稳定。
 
@@ -375,7 +367,7 @@ export default App;
 
 推荐启用 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks#installation) 中的 [`exhaustive-deps`](https://github.com/facebook/react/issues/14920) 规则。此规则会在添加错误依赖时发出警告并给出修复建议
 
-### `useMemo`  类似vue computed
+#### `useMemo`  类似vue computed
 
 > 如果你在渲染期间执行了高开销的计算，则可以使用 `useMemo` 来进行优化。
 
@@ -383,7 +375,7 @@ export default App;
 
 返回一个 [memoized](https://en.wikipedia.org/wiki/Memoization) 值。把**“创建”函数**和**依赖项数组**作为参数传入 `useMemo`，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。如果没有提供**依赖项数组**，`useMemo` 在每次渲染时都会计算新的值。
 
-### `useRef` 获取/操作DOM
+#### `useRef` 获取/操作DOM
 
 > `const refContainer = useRef(initialValue);`  创建一个存储DOM对象的容器
 
@@ -450,7 +442,7 @@ function MeasureExample() {
 }
 ```
 
-### `useImperativeHandle`
+#### `useImperativeHandle`
 
 > 格式：`useImperativeHandle(ref, createHandle, [deps])`
 >
@@ -479,7 +471,7 @@ const FancyInput = forwardRef(function FancyInput(props, ref) {
 });
 ```
 
-### `useLayoutEffect`
+#### `useLayoutEffect`
 
 > 尽可能使用 `useEffect` 以避免阻塞视觉更新
 
@@ -491,7 +483,7 @@ const FancyInput = forwardRef(function FancyInput(props, ref) {
 * 如果你使用服务端渲染，请记住，*无论* `useLayoutEffect` *还是* `useEffect` 都无法在 Javascript 代码加载完成之前执行。这就是为什么在服务端渲染组件中引入 `useLayoutEffect` 代码时会触发 React 告警。解决这个问题，需要将代码逻辑移至 `useEffect` 中（如果首次渲染不需要这段逻辑的情况下），或是将该组件延迟到客户端渲染完成后再显示（如果直到 `useLayoutEffect` 执行之前 HTML 都显示错乱的情况下）
 * 若要从服务端渲染的 HTML 中排除依赖布局 effect 的组件，可以通过使用 `showChild && <Child />` 进行条件渲染，并使用 `useEffect(() => { setShowChild(true); }, [])` 延迟展示组件。这样，在客户端渲染完成之前，UI 就不会像之前那样显示错乱了
 
-### `useDebugValue`
+#### `useDebugValue`
 
 `useDebugValue(value)` : `useDebugValue` 可用于在 React 开发者工具中显示自定义 hook 的标签。
 
@@ -516,7 +508,7 @@ function useFriendStatus(friendID) {
 
 `useDebugValue(date, date => date.toDateString());`
 
-### `useDeferredValue`
+#### `useDeferredValue`
 
 格式：`const deferredValue = useDeferredValue(value);`
 
@@ -551,7 +543,7 @@ function Typeahead() {
 
 记忆该子组件告诉 React 它仅当 `deferredQuery` 改变而不是 `query` 改变的时候才需要去重新渲染。这个限制不是 `useDeferredValue` 独有的，它和使用防抖或节流的 hooks 使用的相同模式。
 
-### `useTransition`
+#### `useTransition`
 
 > `const [isPending, startTransition] = useTransition();` 返回一个状态值表示过渡任务的等待状态，以及一个启动该过渡任务的函数
 
@@ -591,7 +583,7 @@ function App() {
 
 * 过渡任务中的更新将不会展示由于再次挂起而导致降级的内容。这个机制允许用户在 React 渲染更新的时候继续与当前内容进行交互。
 
-### `useId`
+#### `useId`
 
 > `const id = useId();`
 
@@ -621,26 +613,57 @@ function NameFields() {
 >
 > `useId` 支持 `identifierPrefix` 以防止在多个根应用的程序中发生冲突。 要进行配置，请参阅 [`hydrateRoot`](https://zh-hans.reactjs.org/docs/react-dom-client.html#hydrateroot) 和 [`ReactDOMServer`](https://zh-hans.reactjs.org/docs/react-dom-server.html) 的选项。
 
-## 三、library-hooks
+### 三、library-hooks
 
 > 以下 hook 是为库作者提供的，用于将库深入集成到 React 模型中，通常不会在应用程序代码中使用。
 
-### usesyncexternalstore
+#### `usesyncexternalstore`
 
 
 
-### useinsertioneffect
+#### `useinsertioneffect`
 
 
 
-# 自定义Hooks
+## 如何自定义Hooks？
 
-> 自定义Hook就是一个普通函数，该函数名称以`use`开头，本质是一个调用其他钩子函数的钩子函数
+> 自定义Hooks就是一个普通函数，该函数名称以`use`开头，本质是一个调用其他钩子函数的钩子函数
 
-使用规则：
+在React中创建自定义Hooks时，应当遵循一些最佳实践和注意事项，以确保它们的正确性和可重用性。以下是关于自定义Hooks需要注意的一些要点：
 
-1. 只能在组件中或者其他自定义Hook函数中调用
-2. 只能在组件的顶层调用，不能嵌套在`if`、`for`、`其他函数中`
+1. **命名约定**
+
+   自定义Hooks应该以`use`开头，这不仅是一个约定，也让React能够识别你的Hook是否遵守Hooks的规则。
+
+2. **调用顺序**
+
+   自定义Hooks内的所有原始Hooks（如useState, useEffect等）调用必须始终保持相同的顺序。这是因为React依赖于Hook调用的顺序来正确地管理状态。
+
+3. **不要在`循环`、`条件`或`嵌套函数`中调用Hooks**
+
+   正如React的规则所指，Hooks应该总是在组件的顶层调用，不要在循环、条件或嵌套函数中调用它们。
+
+4. **保持简洁**
+
+   自定义Hooks应该保持简洁和专注。它们旨在封装一些可以在多个组件间共享的`逻辑`。
+
+5. **返回值**
+
+   考虑到以后的适应性，最好是返回一个对象，这样添加新的返回值时不需要重新排列解构语句。
+
+   例如，使用`const { data, error } = useCustomHook()`而不是`const [data, error] = useCustomHook()`。
+
+6. **React依赖项传递**
+
+   如果你的Hook内部使用了像`useEffect`、`useCallback`、`useMemo`这样的React Hooks，确保正确处理依赖项列表。
+
+7. **逻辑复用而非状态复用**
+
+   自定义Hooks通常用来共享逻辑而非状态。如果你发现自己在复用太多的状态相关代码，那可能组件抽象才是更好的方式。
+
+8. **封装上下文**
+
+   如果你在多个组件中使用相同的上下文，你可以将`useContext(MyContext)`封装在自定义Hook中，这样能够简化组件中的代码。
 
 ```react
 export default function useToggle() {
@@ -656,3 +679,20 @@ export default function useToggle() {
 }
 ```
 
+## 为什么不应在循环、条件或嵌套函数中调用Hooks？
+
+在React中，不应在循环、条件判断或嵌套函数中调用Hooks的原因主要归结于两个关键点：**Hooks的调用顺序**和**React的Hooks规则**。
+
+1. **Hooks的调用顺序**：
+   React依赖于Hooks的调用顺序来正确地追踪组件的状态和副作用。每次组件渲染时，Hooks都必须以相同的顺序被调用。这是因为React内部没有将Hook与其名字关联，而是依赖它们调用的顺序来确定哪个状态对应于哪个`useState`或`useEffect`。
+
+   如果将Hooks放在循环、条件判断或嵌套函数内部，那么它们的调用顺序就可能在组件的不同渲染周期内发生变化。这将导致React无法正确追踪Hook的状态，从而出现不可预知的错误。
+
+2. **React的Hooks规则**：
+   因为上述对调用顺序的依赖，React提出了一个规则，即“`只在React函数组件的最顶层调用Hooks`”。这意味着在循环、条件判断或嵌套函数中调用Hooks是违反这一规则的。遵守这个规则能够确保Hooks的调用顺序在组件的每次渲染中保持一致。
+
+为了避免这些问题，可以采用以下策略：
+
+- 如果逻辑需要根据条件判断执行，可以将条件判断放在Hook内部。例如，在`useEffect`内部检查某个条件是否成立，而不是条件控制`useEffect`的调用。
+- 对于循环生成的Hooks，可以考虑重新设计你的组件结构，使得每个循环项成为一个新的组件，在这些新组件中独立地调用Hooks。
+- 如果需要根据条件选择性地创建状态或执行副作用，可以考虑使用状态或副作用内部的逻辑判断，或者使用不同组件来封装这些逻辑并根据条件渲染它们。
