@@ -10,21 +10,7 @@
 
 `Plugins`:更多的是优化，提取精华(公共模块去重)，压缩处理(css/js/html)等，对webpack功能的扩展。
 
-`Chunk`: 个人觉得这个是webpack 4 的Code Splitting产物，抛弃了webpack3的`CommonsChunkPlugin`,它最大的特点就是配置简单，当你设置 `mode` 是 `production`，那么 webpack 4 就会自动开启 `Code Splitting`，可以完成将某些公共模块去重，打包成一个单独的`chunk
-
-### package.json文件配置
-
-```json
-name - 包名.
-version - 包的版本号。
-description - 包的描述。
-homepage - 包的官网URL。
-author - 包的作者，它的值是你在https://npmjs.org网站的有效账户名，遵循“账户名<邮件>”的规则，		例如：zhangsan <zhangsan@163.com>。
-contributors - 包的其他贡献者。
-dependencies / devDependencies - 生产/开发环境依赖包列表。它们将会被安装在 node_module 目录下。
-main - main 字段指定了程序的主入口文件，require('moduleName') 就会加载这个文件。这个字段的默认值是模块根目录下面的 index.js。
-keywords - 关键字
-```
+`Chunk`: 个人觉得这个是webpack 4 的Code Splitting产物，抛弃了webpack3的`CommonsChunkPlugin`,它最大的特点就是配置简单，当你设置 `mode` 是 `production`，那么 webpack 4 就会自动开启 `Code Splitting`，可以完成将某些公共模块去重，打包成一个单独的`chunk`
 
 ### 局部安装webpack
 
