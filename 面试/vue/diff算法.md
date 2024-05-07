@@ -1,3 +1,19 @@
+# 前置知识
+
+## type
+
+首先咱们来说`type`。 这里的`type`表示：**VNode 的节点类型**。 比如：
+
+1. 一个`div`节点，`vnode` 就是`div`
+2. 一个`li`节点，`vnode` 就是`li`
+3. 一个`注释`节点，`vnode` 就是`comment`
+4. 一个`组件节点`，`vnode`就是`Component 对象实例`
+5. ......
+
+## key
+
+`key` 表示节点的唯一标识
+
 # vue2 双端diff算法
 
 ## 什么是虚拟DOM？
@@ -298,6 +314,52 @@ patch函数接收两个参数`oldVnode`和`Vnode`分别代表新的节点和之�
 
 > 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，`[3,6,2,7]` 是数组 `[0,3,1,6,2,2,7]` 的子序列。
 
+```js
+/**
+ * 最长递增子序列
+ * @param {number[]} nums 
+ * @return {number}
+ */
+const lengthOfLIS = function (nums) {
+    if (nums.length === 0) return 0;
+    const tails = [nums[0]]; // 存储最长递增子序列的末尾元素
+    for (let i = 1; i < nums.length; i++) { 
+        if (nums[i] > tails[tails.length - 1]) { // 如果当前元素大于末尾元素，则直接添加到末尾
+            tails.push(nums[i]);
+        } else { // 如果当前元素小于等于末尾元素，则找到第一个大于等于当前元素的元素，并替换
+            const index = getFirstGreaterIndex(nums[i]);
+            tails[index] = nums[i];
+        }
+    }
+    return tails.length;
+
+    /**
+     * 遍历数组，找到第一个大于等于target的元素
+     * @param target 目标元素
+     * @returns {number} index
+     */
+    function getFirstGreaterIndex(target) {
+        // for (let i = 0; i < tails.length; i++) {
+        //     if (tails[i] >= target) {
+        //         return i;
+        //     }
+        // }
+        // 因为是有序的，所以可以使用二分查找来优化
+        let i = 0, j = tails.length - 1;
+        while (i < j) {
+            const mid = Math.floor((i + j) / 2);
+            if (tails[mid] >= target) {
+                j = mid;
+            } else {
+                i = mid + 1;
+            }
+        }
+        return i;
+    }
+}
+
+```
+
 
 示例 1：
 
@@ -387,6 +449,95 @@ function lengthOfLIS(nums: number[]): number {
 
 注意：这个方案中的result得到的长度是正确的，但是顺序并不一定是正确结果需要的顺序，比如`[10, 9, 2, 5, 3, 7, 1, 18]`得到的result为`[1, 3, 7, 18]`
 
+[点击这里可以查看 vue 中**求解最长递增子序列**的代码](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fvuejs%2Fcore%2Fblob%2Fbef85e7975084b05af00b60ecd171c83f251c6d5%2Fpackages%2Fruntime-core%2Fsrc%2Frenderer.ts%23L2402-L2442)，通过源码可以发现：**vue 通过 getSequence 函数处理的最长递增子序列**
+
+该函数算法来自于 [维基百科（贪心 + 二分查找）](https://link.juejin.cn?target=https%3A%2F%2Fzh.m.wikipedia.org%2Fzh-hans%2F%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97)，我们复制了 `vue 3` 中 `getSequence` 的所有代码，并为其加入了 **详细的备注**，如下：
+
+```js
+/**
+ * 获取最长递增子序列下标
+ * 维基百科：https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+ * 百度百科：https://baike.baidu.com/item/%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/22828111
+ */
+ function getSequence(arr) {
+  // 获取一个数组浅拷贝。注意 p 的元素改变并不会影响 arr
+  // p 是一个最终的回溯数组，它会在最终的 result 回溯中被使用
+  // 它会在每次 result 发生变化时，记录 result 更新前最后一个索引的值
+  const p = arr.slice()
+  // 定义返回值（最长递增子序列下标），因为下标从 0 开始，所以它的初始值为 0
+  const result = [0]
+  let i, j, u, v, c
+  // 当前数组的长度
+  const len = arr.length
+  // 对数组中所有的元素进行 for 循环处理，i = 下标
+  for (i = 0; i < len; i++) {
+    // 根据下标获取当前对应元素
+    const arrI = arr[i]
+    // 
+    if (arrI !== 0) {
+      // 获取 result 中的最后一个元素，即：当前 result 中保存的最大值的下标
+      j = result[result.length - 1]
+      // arr[j] = 当前 result 中所保存的最大值
+      // arrI = 当前值
+      // 如果 arr[j] < arrI 。那么就证明，当前存在更大的序列，那么该下标就需要被放入到 result 的最后位置
+      if (arr[j] < arrI) {
+        p[i] = j
+        // 把当前的下标 i 放入到 result 的最后位置
+        result.push(i)
+        continue
+      }
+      // 不满足 arr[j] < arrI 的条件，就证明目前 result 中的最后位置保存着更大的数值的下标。
+      // 但是这个下标并不一定是一个递增的序列，比如： [1, 3] 和 [1, 2] 
+      // 所以我们还需要确定当前的序列是递增的。
+      // 计算方式就是通过：二分查找来进行的
+
+      // 初始下标
+      u = 0
+      // 最终下标
+      v = result.length - 1
+      // 只有初始下标 < 最终下标时才需要计算
+      while (u < v) {
+        // (u + v) 转化为 32 位 2 进制，右移 1 位 === 取中间位置（向下取整）例如：8 >> 1 = 4;  9 >> 1 = 4; 5 >> 1 = 2
+        // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Right_shift
+        // c 表示中间位。即：初始下标 + 最终下标 / 2 （向下取整）
+        c = (u + v) >> 1
+        // 从 result 中根据 c（中间位），取出中间位的下标。
+        // 然后利用中间位的下标，从 arr 中取出对应的值。
+        // 即：arr[result[c]] = result 中间位的值
+        // 如果：result 中间位的值 < arrI，则 u（初始下标）= 中间位 + 1。即：从中间向右移动一位，作为初始下标。 （下次直接从中间开始，往后计算即可）
+        if (arr[result[c]] < arrI) {
+          u = c + 1
+        } else {
+          // 否则，则 v（最终下标） = 中间位。即：下次直接从 0 开始，计算到中间位置 即可。
+          v = c
+        }
+      }
+      // 最终，经过 while 的二分运算可以计算出：目标下标位 u
+      // 利用 u 从 result 中获取下标，然后拿到 arr 中对应的值：arr[result[u]]
+      // 如果：arr[result[u]] > arrI 的，则证明当前  result 中存在的下标 《不是》 递增序列，则需要进行替换
+      if (arrI < arr[result[u]]) {
+        if (u > 0) {
+          p[i] = result[u - 1]
+        }
+        // 进行替换，替换为递增序列
+        result[u] = i
+      }
+    }
+  }
+  // 重新定义 u。此时：u = result 的长度
+  u = result.length
+  // 重新定义 v。此时 v = result 的最后一个元素
+  v = result[u - 1]
+  // 自后向前处理 result，利用 p 中所保存的索引值，进行最后的一次回溯
+  while (u-- > 0) {
+    result[u] = v
+    v = p[v]
+  }
+  return result
+}
+
+```
+
 **那么为什么贪心算法可以得到正确的长度呢？**
 
 要想得到最长上升子序列的正确长度，首先必须保证result内存放的数值增速尽可能稳和慢，所以要使用增长空间大、有潜力的值来组合；
@@ -464,9 +615,9 @@ const test= [9,2,5,3,7,101,4,18,1]
 console.log(getOfLIS(test)); // [2,3,4,18]
 ```
 
-## diff算法
+## 快速`diff`算法
 
-> vue3中的diff和上面的思想其实是一样的，都是基于下标来绑定数字在被插入result内时和其前面一个数字的关系。但是它看起来会更加难以理解，因为它是通过数组（P）来绑定回溯关系的，返回的是最长递增子序列的下标值
+> vue3中的`diff`和上面的思想其实是一样的，都是基于下标来绑定数字在被插入`result`内时和其前面一个数字的关系。但是它看起来会更加难以理解，因为它是通过数组（P）来绑定回溯关系的，返回的是最长递增子序列的下标值
 >
 
 ```js
@@ -521,3 +672,446 @@ console.log(getOfLIS(test)); // [2,3,4,18]
   }
 ```
 
+### `diff`算法分为5个步骤
+
+![image-20240506233054870](../../assets/%E9%9D%A2%E8%AF%95/image-20240506233054870.png)
+
+从上面的源码截图中可以看出整个`diff`的分为5步：
+
+1. 预处理`前`置节点（`sync from start`）：自前向后的对比
+2. 预处理`后`置节点（`sync from end`）：自后向前的对比
+3. 处理`仅有新增`节点情况（`common sequence + mount`）：新节点多于旧节点，需要挂载
+4. 处理`仅有卸载`节点情况（`common sequence + unmount`）：旧节点多于新节点，需要卸载
+5. 处理`其他`情况(新增/卸载/移动)（`unknown sequence`）：乱序
+
+#### 第一步：预处理`前`置节点(自前向后的对比)
+
+![image-20240506235338116](../../assets/%E9%9D%A2%E8%AF%95/image-20240506235338116.png)
+
+**自前向后的 diff 比对**中，会 **依次获取相同下标**的`newChild` 和`oldChild` ：
+
+1. 如果`newChild` 和`oldChild` 为 **相同的 `VNode`**，则直接通过 `patch` 进行打补丁即可。每次处理成功，则会自增 `i` 标记，表示**自前向后已处理过的节点数量**
+2. 如果`newChild` 和`oldChild` 为 **不相同的 `VNode`**，则会跳出循环，暂停自前向后的diff对比，接着开始第二步自后向前对比。
+
+下面我们把**源码添加了详细备注（进行了适当简化）**：
+
+```js
+  const patchKeyedChildren = (
+    oldChildren,
+    newChildren,
+    container,
+    parentAnchor
+  ) => {
+    /**
+     * 索引
+     */
+    let i = 0
+    /**
+     * 新的子节点的长度
+     */
+    const newChildrenLength = newChildren.length
+    /**
+     * 旧的子节点最大（最后一个）下标
+     */
+    let oldChildrenEnd = oldChildren.length - 1
+    /**
+     * 新的子节点最大（最后一个）下标
+     */
+    let newChildrenEnd = newChildrenLength - 1
+
+    // 1. 自前向后的 diff 对比。经过该循环之后，从前开始的相同 vnode 将被处理
+    while (i <= oldChildrenEnd && i <= newChildrenEnd) {
+      const oldVNode = oldChildren[i]
+      const newVNode = normalizeVNode(newChildren[i])
+      // 如果 oldVNode 和 newVNode 被认为是同一个 vnode，则直接 patch 即可
+      if (isSameVNodeType(oldVNode, newVNode)) {
+        patch(oldVNode, newVNode, container, null)
+      }
+      // 如果不被认为是同一个 vnode，则直接跳出循环
+      else {
+        break
+      }
+      // 下标自增
+      i++
+    }
+
+```
+
+#### 第二步：预处理`后`置节点(自后向前的对比)
+
+![image-20240507000228374](../../assets/%E9%9D%A2%E8%AF%95/image-20240507000228374.png)
+
+第二步的逻辑和第一步类似，但是对比方向相反。
+
+**自后向前的 diff 比对**中，会 **依次获取相同下标**的`newChild` 和`oldChild` ：
+
+1. 如果`newChild` 和`oldChild` 为 **相同的 `VNode`**，则直接通过 `patch` 进行打补丁即可。每次处理成功，**会自减 `oldChildrenEnd` 和 `newChildrenEnd`** ，表示：**新、旧节点中已经处理完成节点（自后向前）**
+
+2. 如果`newChild` 和`oldChild` 为 **不相同的 `VNode`**，则会跳出循环，暂停自前向后的diff对比。
+
+   通过前两步的比对，如果新节点多于旧节点，则开始第三步；如果旧节点多于新节点，则开始第四步。如果新旧节点数相同则开始第五步
+
+同样，咱们把**源码添加了详细备注（进行了适当简化）**：
+
+```js
+// 2. 自后向前的 diff 对比。经过该循环之后，从后开始的相同 vnode 将被处理
+while (i <= oldChildrenEnd && i <= newChildrenEnd) {
+  const oldVNode = oldChildren[oldChildrenEnd]
+  const newVNode = normalizeVNode(newChildren[newChildrenEnd])
+  if (isSameVNodeType(oldVNode, newVNode)) {
+    patch(oldVNode, newVNode, container, null)
+  } else {
+    break
+  }
+  // 最后的下标递减
+  oldChildrenEnd--
+  newChildrenEnd--
+}
+```
+
+#### 第三步：处理`仅有新增`节点情况(新节点多于旧节点，需要挂载)
+
+第一步和第二步的处理，都有一个前提条件，那就是：**新节点数量和旧节点数量是完全一致的。**但是在日常开发中，咱们经常也会遇到新旧节点数量不一致的情况。具体可以分为两种：
+
+1. 新节点的数量多于旧节点的数量（如：`arr.push(item)`）
+2. 旧节点的数量多于新节点的数量（如：`arr.pop(item)`）
+
+那么第三步和第四步就是用来处理这两种情况的。
+
+让 “新节点多于旧节点”，那么咱们其实有两种方式：
+
+1. 执行`arr.push()`：这样可以把新数据添加到**尾部**。即：**多出的新节点位于 尾部**
+2. 执行`arr.unshift()`：这样可以把新数据添加到**头部**。即：**多出的新节点位于 头部**
+
+那么明确好以上内容之后，下面咱们来看下第三步代码：
+
+```js
+// 3. 新节点多余旧节点时的 diff 比对。
+if (i > oldChildrenEnd) {
+    if (i <= newChildrenEnd) {
+        const nextPos = newChildrenEnd + 1
+        // 重点：找到锚点
+        const anchor =
+                nextPos < newChildrenLength ? newChildren[nextPos].el : parentAnchor
+        while (i <= newChildrenEnd) {
+                patch(null, normalizeVNode(newChildren[i]), container, anchor)
+                i++
+        }
+    }
+}
+```
+
+![image-20240507002027969](../../assets/%E9%9D%A2%E8%AF%95/image-20240507002027969.png)
+
+由上面的代码可知：
+
+1. 对于**新节点多于旧节点**的场景具体可以再细分为两种情况：
+   1. 多出的新节点位于 **尾部**
+   2. 多出的新节点位于 **头部**
+2. 这两种情况下的区别在于：**插入的位置不同**
+3. 明确好插入的位置之后，直接通过 `patch` 进行打补丁即可。
+
+#### 第四步：处理`仅有卸载`节点情况(旧节点多于新节点，需要卸载)
+
+根据第三步的经验，其实我们也可以明确，对于旧节点多于新节点时，对应的场景也可以细分为两种：
+
+1. 执行`arr.pop()`：这样可以从 **尾部** 删除数据。即：**多出的旧节点位于 尾部**
+2. 执行`arr.shift()`：这样可以从 **头部** 删除数据。即：**多出的旧节点位于 头部**
+
+对应的代码：
+
+```js
+// 4. 旧节点多与新节点时的 diff 比对。
+else if (i > newChildrenEnd) {
+    while (i <= oldChildrenEnd) {
+        // 卸载 dom
+        unmount(oldChildren[i])
+        i++
+    }
+}
+```
+
+![image-20240507002955213](../../assets/%E9%9D%A2%E8%AF%95/image-20240507002955213.png)
+
+由以上代码可知：
+
+1. 旧节点多于新节点时，只需要 **卸载旧节点即可**
+
+#### 第五步：处理`其他`情况(新增/卸载/移动)-乱序的情况
+
+##### 1. 最长递增子序列在 `diff` 中的作用是什么？
+
+在第五步的 `diff` 中，`vue` 使用了 **最长递增子序列** 这样的一个概念，那么最长递增子序列在 `diff` 中的作用是什么？答案是`保证最佳的移动方案,最长递增子序列的确定可以帮助我们减少移动的次数,从而提升性能`。
+
+假设，我们现在有一个这样两组节点：
+
+```
+旧节点：1,2,3,4,5,6
+新节点：1,3,2,4,6,5
+```
+
+我们可以根据 **新节点** 生成 **递增子序列（非最长）（注意：并不是惟一的）** ，其结果为：
+
+1. `1、3、6`
+2. `1、2、4、6`
+3. ...
+
+对于以上的节点对比而言，如果我们想要把 **旧节点转化为新节点**，那么将要涉及到节点的 **移动**，所以问题的重点是：**如何进行移动**。
+
+那么接下来，我们来分析一下移动的策略，整个移动根据递增子序列的不同，将拥有两种移动策略：
+
+1. `1、3、6` 递增序列下：
+   1. 因为 `1、3、6` 的递增已确认，所以它们三个是不需要移动的，那么我们所需要移动的节点无非就是 **三** 个 `2、4、5` 。
+   2. 所以我们需要经过 **三次** 移动
+2. `1、2、4、6` 递增序列下：
+   1. 因为 `1、2、4、6` 的递增已确认，所以它们四个是不需要移动的，那么我们所需要移动的节点无非就是 **两个** `3、5` 。
+   2. 所以我们需要经过 **两次** 移动
+
+所以由以上分析，我们可知：**最长递增子序列的确定，可以帮助我们减少移动的次数**
+
+所以，当我们需要进行节点移动时，移动需要事先构建出最长递增子序列，以保证我们的移动方案。
+
+##### 2. 详解
+
+第五步乱序是最复杂的场景，将会涉及到 **添加、删除、打补丁、移动** 这些所有场景
+
+第五步代码如下：
+
+```js
+// 5. unknown sequence
+// [i ... e1 + 1]: a b [c d e] f g
+// [i ... e2 + 1]: a b [e d c h] f g
+// i = 2, e1 = 4, e2 = 5
+else {
+  // 旧子节点的开始索引：oldChildrenStart
+  const s1 = i 
+  // 新子节点的开始索引：newChildrenStart
+  const s2 = i 
+
+  // 5.1 创建一个 <key（新节点的 key）:index（新节点的位置）> 的 Map 对象 keyToNewIndexMap。通过该对象可知：新的 child（根据 key 判断指定 child） 更新后的位置（根据对应的 index 判断）在哪里
+  const keyToNewIndexMap: Map<string | number | symbol, number> = new Map()
+  // 通过循环为 keyToNewIndexMap 填充值（s2 = newChildrenStart; e2 = newChildrenEnd）
+  for (i = s2; i <= e2; i++) {
+    // 从 newChildren 中根据开始索引获取每一个 child（c2 = newChildren）
+    const nextChild = (c2[i] = optimized
+      ? cloneIfMounted(c2[i] as VNode)
+      : normalizeVNode(c2[i]))
+    // child 必须存在 key（这也是为什么 v-for 必须要有 key 的原因）
+    if (nextChild.key != null) {
+      // key 不可以重复，否则你将会得到一个错误
+      if (__DEV__ && keyToNewIndexMap.has(nextChild.key)) {
+        warn(
+          `Duplicate keys found during update:`,
+          JSON.stringify(nextChild.key),
+          `Make sure keys are unique.`
+        )
+      }
+      // 把 key 和 对应的索引，放到 keyToNewIndexMap 对象中
+      keyToNewIndexMap.set(nextChild.key, i)
+    }
+  }
+
+  // 5.2 循环 oldChildren ，并尝试进行 patch（打补丁）或 unmount（删除）旧节点
+  let j
+  // 记录已经修复的新节点数量
+  let patched = 0
+  // 新节点待修补的数量 = newChildrenEnd - newChildrenStart + 1
+  const toBePatched = e2 - s2 + 1
+  // 标记位：节点是否需要移动
+  let moved = false
+  // 配合 moved 进行使用，它始终保存当前最大的 index 值
+  let maxNewIndexSoFar = 0
+  // 创建一个 Array 的对象，用来确定最长递增子序列。它的下标表示：《新节点的下标（newIndex），不计算已处理的节点。即：n-c 被认为是 0》，元素表示：《对应旧节点的下标（oldIndex），永远 +1》
+  // 但是，需要特别注意的是：oldIndex 的值应该永远 +1 （ 因为 0 代表了特殊含义，他表示《新节点没有找到对应的旧节点，此时需要新增新节点》）。即：旧节点下标为 0， 但是记录时会被记录为 1
+  const newIndexToOldIndexMap = new Array(toBePatched)
+  // 遍历 toBePatched ，为 newIndexToOldIndexMap 进行初始化，初始化时，所有的元素为 0
+  for (i = 0; i < toBePatched; i++) newIndexToOldIndexMap[i] = 0
+	// 遍历 oldChildren（s1 = oldChildrenStart; e1 = oldChildrenEnd），获取旧节点（c1 = oldChildren），如果当前 已经处理的节点数量 > 待处理的节点数量，那么就证明：《所有的节点都已经更新完成，剩余的旧节点全部删除即可》
+  for (i = s1; i <= e1; i++) {
+    // 获取旧节点（c1 = oldChildren）
+    const prevChild = c1[i]
+    // 如果当前 已经处理的节点数量 > 待处理的节点数量，那么就证明：《所有的节点都已经更新完成，剩余的旧节点全部删除即可》
+    if (patched >= toBePatched) {
+      // 所有的节点都已经更新完成，剩余的旧节点全部删除即可
+      unmount(prevChild, parentComponent, parentSuspense, true)
+      continue
+    }
+    // 新节点需要存在的位置，需要根据旧节点来进行寻找（包含已处理的节点。即：n-c 被认为是 1）
+    let newIndex
+    // 旧节点的 key 存在时
+    if (prevChild.key != null) {
+      // 根据旧节点的 key，从 keyToNewIndexMap 中可以获取到新节点对应的位置
+      newIndex = keyToNewIndexMap.get(prevChild.key)
+    } else {
+      // 旧节点的 key 不存在（无 key 节点）
+      // 那么我们就遍历所有的新节点（s2 = newChildrenStart; e2 = newChildrenEnd），找到《没有找到对应旧节点的新节点，并且该新节点可以和旧节点匹配》（s2 = newChildrenStart; c2 = newChildren），如果能找到，那么 newIndex = 该新节点索引
+      for (j = s2; j <= e2; j++) {
+       // 找到《没有找到对应旧节点的新节点，并且该新节点可以和旧节点匹配》（s2 = newChildrenStart; c2 = newChildren）
+        if (
+          newIndexToOldIndexMap[j - s2] === 0 &&
+          isSameVNodeType(prevChild, c2[j] as VNode)
+        ) {
+          // 如果能找到，那么 newIndex = 该新节点索引
+          newIndex = j
+          break
+        }
+      }
+    }
+    // 最终没有找到新节点的索引，则证明：当前旧节点没有对应的新节点
+    if (newIndex === undefined) {
+      // 此时，直接删除即可
+      unmount(prevChild, parentComponent, parentSuspense, true)
+    } 
+    // 没有进入 if，则表示：当前旧节点找到了对应的新节点，那么接下来就是要判断对于该新节点而言，是要 patch（打补丁）还是 move（移动）
+    else {
+      // 为 newIndexToOldIndexMap 填充值：下标表示：《新节点的下标（newIndex），不计算已处理的节点。即：n-c 被认为是 0》，元素表示：《对应旧节点的下标（oldIndex），永远 +1》
+      // 因为 newIndex 包含已处理的节点，所以需要减去 s2（s2 = newChildrenStart）表示：不计算已处理的节点
+      newIndexToOldIndexMap[newIndex - s2] = i + 1
+      // maxNewIndexSoFar 会存储当前最大的 newIndex，它应该是一个递增的，如果没有递增，则证明有节点需要移动
+      if (newIndex >= maxNewIndexSoFar) {
+        // 持续递增
+        maxNewIndexSoFar = newIndex
+      } else {
+        // 没有递增，则需要移动，moved = true
+        moved = true
+      }
+      // 打补丁
+      patch(
+        prevChild,
+        c2[newIndex] as VNode,
+        container,
+        null,
+        parentComponent,
+        parentSuspense,
+        isSVG,
+        slotScopeIds,
+        optimized
+      )
+      // 自增已处理的节点数量
+      patched++
+    }
+  }
+
+  // 5.3 针对移动和挂载的处理
+  // 仅当节点需要移动的时候，我们才需要生成最长递增子序列，否则只需要有一个空数组即可
+  const increasingNewIndexSequence = moved
+    ? getSequence(newIndexToOldIndexMap)
+    : EMPTY_ARR
+  // j >= 0 表示：初始值为 最长递增子序列的最后下标
+  // j < 0 表示：《不存在》最长递增子序列。
+  j = increasingNewIndexSequence.length - 1
+  // 倒序循环，以便我们可以使用最后修补的节点作为锚点
+  for (i = toBePatched - 1; i >= 0; i--) {
+    // nextIndex（需要更新的新节点下标） = newChildrenStart + i
+    const nextIndex = s2 + i
+    // 根据 nextIndex 拿到要处理的 新节点
+    const nextChild = c2[nextIndex] as VNode
+    // 获取锚点（是否超过了最长长度）
+    const anchor =
+      nextIndex + 1 < l2 ? (c2[nextIndex + 1] as VNode).el : parentAnchor
+    // 如果 newIndexToOldIndexMap 中保存的 value = 0，则表示：新节点没有用对应的旧节点，此时需要挂载新节点
+    if (newIndexToOldIndexMap[i] === 0) {
+      // 挂载新节点
+      patch(
+        null,
+        nextChild,
+        container,
+        anchor,
+        parentComponent,
+        parentSuspense,
+        isSVG,
+        slotScopeIds,
+        optimized
+      )
+    } 
+    // moved 为 true，表示需要移动
+    else if (moved) {
+      // j < 0 表示：不存在 最长递增子序列
+      // i !== increasingNewIndexSequence[j] 表示：当前节点不在最后位置
+      // 那么此时就需要 move （移动）
+      if (j < 0 || i !== increasingNewIndexSequence[j]) {
+        move(nextChild, container, anchor, MoveType.REORDER)
+      } else {
+        // j 随着循环递减
+        j--
+      }
+    }
+  }
+}
+```
+
+由以上代码可知：
+
+它的主要逻辑分为三大步：
+
+1. 创建一个 `<key（新节点的 key）:index（新节点的位置）>` 的 `Map` 对象 `keyToNewIndexMap`。通过该对象可知：新的 `child`（根据 `key` 判断指定 `child`） 更新后的位置（根据对应的 `index` 判断）在哪里
+2. 循环 `oldChildren` ，并尝试进行 `patch`（打补丁）或 `unmount`（删除）旧节点
+3. 处理 移动和挂载
+
+上面代码的具体图画如下：
+
+>  举个例子，比如要新增`n8`节点，删除`n3`节点，移动`n4`、`n5`、`n6`节点
+
+![image-20240507005811913](../../assets/%E9%9D%A2%E8%AF%95/image-20240507005811913.png)
+
+1. 创建两张表
+
+   * `创建新节点位置映射表 keyToNewIndexMap`(用于映射出新节点与位置的索引关系)，如`n6`的索引位置是`2`，以此类推。然后定义两个变量：
+
+     * `当前最远位置(maxNewIndexSoFar) = 0`
+
+       用于记录新节点中当前的最远位置，目的是用于判断新旧节点，在遍历的过程中，是否同时呈现递增趋势。如果不是，则证明节点产生了移动，需要移动标识置为`true`，后续进行移动处理。
+
+     * `移动标识(moved) = false`
+
+   * `创建一个新旧节点位置映射表(newIndexToOldIndexMap)`(用于记录新旧节点位置的映射关系)，初始值都为0。如果处理过后，值还是为0的话，则判定为新节点，后续需要挂载。
+
+   ![image-20240507182631202](../../assets/%E9%9D%A2%E8%AF%95/image-20240507182631202.png)
+
+2. 首先从旧节点列表`s1=2`开始，在新节点列表中查找，发现没有`n3`节点，所以该节点是要卸载的节点，直接执行卸载操作。
+
+3. 接着`s1=3`的时候，在新节点列表中查找，发现有`n4`节点，就把`s1+1=4`记录到`新旧节点位置映射表`中，同时我们对比`新节点位置索引值`和`当前最远位置`，发现`3`比`0`大，所以`当前最远位置=3`，然后打补丁更新。
+
+   ![image-20240507191530952](../../assets/%E9%9D%A2%E8%AF%95/image-20240507191530952.png)
+
+   ![image-20240507191737430](../../assets/%E9%9D%A2%E8%AF%95/image-20240507191737430.png)
+
+4. 同样的逻辑，`s1=4`的时候，在新节点列表中查找，发现有`n5`节点，就把`s1+1=5`记录到`新旧节点位置映射表`中，同时我们对比`新节点位置索引值`和`当前最远位置`，发现`4`比`3`大，所以`当前最远位置=4`，然后打补丁更新。
+
+5. 目前`当前最远位置`值依然`呈递增趋势`，所以`移动标识(moved)`还是`false`。
+
+6. 接着当`s1=5`的时候，在新节点列表中查找，发现有`n6`节点，就把`s1+1=6`记录到`新旧节点位置映射表`中，同时我们对比`新节点位置索引值`和`当前最远位置`，发现`2`比`4`小，它不是呈递增趋势了，就说明节点需要移动了，我们把`移动标识(moved)`设置为`true`，然后打补丁更新。
+
+7. 最后，我们需要处理`新旧节点位置映射表`，从里面寻找一个`最长递增子序列`（目的是让节点做到最小限度的移动操作），我们发现最长递增子序列是`4`和`5`，对应索引是`1`和`2`。
+
+   ![image-20240507185745056](../../assets/%E9%9D%A2%E8%AF%95/image-20240507185745056.png)
+
+​	然后，从后往前遍历，处理`新旧节点位置映射表`
+
+​	![image-20240507185933174](../../assets/%E9%9D%A2%E8%AF%95/image-20240507185933174.png)
+
+​	当`i=3`的时候，对应节点为`n8`，在`新旧节点位置映射表`中的值为`0`，为`0`则表示节点需要新增，所以挂载`n8`节点。
+
+​	当`i=2`的时候，对应节点为`n5`，在`新旧节点位置映射表`中的值为`5`，`i=2`它是处于最长递增子序列`j=1`的地方，因此无需移动	直接跳过。一旦找到最长递增子序列的元素，`i`和`j`的值需要递减。
+
+​	当`i=1`的时候，对应节点为`n4`，在`新旧节点位置映射表`中的值为`4`，`i=1`它是处于最长递增子序列`j=0`的地方，因此无需移动	直接跳过。同理，`i`和`j`的值继续递减。
+
+​	![image-20240507190934472](../../assets/%E9%9D%A2%E8%AF%95/image-20240507190934472.png)
+
+​	当`i=0`的时候，对应节点为`n6`，在`新旧节点位置映射表`中的值为`6`，`i=0`它不处于最长递增子序列中，因此该节点需要移动，所以执行移动操作
+
+8. `diff`完成，整个过程中，新增了`n8`节点，卸载了`n3`节点，移动了`n6`,其他均为原地`patch`更新。
+
+### `patch`打补丁更新，具体执行了哪些操作？
+
+"打补丁" (patching) 阶段，是指将 diff 算法计算出的差异应用到真实 DOM 上的具体操作。这些操作大致可以分为以下几个步骤：
+
+1. **更新节点**：如果新旧虚拟节点是相同的（即 `key` 和 `type` 相同），就会比较并更新节点的属性和事件监听器，同时递归地进行子节点的 patch 操作。
+2. **添加节点**：如果新的虚拟节点在旧的虚拟节点中不存在，那么会创建一个新的 DOM 节点，并将其插入到真实 DOM 树中正确的位置。
+3. **删除节点**：如果旧的虚拟节点在新的虚拟树中不存在，则会将对应的真实 DOM 节点从 DOM 树中移除。
+4. **移动节点**：Vue diff 算法会通过 "key" 属性识别可服用的子元素。如果子节点仅仅是顺序变动了，那么 Vue 会尽可能的复用已有节点，并重新排序，而不是销毁再创建。
+5. **更新文本节点**：如果比较的节点是文本节点，Vue 会直接更新文本内容。
+
+在进行 patch 操作时，Vue 尝试最小化 DOM 操作次数，因为DOM操作往往是Web应用中相对昂贵的操作。为此，Vue在内部维护了一个更新队列，确保在同一个事件循环中如果有多个数据变更导致的虚拟DOM更新，它们会被合并，并且多次的 diff 结果只会应用一次实际的DOM操作。
+
+值得注意的是，Vue 2 和 Vue 3 在 diff 算法上有一些不同。Vue 3 引入了 Composition API 和 Fragment 等特性，并使用了更快的虚拟 DOM 更新策略。以上的涵盖了通用的 patch 操作，但实现的具体细节可能有所不同。

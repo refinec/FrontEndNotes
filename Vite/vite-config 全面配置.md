@@ -1,4 +1,4 @@
-## 总体配置
+### 总体配置
 
 ```js
 // vite.config.ts
@@ -211,6 +211,34 @@ export default ({ mode }: ConfigEnv): UserConfig => {
   }
 }
 ```
+
+### 手动分包(第三方包和业务代码)
+
+```js
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    rollupOptions: {
+      // 1. 对象的形式，一个属性名就是一个打包结果
+      manualChunks: {
+        "xxx": ["lodash", "vue"]
+      },
+      // 2. 函数形式
+      manualChunks(id) { // id 表示模块ID，没有返回则表示所有内容都放到index-xxxxx.js的打包结果中
+        // 第三方库都打包到vendor-xxxx.js文件中
+        if (id.includes('node_modules')) {
+          return 'vendor';
+        }
+      }
+    }
+  }
+})
+```
+
+
 
 ### SFC 支持 name 属性
 
