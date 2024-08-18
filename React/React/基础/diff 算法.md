@@ -1,1 +1,0 @@
-## diff 算法（又称为[协调](https://zh-hans.reactjs.org/docs/reconciliation.html)）

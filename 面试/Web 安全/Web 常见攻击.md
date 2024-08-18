@@ -169,8 +169,20 @@ set-cookie: NID=189=M8l6-z41asXtm2uEwcOC5oh9djkffOMhWqQrlnCtOI; expires=Sat, 18-
 `SameSite`可以设置为三个值，`Strict`、`Lax`和`None`。
 
 1. 在`Strict`模式下，浏览器完全禁止第三方请求携带Cookie。比如请求`sanyuan.com`网站只能在`sanyuan.com`域名当中请求才能携带 Cookie，在其他网站请求都不能。
-2. 在`Lax`模式，就宽松一点了，但是只能在 `get方法提交表单`况或者`a标签发送get请求`的情况下可以携带 Cookie，其他情况均不能。
-3. 在`None`模式下，Cookie将在所有上下文中发送，即允许跨域发送。
+
+2. `Lax`：宽松模式(阻止发送Cookie，只对超链接`<a>`放行)
+
+   > 在`Lax`模式下，只能在 `get方法提交表单`况或者`a标签发送get请求`的情况下可以携带 Cookie，其他情况均不能。
+
+3. `None`：不作任何限制
+
+   > 在`None`模式下，Cookie将在所有上下文中发送，即允许跨域发送。所以会有CSRF危险。
+
+   ```
+   Set-Cookie: ...; Secure; SameSite=None;
+   ```
+
+   使用该值必须保证Cookie为`Secure`，否则无效
 
 #### 4.CSRF Token
 

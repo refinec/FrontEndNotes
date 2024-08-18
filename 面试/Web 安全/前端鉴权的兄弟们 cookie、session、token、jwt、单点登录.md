@@ -224,13 +224,57 @@ node 上同样有相关的库实现：[express-jwt - npm](https://link.juejin.cn
 
 #### 总结
 
-* `header`是一个json字符串，并用base64把该字符串编码，内容包括签名算法和字符串类型
+* `header`是一个json字符串，并用base64把该字符串编码，内容包括签名算法和字符串类型(`{"alg": "HS256", "typ": "JWT"}`)
 
-​	`payload`是一个json字符串，并用base64把该字符串编码，内容包括用户的身份信息
+​	`payload`是一个json字符串，并用base64把该字符串编码，内容包括用户的身份信息(如：`{name: "xxx", "age": 18}`)
 
-​	`signature`是一个字符串，主要用编码后的`header`+`payload`字符串结合**加密算法和秘钥**生成加密字符串，并把该字符串用base64编码后得到
+​	`signature`是一个字符串，主要用编码后的`header`+`payload`字符串结合**加密算法和秘钥**生成加密字符串，并把该字符串用`base64`编码后得到
 
 * JWT会将用户信息加密到Token里，服务器并不保存任何用户信息。服务器通过使用保存的密钥验证JWT Token的正确性，只要正确即通过验证。相比之下，传统的Token往往需要查询数据库获取用户信息以确认其有效性。 在这方面，JWT能够提供一种减少数据库查询，更为高效的验证方式
+
+**生成JWT的代码例子**：
+
+```js
+const crypto = require('crypto');
+
+/**
+ * 签名
+ * @param info 要签名的信息
+ * @param key 加密的KEY
+ * @returns 
+ */
+function sign(info, key) {
+    const hmac = crypto.createHmac('sha256', key);
+    hmac.update(info);
+    return hmac.digest('hex');
+}
+
+/**
+ * 生成JWT字符串
+ * @param info 要加密的信息
+ * @param key 加密的KEY
+ * @returns 
+ */
+function jwt(info, key) {
+    const header = {
+        "alg": "HS256",
+        "typ": "JWT"
+    };
+    const headerStr = Buffer.from(JSON.stringify(header)).toString('base64');
+    const payloadStr = Buffer.from(JSON.stringify(info)).toString('base64');
+    const signStr = Buffer.from(sign(headerStr + '.' + payloadStr, key)).toString('base64').replace(/=/g, ''); // 把 “=” 去掉，因为没有实际意义
+    return headerStr + '.' + payloadStr + '.' + signStr;
+}
+
+// 示例
+const payload = {
+    "sub": "1234567890",
+    "name": "John Doe",
+    "iat": 151623902
+}
+const KEY = "server-secret-key"; // 只存在于服务端的KEY
+const jwt_result = jwt(payload, KEY);  // JWT结果
+```
 
 ### refresh token
 
