@@ -409,3 +409,45 @@ const worker = new Worker(path.resolve(__dirname, 'worker.js'))
 上述代码仅表示Electron可以分配本地脚本给WebWorker线程执行，但实际开发阶段一般是通过 ~~http(s)://~~ 协议加载页面资源，而发布时才会打包为本地资源。
  所以这里还要分为开发阶段用和发布用代码，还涉及资源的路径问题，所以还不如直接转换为Blob数据内嵌到UI线程的代码中更便捷。
 
+## 前端项目内使用
+
+方式一：
+
+```js
+import MyWorker from './delayWorker.js?worker&inline'
+
+const worker = new MyWorker()
+```
+
+方式二：
+
+```js
+import MyWorker from './delayWorker.js?raw'
+
+const blob = new Blob([MyWorker], { type: 'application/javascript' });
+const workUrl = window.URL.createObjectURL(blob);
+const worker = new Worker(workUrl);
+```
+
+方式三：
+
+worker导出为函数；需要一个转换函数把 worker 转换为URL；
+
+```js
+export function hilitorWorker() {
+  self.addEventListener(
+    'message',
+    function (e) {
+      const {
+        data: { type, payload },
+      } = e;
+    });
+}
+
+export function createWorker(fn: any) {
+  return new Worker(URL.createObjectURL(new Blob([`(${fn})()`], { type: 'text/javascript' })));
+}
+
+const worker = createWorker(hilitorWorker);
+```
+
