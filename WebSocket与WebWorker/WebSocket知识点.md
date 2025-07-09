@@ -305,6 +305,105 @@ WebSocket 服务器的实现，可以查看维基百科的[列表](https://en.wi
 - [Socket.IO](http://socket.io/)
 - [WebSocket-Node](https://github.com/theturtle32/WebSocket-Node)
 
+## 如何实现心跳包？
+
+> WebSocket心跳包机制是一种常见的技术，用于检测客户端与服务器之间的连接是否仍然有效。以下是基于WebSocket实现心跳包逻辑的代码示例，分别用JavaScript（前端）和Node.js（后端）实现。
+
+1. 在前端代码中，客户端会定期发送心跳包到服务器，并监听服务器的响应。如果在指定时间内没有收到响应，则认为连接断开，可以尝试重新连接。
+
+   ```js
+   const socket = new WebSocket('ws://example.com/socket'); // 替换为你的WebSocket服务器地址
+   const heartbeatInterval = 30000; // 心跳包发送间隔（30秒）
+   const timeoutInterval = 30000; // 等待服务器响应的超时时间（30秒）
+   
+   let timeout; // 用于存储超时定时器
+   
+   // 发送心跳包
+   function sendHeartbeat() {
+     console.log('Sending heartbeat');
+     socket.send(JSON.stringify({ type: 'heartbeat' })); // 发送心跳包
+     clearTimeout(timeout); // 清除之前的超时定时器
+     timeout = setTimeout(() => {
+       console.error('Heartbeat timeout, connection lost');
+       socket.close(); // 关闭连接
+     }, timeoutInterval); // 设置新的超时定时器
+   }
+   
+   // 监听服务器响应
+   socket.onmessage = (event) => {
+     const message = JSON.parse(event.data);
+     if (message.type === 'heartbeat') {
+       console.log('Heartbeat received from server');
+       clearTimeout(timeout); // 清除超时定时器
+       timeout = setTimeout(() => {
+         console.error('Heartbeat timeout, connection lost');
+         socket.close(); // 关闭连接
+       }, timeoutInterval); // 设置新的超时定时器
+     }
+   };
+   
+   // 定期发送心跳包
+   setInterval(sendHeartbeat, heartbeatInterval);
+   
+   // 监听连接断开
+   socket.onclose = () => {
+     console.log('WebSocket connection closed');
+     clearTimeout(timeout); // 清除超时定时器
+   };
+   
+   // 监听错误
+   socket.onerror = (error) => {
+     console.error('WebSocket error:', error);
+   };
+   ```
+
+2. 在后端代码中，服务器需要监听客户端发送的心跳包，并在收到心跳包后立即发送响应。
+
+   ```js
+   const WebSocket = require('ws');
+   const server = new WebSocket.Server({ port: 8080 }); // WebSocket服务器监听端口
+   
+   server.on('connection', (socket) => {
+     console.log('Client connected');
+   
+     // 监听客户端消息
+     socket.on('message', (message) => {
+       const data = JSON.parse(message);
+       if (data.type === 'heartbeat') {
+         console.log('Heartbeat received from client');
+         socket.send(JSON.stringify({ type: 'heartbeat' })); // 响应心跳包
+       }
+     });
+   
+     // 监听客户端断开连接
+     socket.on('close', () => {
+       console.log('Client disconnected');
+     });
+   
+     // 监听错误
+     socket.on('error', (error) => {
+       console.error('WebSocket error:', error);
+     });
+   });
+   ```
+
+**逻辑说明**
+
+- **前端逻辑**：
+  - 客户端定期（例如每30秒）发送心跳包到服务器。
+  - 如果在指定超时时间（例如30秒）内没有收到服务器的响应，则认为连接断开，关闭WebSocket连接。
+  - 如果收到服务器的心跳响应，则重置超时计时器。
+- **后端逻辑**：
+  - 服务器监听客户端发送的消息。
+  - 如果收到心跳包，则立即发送响应。
+  - 如果客户端断开连接，则触发`close`事件。
+
+**注意事项**
+
+- 心跳包的内容可以根据实际需求设计，例如可以包含时间戳、客户端标识等信息。
+- 在生产环境中，建议使用更健壮的WebSocket库（如`socket.io`）来简化心跳包逻辑的实现。
+- 如果服务器长时间没有响应，客户端可以尝试重新连接，但需要限制重连次数以避免无限重连。
+
 # WebSocketd
 
 一款非常特别的 WebSocket 服务器：[Websocketd](http://websocketd.com/)。
