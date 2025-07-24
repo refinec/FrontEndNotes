@@ -4,8 +4,8 @@ HTTPS是以安全为目标的 HTTP 通道，是 HTTP 的安全版。HTTPS 的安
 
 **SSL 协议可分为两层：**
 
-- SSL 记录协议（SSL Record Protocol），它建立在可靠的传输协议（如TCP）之上，为高层协议提供数据封装、压缩、加密等基本功能的支持。
-- SSL 握手协议（SSL Handshake Protocol），它建立在 SSL 记录协议之上，用于在实际的数据传输开始前，通讯双方进行身份认证、协商加密算法、交换加密密钥等。
+- SSL 记录协议（SSL Record Protocol），它建立在可靠的传输协议（如TCP）之上，为高层协议提供<u>**数据封装、压缩、加密**</u>等基本功能的支持。
+- SSL 握手协议（SSL Handshake Protocol），它建立在 SSL 记录协议之上，用于<u>**在实际的数据传输开始前，通讯双方进行身份认证、协商加密算法、交换加密密钥**</u>等。
 
 ### **HTTPS的优点**
 
