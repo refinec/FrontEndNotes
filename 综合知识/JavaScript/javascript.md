@@ -817,6 +817,31 @@ window.addEventListener('scroll', throttle(lazyLoad,1000))
 lazyLoad();  // 首次加载 
 ```
 
+### 第三种
+
+使用`IntersectionObserver`api，参考[链接](https://ruanyifeng.com/blog/2016/11/intersectionobserver_api.html)
+
+```javascript
+function query(selector) {
+  return Array.from(document.querySelectorAll(selector));
+}
+
+var observer = new IntersectionObserver(
+  function(changes) {
+    changes.forEach(function(change) {
+      var container = change.target;
+      var content = container.querySelector('template').content;
+      container.appendChild(content);
+      observer.unobserve(container);
+    });
+  }
+);
+
+query('.lazy-loaded').forEach(function (item) {
+  observer.observe(item);
+});
+```
+
 ## this
 
 **this 永远指向最后调用它的那个对象**

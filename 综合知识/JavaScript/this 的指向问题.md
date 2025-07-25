@@ -16,7 +16,7 @@
 
 ### 题目1.1：非严格模式
 
-```
+```js
 var foo = 123;
 function print(){
  this.foo = 234;
@@ -30,7 +30,7 @@ print();
 
 这个`foo`值可以说道两句：如果学习过预编译的知识，在预编译过程中，`foo`和`print`函数会存放在全局`GO`中(即`window`对象上)，所以上述代码就类似下面这样：
 
-```
+```js
 window.foo = 123
 function print() {
     this.foo = 234;
@@ -46,7 +46,7 @@ window.print()
 
 > `"use strict"`可以开启严格模式
 
-```
+```js
 "use strict";
 var foo = 123;
 function print(){
@@ -62,7 +62,7 @@ print();
 
 **答案**
 
-```
+```js
 global this is Window{...}
 print this is undefined
 123
@@ -71,7 +71,7 @@ Uncaught TypeError: Cannot read property 'foo' of undefined
 
 ### 题目1.3：let/const
 
-```
+```js
 let a = 1;
 const b = 2;
 var c = 3;
@@ -88,7 +88,7 @@ console.log(this.a);
 
 **答案**
 
-```
+```js
 undefined
 undefined
 3
@@ -97,7 +97,7 @@ undefined
 
 ### 题目1.4：对象内执行
 
-```
+```js
 a = 1;
 function foo() {
     console.log(this.a); 
@@ -115,7 +115,7 @@ obj.bar();
 
 ### 题目1.5：函数内执行
 
-```
+```js
 var a = 1
 function outer () {
   var a = 2
@@ -131,7 +131,7 @@ outer()
 
 ### 题目1.6：自执行函数
 
-```
+```js
 a = 1;
 (function(){
     console.log(this);
@@ -153,7 +153,7 @@ bar();
 
 **答案**
 
-```
+```js
 Window{...}
 1
 Window{...}
@@ -168,7 +168,7 @@ Window{...}
 
 ### 题目2.1：隐式绑定
 
-```
+```js
 var a = 1;
 function foo() {
     console.log(this.a); 
@@ -184,7 +184,7 @@ obj.foo();
 
 **答案**
 
-```
+```js
 1
 2
 ```
@@ -195,7 +195,7 @@ obj.foo();
 
 感觉上面总是空谈链式调用的情况，下面直接来看一个例题：
 
-```
+```js
 var obj1 = {
     a: 1,
     obj2: {
@@ -221,7 +221,7 @@ obj1.obj2.foo() // 2
 
 ### 题目3.1：取函数别名
 
-```
+```js
 a = 1
 var obj = {
     a: 2,
@@ -240,7 +240,7 @@ foo();
 
 **答案**
 
-```
+```js
 2 
 1
 ```
@@ -251,7 +251,7 @@ foo();
 
 如果取函数别名没有发生在全局，而是发生在对象之中，又会是怎样的结果呢？
 
-```
+```js
 var obj = { 
     a: 1, 
     foo() {
@@ -271,7 +271,7 @@ obj2.foo();
 
 **答案**
 
-```
+```js
 1 
 2 
 3
@@ -279,7 +279,7 @@ obj2.foo();
 
 ### 题目3.3：函数作为参数传递
 
-```
+```js
 function foo() {
   console.log(this.a)
 }
@@ -301,7 +301,7 @@ doFoo(obj.foo)
 
 **答案**
 
-```
+```js
 Window {…}
 2
 ```
@@ -310,7 +310,7 @@ Window {…}
 
 将上面的题略作修改，`doFoo`不在`window`上执行，改为在`obj2`中执行
 
-```
+```js
 function foo() {
   console.log(this.a)
 }
@@ -329,7 +329,7 @@ obj2.doFoo(obj.foo)
 
 **答案**
 
-```
+```js
 {a: 3, doFoo: ƒ}
 2
 ```
@@ -338,7 +338,7 @@ obj2.doFoo(obj.foo)
 
 下面这个题目我们写代码时会经常遇到：
 
-```
+```js
 var name='zcxiaobao';
 function introduce(){
     console.log('Hello,My name is ', this.name);
@@ -376,7 +376,7 @@ setTimeout(function(){
 
 **答案**
 
-```
+```js
 Window {…}
 Hello, My name is  zcxiaobao
 Hello,My name is  zcxiaobao
@@ -385,7 +385,7 @@ Hello,My name is  Lisa
 
 所以如果我们想在`setTimeout`或`setInterval`中使用外界的`this`，需要提前存储一下，避免`this`的丢失。
 
-```
+```js
 const Tom = {
     name: 'TOM',
     introduce: function(){
@@ -400,7 +400,7 @@ Tom.introduce()
 
 ### 题目3.6：隐式绑定丢失综合题
 
-```
+```js
 name = 'javascript' ;
 let obj = {
     name: 'obj',
@@ -431,7 +431,7 @@ console.log(name);
 
 **答案**
 
-```
+```js
 javascriptthis
 javascriptthis
 javascriptthis
@@ -450,7 +450,7 @@ undefined
 
 ### 题目4.1：比较三种调用方式
 
-```
+```js
 function foo () {
   console.log(this.a)
 }
@@ -480,7 +480,7 @@ foo.bind(obj)
 
 `题目3.4`发生隐式绑定的丢失，如下代码：我们可不可以通过显式绑定来修正这个问题。
 
-```
+```js
 function foo() {
   console.log(this.a)
 }

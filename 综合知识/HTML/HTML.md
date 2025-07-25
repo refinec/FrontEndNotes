@@ -1,52 +1,4 @@
-## meta viewport 是做什么用的，怎么写
-
-> 通常viewport是指视窗、视口。浏览器上(也可能是一个app中的webview)用来显示网页的那部分区域。在移动端和pc端视口是不同的，**pc端的视口是浏览器窗口区域**，而在**移动端**有三个不同的视口概念：**布局视口、视觉视口、理想视口**
-
-1. **`meta`有两个属性`name` 和 `http-equiv`**
-
-   **`name`(7个):**
-
-   * `keywords`(关键字)
-
-     告诉搜索引擎，你网页的关键字
-
-   * `description`(网站内容描述)
-
-     用于告诉搜索引擎，你网站的主要内容
-
-   * `viewport`(移动端的窗口) 
-
-   * `robots`(定义搜索引擎爬虫的索引方式)
-
-     robots用来告诉爬虫哪些页面需要索引，哪些页面不需要索引
-
-   * `author`(作者)
-
-   * `generator`(网页制作软件）
-
-   * `copyright`(版权)
-
-   **`http-equiv`： **`http-equiv`顾名思义，相当于http的文件头作用
-
-   * `content-Type` 设定网页字符集
-
-   * `X-UA-Compatible`(浏览器采用哪种版本来渲染页面)
-   
-     指定IE和Chrome使用最新版本渲染当前页面
-   
-   * `cache-control`（请求和响应遵循的缓存机制）
-   
-   * `expires`(网页到期时间)
-
-```html
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>当下软件园-绿色软件_最新绿色下载软件_免费软件下载网站 - 当下软件园</title>
-<meta name="keywords" content="软件下载,下载软件,绿色软件,免费软件,绿色软件园">
-<meta name="description" content="当下软件园汇聚当下最新最酷的绿色软件,更新快,种类全,所有软件均经过检测,安全无毒, DOWN下——为中国5亿网民提供贴心,省心,放心的免费软件下载网站。">
-<meta http-equiv="mobile-agent" content="format=html5; url=http://m.downxia.com"/>
-```
-
-## H5 是什么？-->>移动端页面
+## H5 是什么？-->>移动端的网页
 
 **h5一般指的是开一个WebView来加载页面。WebView是一种控件，它基于webkit引擎，因此具备渲染Web页面的功能**
 
@@ -77,7 +29,7 @@
 
 与事件冒泡相反，事件会从最外层开始发生，直到最具体的元素
 
-#### addEventListener
+#### `addEventListener`
 
 addEventListener方法用来为一个特定的元素绑定一个事件处理函数，是JavaScript中的常用方法。
 
@@ -90,7 +42,7 @@ addEventListener方法用来为一个特定的元素绑定一个事件处理函�
 - true - 事件句柄在捕获阶段执行（即在事件捕获阶段调用处理函数）
 - false- false- 默认。事件句柄在冒泡阶段执行（即表示在事件冒泡的阶段调用事件处理函数）
 
-#### attachEvent
+#### `attachEvent`
 
 兼容IE的写法，默认是事件冒泡阶段调用处理函数，写**事件名时候要加上"on"前缀 **（"onload"、"onclick"等）。
 
@@ -137,17 +89,7 @@ document.addEventListener('mouseup', function(e){
 })
 ```
 
-## 标签语义化
 
-（1）**html结构清晰**，代码可读性较好。 
-
-（2）**有利于SEO**，搜索引擎根据标签来确定上下文和各个关键字的权重。 
-
-（3）**无障碍阅读，样式丢失的时候能让页面呈现清晰的结构**。 
-
-（4）**方便其他设备解析**，如**盲人阅读器**根据语义渲染网页 
-
-（5）**便于团队维护和开发**，语义化更具可读性，代码更好维护，与CSS3关系更和谐。
 
 ## src与href的区别
 

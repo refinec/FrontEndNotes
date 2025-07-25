@@ -213,36 +213,36 @@ setTimeout(function() {
 
 ```js
 async function async1() {
-       console.log('async1 start')
-       await async2()
-       console.log('async1 end')         // 1
-   }
-    
-   async function async2() {
-       console.log('async2')
-   }
-    
-  console.log('script start')
-    
-  async1()
-    
-  setTimeout(() => {                    // 2
-      console.log('setTimeout')
-  }, 0)
-    
-  new Promise((resolve) => {
-      console.log('promise')
-      resolve()
-  }).then(function () {                 // 3
-      console.log('promise1 start')
-      return 'promise1 end'
-  }).then(res => {                      // 4
-      console.log(res)
-  }).then(res => {                      // 5
-      console.log(res)
-  })
-    
-  console.log('script end')
+   console.log('async1 start')
+   await async2()
+   console.log('async1 end')         // 1
+}
+
+async function async2() {
+   console.log('async2')
+}
+
+console.log('script start')
+
+async1()
+
+setTimeout(() => {                    // 2
+  console.log('setTimeout')
+}, 0)
+
+new Promise((resolve) => {
+  console.log('promise')
+  resolve()
+}).then(function () {                 // 3
+  console.log('promise1 start')
+  return 'promise1 end'
+}).then(res => {                      // 4
+  console.log(res)
+}).then(res => {                      // 5
+  console.log(res)
+})
+
+console.log('script end')
 ```
 
 输出结果：
