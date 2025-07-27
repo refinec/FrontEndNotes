@@ -1,5 +1,3 @@
-# vue
-
 ## 1. 虚拟Dom是什么，为什么会有这项技术
 
 Web界面由DOM树(树的意思是数据结构)来构建，当其中一部分发生变化时，其实就是对应某个DOM节点发生了变化， **虚拟DOM就是为了解决浏览器性能问题而被设计出来的**
@@ -368,7 +366,7 @@ const List = resolve =>{ require.ensure([],()=>{ resolve(require('./list')) },'l
 {
     path: '/home',
     name: 'home',
-    component:resolve => require(['@/components/home'],resolve)
+    component: resolve => require(['@/components/home'],resolve)
 }
 ```
 
@@ -378,12 +376,12 @@ const List = resolve =>{ require.ensure([],()=>{ resolve(require('./list')) },'l
 
 ```javascript
 //没有指定webpackChunkName,每个组件打包成一个js文件
-const test1 = ()=>import('@/components/test1.vue') 
-const test2 = ()=>import('@/components/test2.vue')
+const test1 = ()=> import('@/components/test1.vue') 
+const test2 = ()=> import('@/components/test2.vue')
 
 //指定了相同的webpackChunkName，会合并打包成y一个js文件
-const test3 = ()=>import(/* webpackChunkName:'grounpTest' */ '@/components/test3.vue') 
-const test4 = ()=>import(/* webpackChunkName:'grounpTest' */ '@/components/test4.vue')
+const test3 = ()=> import(/* webpackChunkName:'grounpTest' */ '@/components/test3.vue') 
+const test4 = ()=> import(/* webpackChunkName:'grounpTest' */ '@/components/test4.vue')
 
 const router = new VueRouter({
     routes: [

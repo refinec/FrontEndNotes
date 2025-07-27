@@ -28,7 +28,7 @@ replace替换路由，没有历史记录。
 
 - **全局导航钩子**
 
-```
+```js
 router.beforeEach(to, from, next),
 
 router.beforeResolve(to, from, next),
@@ -38,7 +38,7 @@ router.afterEach(to, from )
 
 - **组件内钩子**
 
-```
+```js
 beforeRouteEnter,
 
 beforeRouteUpdate,
@@ -48,6 +48,6 @@ beforeRouteLeave
 
 - **单独路由独享组件**
 
-```
+```js
 beforeEnter
 ```
