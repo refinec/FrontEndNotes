@@ -37,9 +37,9 @@ console.log(b);
 ## 第3题
 
 ```js
-var a = {n:1};
+var a = { n:1 };
 var b = a;
-a.x = a = {n:2};
+a.x = a = { n:2 };
 console.log(a.x);
 console.log(b.x);
 ```
@@ -100,7 +100,7 @@ console.log("1" + 3);
 console.log(1 + undefined);
 console.log(1 + null);
 console.log(1 + {});
-console.log(1 + []);
+console.log(1 + []); // [].toString() -> ''
 console.log([] + {});
 ```
 
@@ -253,11 +253,11 @@ a();
 
 **解析**
 
-> 这道题考察的是作用域的问题，作用域其实就是一套变量的查找规则，每个函数在执行时都会创建一个执行上下文，其中会关联一个变量对象，也就是它的作用域，上面保存着该函数能访问的所有变量，另外上下文中的代码在执行时还会创建一个作用域链，如果某个标识符在当前作用域中没有找到，会沿着外层作用域继续查找，直到最顶端的全局作用域，因为js是词法作用域，在写代码阶段就作用域就已经确定了，换句话说，是在函数定义的时候确定的，而不是执行的时候，所以a函数是在全局作用域中定义的，虽然在b函数内调用，但是它只能访问到全局的作用域而不能访问到b函数的作用域。
+> 这道题考察的是作用域的问题，作用域其实就是一套变量的查找规则，每个函数在执行时都会创建一个执行上下文，其中会关联一个变量对象，也就是它的作用域，上面保存着该函数能访问的所有变量，另外上下文中的代码在执行时还会创建一个作用域链，如果某个标识符在当前作用域中没有找到，会沿着外层作用域继续查找，直到最顶端的全局作用域，因为**js是词法作用域，在写代码阶段就作用域就已经确定了，换句话说，是在函数定义的时候确定的，而不是执行的时候**，所以a函数是在全局作用域中定义的，虽然在b函数内调用，但是它只能访问到全局的作用域而不能访问到b函数的作用域。
 
 ## 第14题
 
-```
+```js
 var a = 1
 function a(){}
 console.log(a)
@@ -269,7 +269,6 @@ console.log(b)
 function b(){}
 var b
 console.log(b)
-复制代码
 ```
 
 **答案**
@@ -288,14 +287,17 @@ console.log(b)
 
 ## 第15题
 
-```
+```js
 function Foo() {
   getName = function () { console.log(1) }
   return this
 }
 Foo.getName = function () { console.log(2) }
+
 Foo.prototype.getName = function () { console.log(3) }
+
 var getName = function () { console.log(4) }
+
 function getName() { console.log(5) }
 
 //请写出以下输出结果：
@@ -306,7 +308,6 @@ getName()
 new Foo.getName()
 new Foo().getName()
 new new Foo().getName()
-复制代码
 ```
 
 **答案**
@@ -333,7 +334,7 @@ new new Foo().getName()
 
 ## 第16题
 
-```
+```js
 const person = {
  address: {
   country:"china",
@@ -342,8 +343,8 @@ const person = {
  say: function () {
   console.log(`it's ${this.name}, from ${this.address.country}`)
  },
- setCountry:function (country) {
-  this.address.country=country
+ setCountry: function (country) {
+  this.address.country = country
  }
 }
 
@@ -358,7 +359,6 @@ p2.setCountry("England")
 
 p1.say()
 p2.say()
-复制代码
 ```
 
 **答案**
@@ -377,6 +377,7 @@ p2.say()
 setTimeout(function() {
   console.log(1);
 }, 0);
+
 new Promise(function(resolve) {
   console.log(2);
   for( var i=0 ; i<10000 ; i++ ) {
@@ -448,7 +449,7 @@ setTimeout(function() {
 
 **答案**
 
-`1、7、6、8、2、4、9、11、3、10、5、12`
+`1、7、6、8、2、4、3、5、9、11、10、12`
 
 **解析**
 
@@ -456,7 +457,6 @@ setTimeout(function() {
 >
 > ![图片](../../assets/面试/640.jpeg)
 >
-> 理解了以后再来分析这道题就很简单了，首先执行整体代码，先打印出1，setTimeout回调扔进timers队列，nextTick的扔进nextTick的队列，promise的回调是同步代码，执行后打印出7，then回调扔进微任务队列，然后又是一个setTimeout回调扔进timers队列，到这里当前节点就结束了，检查nextTick和微任务队列，nextTick队列有任务，执行后打印出6，微任务队列也有，打印出8，接下来按顺序检查各个阶段，check队列、close callbacks队列都没有任务，到了timers阶段，发现有两个任务，先执行第一个，打印出2，然后nextTick的扔进nextTick的队列，执行promise打印出4，then回调扔进微任务队列，再执行第二个setTimeout的回调，打印出9，然后和刚才一样，nextTick的扔进nextTick的队列，执行promise打印出11，then回调扔进微任务队列，到这里timers阶段也结束了，执行nextTick队列的任务，发现又两个任务，依次执行，打印出3和10，然后检查微任务队列，也是两个任务，依次执行，打印出5和12，到这里是有队列都清空了。
 
 
 

@@ -19,9 +19,9 @@
 ```js
 var foo = 123;
 function print(){
- this.foo = 234;
-    console.log(this); // window
- console.log(foo); // 234
+	this.foo = 234;
+  console.log(this); // window
+  console.log(foo); // 234
 }
 print(); 
 ```
@@ -35,7 +35,7 @@ window.foo = 123
 function print() {
     this.foo = 234;
     console.log(this); 
- console.log(window.foo);
+ 		console.log(window.foo);
 }
 window.print()
 ```
@@ -137,6 +137,7 @@ a = 1;
     console.log(this);
     console.log(this.a)
 }())
+
 function bar() {
     b = 2;
     (function(){
@@ -495,13 +496,13 @@ doFoo(obj.foo)
 
 1. 首先先修正`doFoo()`函数的`this`指向。
 
-```
+```js
 doFoo.call(obj, obj.foo)
 ```
 
 1. 然后修正`fn`的`this`。
 
-```
+```js
 function foo() {
   console.log(this.a)
 }
@@ -520,7 +521,7 @@ doFoo(obj.foo)
 
 接着上一个题目的风格，稍微变点花样：
 
-```
+```js
 var obj1 = {
     a: 1
 }
@@ -545,7 +546,7 @@ obj2.foo()
 
 做题之前，先了解一下`setTimeout`的内部机制：(关于异步的执行顺序，可以参考**JavaScript之EventLoop**[6])
 
-```
+```js
 setTimeout(fn) {
     if (回调条件满足) (
         fn
@@ -557,7 +558,7 @@ setTimeout(fn) {
 
 **答案**
 
-```
+```js
 2
 {a: 1}
 1
@@ -565,7 +566,7 @@ setTimeout(fn) {
 
 ### 题目4.4：注意call位置
 
-```
+```js
 function foo () {
     console.log(this.a)
 }
@@ -583,7 +584,7 @@ foo().call(obj)
 
 **答案**
 
-```
+```js
 2
 1
 2
@@ -594,7 +595,7 @@ Uncaught TypeError: Cannot read property 'call' of undefined
 
 上面由于`foo`没有返回函数，无法执行`call`函数报错，因此修改一下`foo`函数，让它返回一个函数。
 
-```
+```js
 function foo () {
     console.log(this.a)
     return function() {
@@ -617,7 +618,7 @@ foo().call(obj)
 
 **答案**
 
-```
+```js
 2
 1
 2
@@ -630,7 +631,7 @@ foo().call(obj)
 
 > call是会立即执行函数，bind会返回一个新函数，但不会执行函数
 
-```
+```js
 function foo () {
     console.log(this.a)
     return function() {
@@ -653,7 +654,7 @@ foo().bind(obj)
 
 **答案**
 
-```
+```js
 2
 2
 ```
@@ -662,7 +663,7 @@ foo().bind(obj)
 
 做到这里，不由产生了一些疑问：如果使用`call、bind`等修改了外层函数的`this`，那内层函数的`this`会受影响吗？(注意区别箭头函数)
 
-```
+```js
 function foo () {
     console.log(this.a)
     return function() {
@@ -678,7 +679,7 @@ foo.call(obj)()
 
 **答案**
 
-```
+```js
 1
 2
 ```
@@ -687,7 +688,7 @@ foo.call(obj)()
 
 把上面的代码移植到对象中，看看会发生怎样的变化？
 
-```
+```js
 var obj = {
     a: 'obj',
     foo: function () {
@@ -715,7 +716,7 @@ obj.foo().call(obj2)
 
 显式绑定一开始讲的时候，就谈过`call/apply`存在传参差异，那咱们就来传一下参数，看看传完参数的this会是怎样的美妙。
 
-```
+```js
 var obj = {
   a: 1,
   foo: function (b) {
@@ -761,7 +762,7 @@ obj.foo.call(obj2)(1)
 
 JavaScript中没有给数组提供类似max和min函数，只提供了`Math.max/min`，用于求多个数的最值，所以可以借助apply方法，直接传递数组给`Math.max/min`
 
-```
+```js
 const arr = [1,10,11,33,4,52,17]
 Math.max.apply(Math, arr)
 Math.min.apply(Math, arr)
@@ -777,7 +778,7 @@ Math.min.apply(Math, arr)
 
 例如下面这个例子
 
-```
+```js
 const obj = {a: 10}
 const arr = [1, 2, 3, 4]
 arr.forEach(function (val, key){
@@ -811,7 +812,7 @@ arr.forEach(function (val, key){
 
 ### 题目6.1：new绑定
 
-```
+```js
 function User(name, age) {
     this.name = name;
     this.age = age;
@@ -831,7 +832,7 @@ zc
 
 ### 题目6.2：属性加方法
 
-```
+```js
 function User (name, age) {
   this.name = name;
   this.age = age;
@@ -853,7 +854,7 @@ zc.howOld()()
 
 这个题很难不让人想到如下代码，都是函数嵌套，具体解法是类似的，可以对比来看一下啊。
 
-```
+```js
 const User = {
   name: 'zc';
   age: 18;
@@ -888,7 +889,7 @@ zc
 
 接下来一起来品味品味：
 
-```
+```js
 function Foo(){
     getName = function(){ console.log(1); };
     return this;
@@ -980,7 +981,7 @@ console.log(new Foo.getName())
 
 测试结果如下:
 
-```
+```js
 foo1 = new Foo.getName()
 foo2 = new new Foo().getName()
 console.log(foo1.constructor)
@@ -1019,7 +1020,7 @@ console.log(foo2.constructor)
 
 ### 题目7.1：对象方法使用箭头函数
 
-```
+```js
 name = 'tom'
 const obj = {
     name: 'zc',
@@ -1040,7 +1041,7 @@ My name is tom
 
 ### 题目7.2：箭头函数与普通函数比较
 
-```
+```js
 name = 'tom'
 const obj = {
     name: 'zc',
@@ -1064,7 +1065,7 @@ obj.intro()()
 
 ### 题目7.3：箭头函数与普通函数的嵌套
 
-```
+```js
 name = 'window'
 const obj1 = {
     name: 'obj1',
@@ -1116,7 +1117,7 @@ window
 
 ### 题目7.4：new碰上箭头函数
 
-```
+```js
 function User(name, age) {
     this.name = name;
     this.age = age;
@@ -1142,7 +1143,7 @@ zc.howOld();
 
 箭头函数由于没有`this`，不能通过`call\apply\bind`来修改`this`指向，但可以通过修改外层作用域的`this`来达成间接修改
 
-```
+```js
 var name = 'window'
 var obj1 = {
   name: 'obj1',
@@ -1201,7 +1202,7 @@ obj2
 
 1. 箭头函数定义对象方法
 
-```
+```js
 const zc = {
     name: 'zc',
     intro: () => {
@@ -1214,7 +1215,7 @@ zc.intro() // undefined
 
 1. 箭头函数不能作为构造函数
 
-```
+```js
 const User = (name, age) => {
     this.name = name;
     this.age = age;
@@ -1227,7 +1228,7 @@ zc = new User('zc', 24);
 
 DOM中事件的回调函数中this已经封装指向了调用元素，如果使用构造函数，其this会指向window对象
 
-```
+```js
 document.getElementById('btn')
         .addEventListener('click', ()=> {
             console.log(this === window); // true
@@ -1240,7 +1241,7 @@ document.getElementById('btn')
 
 ### 题目9.1: 对象综合体
 
-```
+```js
 var name = 'window'
 var user1 = {
     name: 'user1',
@@ -1285,7 +1286,7 @@ user1.foo4().call(user2)
 
 答案:
 
-```
+```js
 var name = 'window'
 var user1 = {
     name: 'user1',
@@ -1323,7 +1324,7 @@ user1.foo4().call(user2) // user1
 
 ### 题目9.2：隐式绑定丢失
 
-```
+```js
 var x = 10;
 var foo = {
    x : 20,
@@ -1350,7 +1351,7 @@ foo.bar();
 
 ### 题目9.3：arguments(推荐看)
 
-```
+```js
 var length = 10;
 function fn() {
     console.log(this.length);
@@ -1373,24 +1374,22 @@ obj.method(fn, 1);
 
 - `arguments[0]()`: 这种执行方式看起来就怪怪的，咱们把它展开来看看：
 
-  ```
+  ```js
   arguments: {
       0: fn,
       1: 1,
       length: 2
   }
-  复制代码
   ```
-
-  ```
+  
+  ```js
   arguments: {
       fn: fn,
       1: 1,
       length: 2
   }
-  复制代码
   ```
-
+  
 - 1. 到这里大家应该就懂了，隐式绑定，`fn`函数`this`指向`arguments`，打印2
 
 - 1. `arguments[0]`: 这是访问对象的属性0？0不好理解，咱们把它稍微一换，方便一下理解：
@@ -1399,7 +1398,7 @@ obj.method(fn, 1);
 
 ### 题目9.4：压轴题(推荐看)
 
-```
+```js
 var number = 5;
 var obj = {
     number: 3,
@@ -1433,7 +1432,7 @@ console.log(window.number);
 
    此时的obj可以类似的看成以下代码(注意存在闭包):
 
-   ```
+   ```js
    obj = {
       number: 3,
       fn: function () {
@@ -1444,9 +1443,8 @@ console.log(window.number);
            console.log(number);
        }
    }
-   复制代码
    ```
-
+   
 2. - `var number`: 立即执行函数的`AO`中添加`number`属性，值为`undefined`
    - `this.number *= 2`: `window.number = 10`
    - `number = number * 2`: 立即执行函数`AO`中`number`值为`undefined`，赋值后为`NaN`

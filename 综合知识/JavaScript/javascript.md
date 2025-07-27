@@ -810,14 +810,30 @@ CommonJS定义了两个主要概念：
 
 ## Attribute与Property
 
-**attribute **：是HTML**标签上的某个属性**，如id、class、value等以及自定义属性
+* **`attribute` **：指的是dom属性，即HTML**标签上的属性**，如id、class、value等以及自定义属性
 
-**property **：是js获取的**DOM对象上的属性值**，比如a，你可以将它看作为一个基本的js对象。
+  ```html
+  <input id="the-input" type="text" value="Name:" />
+  ```
 
-```javascript
-let demo11 = oDiv.getAttribute('class');
-let demo2 = oDiv.setAttribute('data-name','new-value')
-```
+  上面代码中的 input 节点有三个 attribute:
+
+  - id : the-input
+  - type : text
+  - value : Name
+
+  ```js
+  let demo11 = oDiv.getAttribute('id');
+  let demo2 = oDiv.setAttribute('data-name','new-value')
+  ```
+
+* **`property` **：指的是对象属性，是js获取的**DOM对象上的属性值**，比如a，你可以将它看作为一个基本的js对象。
+
+  ```js
+  HTMLInputElement.id === 'the-input'
+  HTMLInputElement.type === 'text'
+  HTMLInputElement.value === 'Name:'
+  ```
 
 ## 路由规则
 
@@ -829,19 +845,19 @@ let demo2 = oDiv.setAttribute('data-name','new-value')
 * `forward()`
 * `go()`
 
-**pushState()**：添加历史记录的条目
+**`pushState`**：添加历史记录的条目
 
 ```javascript
 history.pushState(state, title, url); 添加一条历史记录，不刷新页面
 ```
 
-`state` : 一个于指定网址相关的状态对象，`popstate`事件触发时，该对象会传入回调函数中。如果不需要这个对象，此处可以填null。
+* `state` : 一个于指定网址相关的状态对象，`popstate`事件触发时，该对象会传入回调函数中。如果不需要这个对象，此处可以填null。
 
-`title` : 新页面的标题，但是所有浏览器目前都忽略这个值，因此这里可以填null。
+* `title` : 新页面的标题，但是所有浏览器目前都忽略这个值，因此这里可以填null。
 
-`url` : 新的网址，必须与前页面处在同一个域。浏览器的地址栏将显示这个网址。
+* `url` : 新的网址，必须与前页面处在同一个域。浏览器的地址栏将显示这个网址。
 
-**replaceState**：替换历史记录的条目
+**`replaceState`**：替换历史记录的条目
 
 ```javascript
 history.replaceState(state, title, url);  替换当前的历史记录，不刷新页面
@@ -851,9 +867,29 @@ history.replaceState(state, title, url);  替换当前的历史记录，不刷�
 - 不同之处在于，pushState会增加一条新的历史记录，replaceState则会替换当前的历史记录。
 - 这两个api，加上state改变触发的`popstate`事件，提供了单页应该的另一种路由方式。
 
- `popstate` 事件：历史记录发生改变时触发
+ **`popstate`** ：历史记录发生改变时触发
 
-**基于hash（location.hash+hashchange事件）**
+```js
+window.onpopstate = function (event) {
+  alert(
+    "location: " +
+      document.location +
+      ", state: " +
+      JSON.stringify(event.state),
+  );
+};
+
+history.pushState({ page: 1 }, "title 1", "?page=1");
+history.pushState({ page: 2 }, "title 2", "?page=2");
+history.replaceState({ page: 3 }, "title 3", "?page=3");
+history.back(); // 弹出 "location: http://example.com/example.html?page=1, state: {"page":1}"
+history.back(); // 弹出 "location: http://example.com/example.html, state: null
+history.go(2); // 弹出 "location: http://example.com/example.html?page=3, state: {"page":3}
+```
+
+
+
+**基于hash（`location.hash`+`hashchange`事件）**
 
 我们知道**location.hash的值就是url中`#`后面的内容**，如`http://www.163.com#something`。
 
@@ -881,6 +917,6 @@ window.addEventListener("hashchange", funcRef, false)
 
 * 另一种是通过**js直接赋值给location.hash**，也会改变url，触发**hashchange事件**。
 
-```
+```js
 location.hash="#somewhere"
 ```
