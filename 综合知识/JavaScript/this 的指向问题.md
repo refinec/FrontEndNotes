@@ -1495,3 +1495,4 @@ console.log(window.number);
 - 显示绑定: 通过`call/apply/bind`修改`this`指向
 - `new`绑定: 通过`new`来调用构造函数，会生成一个新对象，并且把这个新对象绑定为调用函数的`this`。
 - 箭头函数绑定: 箭头函数没有`this`，它的`this`是通过作用域链查到外层作用域的`this`，且指向函数定义时的`this`而非执行时
+- class方法：该this指向的就是实例

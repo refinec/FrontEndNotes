@@ -1,4 +1,4 @@
-## 1. 闭包
+## 什么是闭包？
 
 **闭包就是一个函数引用另一个函数内部的变量，因为变量被引用着，所以当另外一个函数执行结束，其相应的执行上下文弹出栈时， 变量并不会被回收，因此可以用来封装一个私有变量。这既是优点也是缺点，不必要的闭包只会增加内存消耗， 因为没有使用的变量并不会被及时回收**
 
@@ -6,9 +6,9 @@
 
 ```javascript
 function f1(){
-    var n=999;
-    nAdd=function(){
-        n+=1
+    var n = 999;
+    nAdd = function(){
+        n += 1;
     }
     function f2(){
         alert(n);
@@ -16,7 +16,7 @@ function f1(){
     return f2;
 }
 
-var result=f1();
+var result = f1();
 
 result(); // 999
 
@@ -49,31 +49,31 @@ result(); // 1000
 
 2. 函数的另一个用途是使已经运行结束的函数上下文中的变量对象继续留在内存中，因为闭包函数保留了这个变量对象的引用，所以这个变量对象不会被回收。
 
-## 2. 介绍一下`js`数据类型
+## `js`中的数据类型有哪些？
 
 **基本数据类型有**:
 
-1. **String**
-2. **Number**
-3. **Boolean**
-4. **Null**
-5. **Undefined**
-6. **Symbol**
-7. **BigInt**
+1. **`String`**
+2. **`Number`**
+3. **`Boolean`**
+4. **`Null`**
+5. **`Undefined`**
+6. **`Symbol`**
+7. **`BigInt`**
 
 **引用数据类型有**:
 
-1. **Object**
-2. **Array**
-3. **Function**
+1. **`Object`**
+2. **`Array`**
+3. **`Function`**
 
-**基本数据类型的值**直接保存在***栈*** 中，而**复杂数据类型的值**保存在***堆***中，**通过使用在栈中保存对应的指针来获取堆中的值**。
+**基本数据类型的值**直接保存在**`栈`** 中，而**复杂数据类型的值**保存在**`堆`**中，**通过使用在栈中保存对应的指针来获取堆中的值**。
 
-## 3. isFinite & Number.isFinite区别
+## `isFinite` & `Number.isFinite`的区别？
 
-都是检测**有限性**的值。两者区别在于，**`isFinite`函数强制将一个非数值的参数转换成数值**，如果能转换成数值，然后再去判断是否是**有限的**
+都是检测**有限性**的值。两者区别在于，**`isFinite`**函数会进行类型转换，强制将一个非数值的参数转换成数值，如果能转换成数值，然后再去判断是否是**有限的**
 
-`Number.isFinite()`检测有穷性的值，这个方法**不会强制将一个非数值的参数转换成数值**，这就意味着，**只有数值类型的值，且是有穷的（finite），才返回 `true`**。
+**`Number.isFinite()`**检测有穷性的值，这个方法**不会强制将一个非数值的参数转换成数值**，这就意味着，**只有数值类型的值，且是有穷的（finite），才返回 `true`**。
 
 ```javascript
 Number.isFinite(0)    // true
@@ -84,16 +84,16 @@ isFinite('0')  // true
 isFinite(Infinity)  // false
 ```
 
-## 4.isNaN 和 Number.isNaN 函数的区别
+## `isNaN` & `Number.isNaN` 函数的区别
 
-- `isNaN`会**将参数转换成数字**，**任何不能被转换成数值的都返回true**，所以对于非数字的参数返回true，会影响`NaN`判断
-- `Number.isNaN`首先判断是不是数字，是数字在去判断是不是`NaN`，这种方法更准确。
+- **`isNaN`**会**将参数转换成数字**，**任何不能被转换成数值的都返回true**，所以对于非数字的参数返回true，会影响`NaN`判断
+- **`Number.isNaN`**首先判断是不是数字，是数字在去判断是不是`NaN`，这种方法更准确。
 
 ```javascript
-// isNaN('sdasd') true
-// isNaN('21N') true
-// isNaN(NaN)  true
-// isNaN(123) false
+isNaN('sdasd') // true
+isNaN('21N') // true
+isNaN(NaN) // true
+isNaN(123) // false
 
 Number.isNaN('1232N')  // false
 Number.isNaN('1232')    // false
@@ -102,38 +102,38 @@ Number.isNaN('sadas')  // false
 Number.isNaN(NaN)   // true
 ```
 
-## 5.什么是可迭代对象
+## 什么是可迭代对象?
 
  一个对象必须实现 @@iterator 方法。这意味着对象（或者它原型链上的某个对象）必须有一个键为 @@iterator 的属性，可通过常量 `Symbol.iterator` 访问该属性
 
-如何判断一个类型是不是可迭代对象
+如何判断一个变量是不是可迭代对象？可以通过判断**`Symbol.iterator`**判断当前变量是否是可迭代对象。
 
 ```js
 let someString = "hi";
 typeof someString[Symbol.iterator];          // "function"
 ```
 
-- 常见的可迭代对象，有`Array`，`Map`, `Set`, `String`,`TypeArray`, `arguments`
-- 可以通过判断**`Symbol.iterator`**判断当前变量是否是可迭代对象
+常见的可迭代对象，有`Array`，`Map`, `Set`, `String`,`TypeArray`, `arguments`
 
-## 6.原型
+## 什么是原型(对象)？
 
-- 在`js`中，我们**通常会使用构造函数来创建一个对象，每一个构造函数的内部都有一个prototype属性，这个属性对应的值是一个对象，这个对象它包含了可以由该构造函数的所有实例都共享的属性和方法**，我们把它称为原型。
-- 原型分为**显示原型**和**隐式原型**，一般称`prototype`为显示原型，`__proto__`称为隐式原型。
-- 一般而言，`__proto__`这个指针我们应该获取这个值，但是浏览器中都实现了 `__proto__ `属性来让我们访问这个属性，但是我们最好不要使用这个属性，因为它不是规范中规定的。
-- ES5 中新增了一个 **`Object.getPrototypeOf()`** 方法，我们可以通过这个方法来获取对象的原型。
+> 在`js`中，我们**通常会使用构造函数来创建一个对象，每一个构造函数的内部都有一个`prototype`属性，这个属性对应的值是一个对象，这个对象它包含了可以<u>由该构造函数的所有实例都共享的属性和方法</u>**，我们把它称为原型。
+>
+> 原型分为**显示原型**和**隐式原型**，一般称`prototype`为显示原型，`__proto__`称为隐式原型。
+
+一般而言，通过`__proto__`这个属性可以让我们获取对象的原型，但是我们最好不要使用这个属性，因为它不是规范中规定的，而是浏览器实现的。ES5 中新增了一个 **`Object.getPrototypeOf()`** 方法，我们可以通过这个方法来获取对象的原型。
 
 举个例子👇
 
 为什么我们新建的对象可以使用`toString()`方法，这是因为我们访问一个对象的属性时，首先会在这个对象身上找，如果没有的话，我们会通过这个对象的`__proto__`找到该对象的原型，然后在这个原型对象中找，这个原型对象又没有的话，就这样子通过一直找下去，这也就是**原型链概念**。直到找到**原型链的尽头也就是`Object.prototype` **。
 
-## js 获取原型的方法
+## js中有哪些方法可以获取对象的原型？
 
 假设Demo是一个对象，那么有三种方式👇
 
-- `Demo.constructor.prototype`
-- Demo.`__proto__`
 - `Object.getPrototypeOf(Demo)`
+- `Demo.constructor.prototype`
+- `Demo.__proto__`
 
 因为设置对象原型的代码：
 
@@ -144,13 +144,13 @@ Object.setPrototypeOf = function (obj, proto) {
  }
 ```
 
-## 6.构造函数、原型与实例之间的关系
+## 构造函数、原型与实例之间的关系
 
-每创建一个函数，该函数就会自动带有一个 **`prototype`** 属性。该属性是个指针，指向了一个对象，我们称之为 **原型对象**。
-
-原型对象上默认有一个属性**` constructor`**，该属性也是一个指针，指向其相关联的构造函数。
-
-通过调用构造函数产生的实例，都有一个内部属性，指向了原型对象。所以实例能够访问原型对象上的所有属性和方法。
+> 每创建一个函数，该函数就会自动带有一个 **`prototype`** 属性。该属性是个指针，指向了一个对象，我们称之为 **原型对象**。
+>
+> 原型对象上默认有一个属性**` constructor`**，该属性也是一个指针，指向其相关联的构造函数。
+>
+> 通过调用构造函数产生的实例，都有一个内部属性，指向了原型对象。所以实例能够访问原型对象上的所有属性和方法。
 
 所以三者的关系是，**(重要)每个构造函数都有一个原型对象，原型对象都包含一个指向构造函数的指针**，而**实例都包含一个指向原型对象的内部指针**。通俗点说就是，**实例通过内部指针可以访问到原型对象，原型对象通过constructor指针，又可以找到构造函数 **。
 
@@ -210,9 +210,9 @@ doggie.superSpeak();  //Animal
 
 总结来说：就是当重写了`Dog.prototype`指向的原型对象后，实例的内部指针也发生了改变，指向了新的原型对象，然后就能实现类与类之间的继承了。（**但是如果在重写原型对象之前，产生的实例，其内部指针指向的还是最初的原型对象**)。
 
-## 7. arguments对象了解吗
+## `arguments`对象了解吗?
 
-`arguments`对象是所有（非箭头）函数中都可用的**局部变量**。此对象包含传递给函数的每个参数，第一个参数在索引0处.`arguments`对象不是一个 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 。它类似于`Array`，但除了length属性和索引元素之外没有任何`Array`属性
+`arguments`对象是所有（非箭头）函数中都可用的**局部变量**。此对象包含传递给函数的每个参数，第一个参数在索引0处.`arguments`对象不是一个 [**`Array`**](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 。它类似于`Array`，但除了`length`属性和索引元素之外没有任何`Array`属性
 
 **转换成数组**👇
 
@@ -222,7 +222,7 @@ let args1 = Array.from(arguments)
 let args2 = [...arguments]
 ```
 
-* 非严格模式中的函数**没有**包含剩余参数、默认参数和解构赋值，那么`arguments`对象中的值**会**跟踪参数的值（反之亦然）
+* 非严格模式中的函数**没有**包含**剩余参数**、**默认参数**和**解构赋值**，那么`arguments`对象中的值**会**跟踪参数的值（反之亦然）
 
 ```javascript
 function func(a) { 
@@ -244,30 +244,15 @@ func(10); // 99
 
 * 当非严格模式中的函数**有**包含**剩余参数**、**默认参数**和**解构赋值**，那么`arguments`对象中的值**不会**跟踪参数的值（反之亦然）。相反, `arguments`反映了调用时提供的参数：
 
-## 把script标签放在body闭合标签上面的原因
+## 把`script`标签放在`body`闭合标签上面的原因?
 
-- **JavaScript的执行**会阻塞HTML的**解析渲染**;
-- 当使用script标签引入外部`js`文件时, **Network线程**会**阻塞HTML的解析**, 但**不会阻塞HTML的渲染**;
+> 当使用script标签引入外部`js`文件时, **Network线程**会**阻塞HTML的解析**, 但**不会阻塞HTML的渲染**，**JavaScript的执行**会阻塞HTML的**解析渲染**
 
 JavaScript执行确实会**阻塞HTML的解析渲染**, 若是以**嵌入的方式**引入JavaScript, 不管**script标签**是放在**head标签中**或是**body标签尾部**, 页面都会由于JavaScript的执行而持续白屏; 
 
-而在**引入外部js文件**的情况, 由于**Network线程**下载外部js文件仅阻塞HTML的解析而不会阻塞HTML的渲染, **script标签**置于**body标签尾部**可以避免由于js文件下载时间太长导致的页面持续白屏!
+而在**引入外部js文件**的情况下, **script标签**置于**body标签尾部**可以避免由于js文件下载时间太长导致的页面持续白屏!
 
-1、**避免用户等待，让页面先展示，然后再去执行脚本**
-2、**防止过多js执行时，变量没有初始化的情况**
-3、**js文件比较大，一般流程时先加载页面，然后加载并执行js**
-
-<img src="https://pic1.zhimg.com/80/v2-c079ce4e29760c796f930b8ccf32617c_720w.jpg" style="zoom:67%;" />
-
-从上图可以看出, 网页的渲染流程大致如下:
-
-1. **Parse HTML** 该阶段生成了DOM Tree和CSSOM Tree;
-2. **Layout** 将DOM Tree结合CSSOM Tree, 生成Layout Tree(又称Render Tree), 计算每个元素的尺寸和位置;
-3. **Update Layout Tree** 更新Layout Tree;
-4. **Paint** 生成PaintLayout Tree记录元素绘制顺序;
-5. **Composite** 合成视图输出到屏幕;
-
-## async VS defer
+## async 与 defer 的区别？
 
 ```javascript
 <script src="..." async></script>
@@ -285,9 +270,9 @@ JavaScript执行确实会**阻塞HTML的解析渲染**, 若是以**嵌入的方�
 
 另外 **defer 还有一个特点，它是按代码顺序来执行**的。
 
-## 讲讲PWA
+## 什么是`PWA`？
 
-PWA全称Progressive Web App，即渐进式WEB应用
+> PWA全称Progressive Web App，即渐进式WEB应用
 
 一个 PWA 应用首先是一个网页, 可以通过 Web 技术编写出一个网页应用. 随后添加上 **App Manifest** 和 **Service Worker** 来实现 PWA 的安装和离线等功能
 
@@ -295,7 +280,7 @@ PWA全称Progressive Web App，即渐进式WEB应用
 - 实现**离线缓存**功能，即使用户手机没有网络，依然可以使用一些离线功能
 - 实现了**消息推送**
 
-## 如何理解 JS 中的this关键字
+## 如何理解 JS 中的this关键字?
 
 **this表示当前对象，this的指向是根据调用的上下文来决定的，默认指向window对象 **。
  全局环境：全局环境就是在里面，这里的this始终指向的是window对象。
@@ -307,13 +292,14 @@ PWA全称Progressive Web App，即渐进式WEB应用
 
 ## 解释一下严格模式(strict mode)
 
-严格模式用于标准化正常的JavaScript语义。严格模式可以嵌入到非严格模式中，关键字 ‘use strict’。使用严格模式后的代码应遵循JS严格的语法规则。例如，分号在每个语句声明之后使用。
+严格模式用于标准化正常的JavaScript语义。严格模式可以嵌入到非严格模式中，关键字 `"use strict"`。使用严格模式后的代码应遵循JS严格的语法规则。例如，分号在每个语句声明之后使用。
 
-## 解释 JavaScript 中的 null 和 undefined
+## JavaScript 中的 `null` 和 `undefined`有何区别？
 
-- JavaScript 中有两种底层类型：null 和 undefined。它们代表了不同的含义：
-- **尚未初始化**：undefined；
-- **空值**：null。
+JavaScript 中有两种底层类型：`null` 和 `undefined`。它们代表了不同的含义：
+
+- undefined：**尚未初始化**
+- null：**空值**
 
 ```javascript
 //null和undefined是两个不同的对象
@@ -323,40 +309,7 @@ null == undefined //true
 null === undefined //flase
 ```
 
-## 字符串去重，并去除掉特殊字符，按照数字在前字母在后的顺序排序字符串
-
-```javascript
-//如下："1233fddfd&3434fdsaff&454545&4545444rfdsfds&545gdsgs"
-var str = "1233fddfd&3434fdsaff&454545&4545444rfdsfds&545gdsgs";
-var n = "";
-var s="";
-for(var i=0;i<str.length;i++){
-    if((str[i]>=0&&str[i]<=9)&&n.indexOf(str[i])==-1){
-        n+=str[i];
-    }else if((str.charCodeAt(i)>=97&&str.charCodeAt(i)<=122)&&s.indexOf(str[i]) == -1){
-        s+=str[i];
-    }
-}
-console.log(n+s); //12345fdsarg
-```
-
-## 编写一个数组去重的方法
-
-```javascript
-function sort(arr) {
-    for(var i = 0;i<arr.length;i++){
-        for(var j = i+1;j<arr.length;j++){
-            if(arr[i] == arr[j]){
-                arr.splice(j,1);
-                j--; //删除一个元素后，后面的元素会依次往前，下标也需要依次往前
-            }
-        }
-    }
-    return arr
-}
-```
-
-## DOM怎样添加、移除、移动、复制、创建和查找节点
+##  DOM怎样添加、移除、移动、复制、创建和查找节点？
 
 - 获取子节点
   		父节点.children
@@ -378,38 +331,11 @@ function sort(arr) {
 - 替换
   父节点.replaceChild（newChild，refChild）
 
-## 如何获取url地址中搜索内容？
-
-`window.location.search`
-
-## 解释一下事件流？
-
-* **事件捕获阶段**：当事件发生的时候，将事件从window依次往子元素传递
-  确定目标阶段：确定事件目标
-* **事件冒泡阶段**：事件目标开始处理事件，处理完以后会将事件依次传递给父元素，一直到window
-  事件都是在事件冒泡处理,`ie`只有冒泡
-
-## ajax请求的时候get 和post方式的区别，什么时候用post
-
-1. GET请求会将参数跟在URL后进行传递，而POST请求则是作为HTTP消息的实体内容发送给WEB服务器。当然在Ajax请求中，这种区别对用户是不可见的
-2. GEt传输数据容量小，不安全，post传输数据内容大，更加安全； 当向服务器发送一些数据的时候选择post比较安全
-
-## js哪些操作会造成内存泄露？
-
-* **意外的全局变量**引起的内存泄露
-
-  `function leak(){ leak=“xxx”;//leak成为一个全局变量，不会被回收 }`
-
-* **被遗忘的定时器**或者**回调**
-
-* **闭包**引起的内存泄漏
-
 ## $(document).ready() 方法和`window.onload` 有什么区别？
 
-1. `window.onload`只能执行一次，执行第二次则第一次被覆盖;
-   ready可执行多次，不会覆盖;
-2. `window.onload`等**文档和资源都加载完成**以后调用;
-   ready只要**文档结构加载完成**以后就会调用;
+`window.onload`只能执行一次，执行第二次则第一次被覆盖; `ready`可执行多次，不会覆盖;
+
+`window.onload`等**文档和资源都加载完成**以后调用; `ready`只要**文档结构加载完成**以后就会调用;
 
 ## 获取对象属性的方法
 
@@ -417,98 +343,44 @@ function sort(arr) {
 - **for in** 遍历的也可以，不过对于非继承的属性名称也会获取到，通过`hasOwnproperty`判断
 - **`Object.getOwnPropertyNames(obj) `**返回的参数就是一个数组，数组内包括**自身拥有的枚举**或**不可枚举属性**名称字符串，如果是数组的话，还有可能获取到`length`属性
 
-## for of 和 for in区别
+## `for of` 和 `for in`区别?
 
-for in
+**`for in`**
 
-- index获取的是**索引**
+- 遍历获取的是**索引**
 - **遍历的顺序可能不是按照顺序进行的**
-- 使用for in 会**遍历数组所有可枚举属性，包括原型**，**例如上面的method和name都会遍历**
-- for in **更适合遍历对象**，不要使用for in去遍历数组
+- 使用`for in` 会**遍历数组所有可枚举属性，包括原型链上的都会遍历**
+- `for in` **更适合遍历对象**，不要使用`for in`去遍历数组
 
-**for of**
+**`for of`**
 
-- for of 语法遍历的是数组元素的**值**
-- for in 遍历的是**索引**
-- for of遍历的只是数组内的元素，而**不包括数组的原型属性method**和**索引name**
+- `for of` 语法遍历的是数组元素的**值**，这**不包括数组的原型链上的属性**
 
 **小结**
 
-- **for..of适用遍历数/数组对象/字符串/map/set等拥有迭代器对象的集合，不能遍历对象 **，因为没有迭代对象，与`forEach()`不同的是，它可以正确响应**break**、**continue**和**return**语句。
+- **`for..of`适用遍历`数`、`数组`、`字符串`、`map`、`set`等拥有迭代器对象的集合，不能遍历对象 **，因为没有迭代对象，与`forEach()`不同的是，它可以正确响应**`break`**、**`continue`**和**`return`**语句。
 
-- **for in 可以遍历一个普通的对象，这样也是它的本质工作，for in会遍历原型以及可枚举属性 **，最好的情况下，使用**`hasOwnProperty`**判断是不是实例属性。
+- **`for in` 可以遍历一个普通的对象以及原型链上可枚举属性 **，最好使用**`hasOwnProperty`**判断下是不是实例属性来过滤掉。
 
-## 作用域链
+## 什么是作用域链？
 
-**<u>作用域 规定了如何查找变量</u>**，也就是确定当前执行代码对变量的访问权限。当查找变量的时候，会先从**当前上下文的变量对象中**查找，如果没有找到，就会从**父级（词法层面上的父级）执行上下文的变量对象中**查找，一直找到**全局上下文的变量对象**，也就是全局对象。这样**由多个执行上下文的变量对象构成的链表**就叫做 **作用域链**。
+> **<u>作用域 规定了如何查找变量</u>**，也就是确定当前执行代码对变量的访问权限。
+
+当查找变量的时候，会先从**当前上下文的变量对象中**查找，如果没有找到，就会从**父级（词法层面上的父级）执行上下文的变量对象中**查找，一直找到**全局上下文的变量对象**，也就是全局对象。这样**由多个执行上下文的变量对象构成的链表**就叫做 **作用域链**。
 
 **函数的作用域在函数创建时就已经确定了。**当函数创建时，会有一个名为 **`[[scope]]`** 的内部属性保存所有父变量对象到其中。当函数执行时，会创建一个执行环境，然后通过复制函数的 `[[scope]]`  属性中的对象构建起执行环境的作用域链，然后，变量对象 `VO` 被激活生成 `AO` 并添加到作用域链的前端，完整作用域链创建完成：
 
-```
+```js
 Scope = [AO].concat([[Scope]]);
 ```
 
 所以闭包，可以说是作用域链的另外一种表示形式。
 
-## 手写函数防抖和函数节流
+## 谈一谈你对`requestAnimationFrame`（rAF）理解
 
-**节流throttle**
+> `window.requestAnimationFrame() `方法**告诉浏览器您希望执行动画并请求浏览器在下一次重绘之前调用指定的函数来更新动画。**该方法使用一个回调函数作为参数，这个回调函数会在浏览器重绘之前调用。
 
-规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效。
-
-- **鼠标的点击事件，比如`mousedown`只触发一次**
-- **监听滚动事件，比如是否滑到底部自动加载更多，用throttle判断**
-- **比如游戏中发射子弹的频率(1秒发射一颗)**
-
-```javascript
-throttle(callback,wait){
-    let last = Date.now();
-    return function(...args){
-        if((Date.now() - last) > wait){
-            callback.call(this,...args);
-            last = Date.now();
-        }
-    }
-}
-```
-
-**防抖**(延迟)
-
-在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时
-
-- **search搜索，用户不断输入值时，用防抖来节约Ajax请求,也就是输入框事件**。
-- **window触发resize时，不断的调整浏览器窗口大小会不断的触发这个事件，用防抖来让其只触发一次**
-
-```javascript
-function debounce(callback, delay){
-    let timer = null;
-    return function(...args){
-        if(timer) clearTimeout(timer);
-        timer = setTimeout(function(){
-            callback.apply(this, args);
-        },delay)
-    }
-}
-```
-
-如果仅需要 `_.debounce` 和 `_.throttle` 方法，可以使用 Lodash 的自定义构建工具，生成一个 2KB 的压缩库。使用以下的简单命令即可：
-
-```
-npm i -g lodash-cli
-npm i -g lodash-cli include=debounce,throttle
-```
-
-## **谈一谈你对requestAnimationFrame（rAF）理解**
-
-正好跟节流有点关系，有点相似处
-
-动画帧率可以作为衡量标准，一般来说画面在 60fps 的帧率下效果比较好。
-
-换算一下就是，每一帧要在 16.7ms (16.7 = 1000/60) 内完成渲染。
-
-我们来看看MDN对它的解释吧👇
-
-> `window.requestAnimationFrame() `方法**告诉浏览器您希望执行动画并请求浏览器在下一次重绘之前调用指定的函数来更新动画。**该方法使用一个回调函数作为参数，这个回调函数会在浏览器重绘之前调用。*-- MDN*
+动画帧率可以作为衡量标准，一般来说画面在 60fps 的帧率下效果比较好。换算一下就是，每一帧要在 16.7ms (16.7 = 1000/60) 内完成渲染。
 
 当我们调用这个函数的时候，我们告诉它需要做两件事：
 
@@ -842,153 +714,49 @@ query('.lazy-loaded').forEach(function (item) {
 });
 ```
 
-## this
-
-**this 永远指向最后调用它的那个对象**
-
-1. 默认指向，作为**普通函数调用**，**指向window，严格模式下指向undefined**
-2. 使用**call/apply/bind** 显示改变this指向
-3. **new对象**，被实例调用，指向的就是实例对象
-4. 箭头函数：**this指向的是上级作用域中的this**
-5. class方法：该this指向的就是实例
-
 ## ECMAScript6 怎么写 class，为什么会出现 class 这种东西
 
 在我看来 ES6 新添加的 class 只是为了补充 js 中缺少的一些面向对象语言的特性，但本质上来说它只是一种语法糖，不是一个新的东西，其背后还是原型继承的思想。通过加入 class 可以有利于我们更好的组织代码。在 class 中添加的方法，其实是添加在类的原型上的。
 
-## 哪些操作会造成内存泄漏
+## 哪些操作会造成内存泄漏?
 
-1. **意外的全局变量**
+1. **意外的全局变量**引起的内存泄露
 
-2. **被遗忘的计时器或回调函数**
+   意外的创建了一个全局变量，而使这个变量一直留在内存中无法被回收。
+
+```js
+function leak(){ 
+  leak = "xxx"; // leak成为一个全局变量，不会被回收
+}
+```
+
+2. **被遗忘的定时器**或者**回调**
+
+   我们**设置了 setInterval 定时器，而忘记取消它**，如果循环函数有对外部变量的引用的话，那么这个变量会被一直留在内存中，而无法被回收。
 
 3. **脱离 DOM 的引用**
 
-4. **闭包**
+   我们**获取一个 DOM 元素的引用，而后面这个元素被删除**，由于我们一直保留了对这个元素的引用，所以它也无法被回收。
 
-- 第一种情况是我们由于**使用未声明的变量**，而意外的创建了一个全局变量，而使这个变量一直留在内存中无法被回收。
+3. **闭包**引起的内存泄漏
 
-- 第二种情况是我们**设置了 setInterval 定时器，而忘记取消它**，如果循环函数有对外部变量的引用的话，那么这个变量会被一直留在内存中，而无法被回收。
-- 第三种情况是我们**获取一个 DOM 元素的引用，而后面这个元素被删除**，由于我们一直保留了对这个元素的引用，所以它也无法被回收。
-- 第四种情况是**不合理的使用闭包，从而导致某些变量一直被留在内存当中**。
+   **不合理的使用闭包，从而导致某些变量一直被留在内存当中**。
 
-## Object.is()使用过吗？跟 === 和 == 区别
+## `Object.is` 跟 `===` 和 `==`的区别？
 
 - 两等号判等，会在比较时进行类型转换。
 - 三等号判等（判断严格），比较时不进行隐式类型转换，（类型不同则会返回false）
-- 使用 **Object.is** 来进行相等判断时，**一般情况下和三等号的判断相同**，它处理了一些特殊的情况，比如 **-0 和 +0 不再相等，两个 `NaN` **认定为是相等的。
+- 使用 **`Object.is`** 来进行相等判断时，**一般情况下和三等号的判断相同**，它处理了一些特殊的情况，比如 **`-0` 和 `+0` 不再相等，两个 `NaN` **认定为是相等的。
 
-## JS事件循环机制
+## 立即执行函数是什么？
 
-- 因为 js 是单线程运行的，在代码执行的时候，通过将不同函数的执行上下文压入执行栈中来保证代码的有序执行。
-- 在执行同步代码的时候，如果遇到了异步事件，js 引擎并不会一直等待其返回结果，而是会将这个事件挂起，继续执行执行栈中的其他任务。
-- 当异步事件执行完毕后，再将异步事件对应的回调加入到与当前执行栈中不同的另一个任务队列中等待执行。
-- 任务队列可以分为宏任务对列和微任务对列，当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。
-- 当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
-
-微任务包括了 promise 的回调、node 中的 **process.nextTick** 、对 Dom 变化监听的 `MutationObserver`。
-
-宏任务包括了 **script 脚本的执行、setTimeout ，setInterval ，setImmediate** 一类的定时事件，还有如 **I/O 操作**、**UI 渲染**等。
-
-## 立即执行函数是什么
-
-**声明一个函数，并马上调用这个匿名函数就叫做立即执行函数**；也可以说立即执行函数是一种语法，让你的函数在定义以后立即执行；
+> **声明一个函数，并马上调用这个匿名函数就叫做立即执行函数**；也可以说立即执行函数是一种语法，让你的函数在定义以后立即执行
 
 作用：
 
 1. 不必为函数命名，**避免了污染全局变量**
 2. 立即执行函数内部形成了一个单独的作用域，**可以封装一些外部无法读取的私有变量**
 3. 封装变量
-
-## 发布订阅者模式
-
-```javascript
-class EventEmitter {
-    constructor(){
-        this.list = {} //list比喻成微信平台
-    }
-    on(key,fn){ // key比喻成公众号、fn为订阅者
-        if(!this.list[key]){
-            this.list[key] = []
-        }
-        this.list[key].push(fn)
-        return this
-    }
-    once(key,fn) {
-        if(!this.list[key]){
-            this.list[key] = []
-        }
-        this.list[key].push(fn)
-        this.list[key].flag = this.list[key].length; 
-        return this
-    }
-    emit(key, args){
-        let that = this;
-        let fns = this.list[key]
-        if(!fns || fns.length === 0) return false
-        for(let i = 0; i < fns.length; i++) {
-            fns[i].apply(this, args)
-            if(fns.flag === i){
-                that.off(key,fns[i-1])
-            }
-        }
-    }
-    off(key,fn) {
-        let fns = this.list[key];
-        let len = fns.length,
-            k = -1;
-        for(let i = 0; i < len; i++) {
-            if(fns[i].name === fn.name){ // 删除
-                k = i;
-                break;
-            }
-        }
-        if(k !== -1) {
-            this.list[key].splice(k,1)
-        }
-    }
-
-    allOff(key) {
-        if(key === undefined){
-            this.list = {}
-        }else{
-            this.list[key] = []
-        }
-    }
-}
-
-var emitter = new EventEmitter();
-
-function handleOne(a, b, c) {
-    console.log('第一个监听函数', a, b, c)
-}
-
-function handleSecond(a, b, c) {
-    console.log('第二个监听函数', a, b, c)
-}
-
-function handleThird(a, b, c) {
-    console.log('第三个监听函数', a, b, c)
-}
-
-emitter.on("demo", handleOne)
-    .once("demo", handleSecond)
-    .on("demo", handleThird);
-
-emitter.emit('demo', [1, 2, 3]);
-// => 第一个监听函数 1 2 3
-// => 第二个监听函数 1 2 3
-// => 第三个监听函数 1 2 3
-
-emitter.off('demo', handleThird);
-emitter.emit('demo', [1, 2, 3]);
-// => 第一个监听函数 1 2 3
-
-emitter.allOff();
-emitter.emit('demo', [1, 2, 3]);
-// nothing
-
-```
 
 ## 模块化
 
@@ -1055,15 +823,13 @@ let demo2 = oDiv.setAttribute('data-name','new-value')
 
 可以在不刷新页面的前提下动态改变浏览器地址栏中的URL地址，动态修改页面上所显示资源。
 
- **window.history的方法和属性**
+ **window.history的方法**：
 
-```
-back()` `forward()` `go()
-```
+* `back()`
+* `forward()`
+* `go()`
 
-HTML5 新方法：添加和替换历史记录的条目
-
-**pushState()**
+**pushState()**：添加历史记录的条目
 
 ```javascript
 history.pushState(state, title, url); 添加一条历史记录，不刷新页面
@@ -1075,7 +841,7 @@ history.pushState(state, title, url); 添加一条历史记录，不刷新页面
 
 `url` : 新的网址，必须与前页面处在同一个域。浏览器的地址栏将显示这个网址。
 
-**replaceState**
+**replaceState**：替换历史记录的条目
 
 ```javascript
 history.replaceState(state, title, url);  替换当前的历史记录，不刷新页面

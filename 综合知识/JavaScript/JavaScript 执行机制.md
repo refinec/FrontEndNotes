@@ -1,9 +1,15 @@
-# JavaScript 执行机制
+事件执行流程：
 
 1. 同步和异步任务分别进入不同的执行"场所"，**同步的进入主线程**，**异步的进入Event Table并注册回调函数**。
 2. 当指定的事情完成时，**Event Table会将这个函数移入Event Queue **。
 3. 主线程内的任务执行完毕为空，会去Event Queue读取对应的函数，进入主线程执行。
 4. 上述过程会不断重复，也就是常说的**Event Loop(事件循环) **。
+
+常见的宏任务和微任务有哪些？
+
+* 微任务包括了 promise 的回调、node 中的 **process.nextTick** 、对 Dom 变化监听的 `MutationObserver`。
+
+* 宏任务包括了 **script 脚本的执行、setTimeout ，setInterval ，setImmediate** 一类的定时事件，还有如 **I/O 操作**、**UI 渲染**等。
 
 js引擎存在monitoring process进程，会持续不断的检查主线程执行栈是否为空，一旦为空，就会去Event Queue那里检查是否有等待被调用的函数。
 
