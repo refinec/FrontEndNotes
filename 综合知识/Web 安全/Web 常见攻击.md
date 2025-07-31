@@ -60,7 +60,7 @@ http://xxx.com?query=<script>alert("你受到了XSS攻击")</script>
 >
 > 而对于一些不受信任的输入，还可以**<u>限制其输入长度</u>**，这样可以增大 XSS 攻击的难度。
 
-#### 1. **对输入脚本进行过滤或转码**
+#### 1. **对用户输入内容进行过滤或转码**
 
 #### 2. 使用Cookie的`HttpOnly`属性
 
@@ -156,7 +156,7 @@ set-cookie: NID=189=M8l6-z41asXtm2uEwcOC5oh9djkffOMhWqQrlnCtOI; expires=Sat, 18-
 - ***`Origin Header`***
 - ***`Referer Header`***
 
-这两个Header在浏览器发起请求时，大多数情况会自动带上，并且不能由前端自定义内容。
+这两个Header在浏览器发起请求时，大多数情况会自动带上。
 
 服务器可以通过解析这两个Header中的域名，确定请求的来源域。
 

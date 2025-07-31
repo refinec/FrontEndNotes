@@ -434,12 +434,13 @@ person.name = '李四';
 ```js
 const queuedObservers = new Set();
 const observe = fn => queuedObservers.add(fn);
-const observable = obj => new Proxy(obj, {set});
-function set(target, key, value, receiver) {
+const observable = obj => new Proxy(obj, {
+  set(target, key, value, receiver) {
     const result = Reflect.set(target, key, value, receiver);
     queuedObservers.forEach(observer => observer());
     return result;
-}
+	}
+});
 ```
 
 上面代码中，先定义了一个Set集合，所有观察者函数都放进这个集合。然后，observable函数返回原始对象的代理，拦截赋值操作。拦截函数set之中，会自动执行所有观察者。

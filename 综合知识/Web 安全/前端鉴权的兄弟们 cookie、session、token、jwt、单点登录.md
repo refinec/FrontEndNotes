@@ -211,16 +211,28 @@ signed: true,
 它是一种成熟的 token 字符串生成方案，包含了我们前面提到的数据、签名。不如直接看一下一个 JWT token 长什么样：
 
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJhIiwiaWF0IjoxNTUxOTUxOTk4fQ.2jf3kl_uKWRkwjOP6uQRJFqMlwSABcgqqcJofFH5XCo 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJhIiwiaWF0IjoxNTUxOTUxOTk4fQ.2jf3kl_uKWRkwjOP6uQRJFqMlwSABcgqqcJofFH5XCo
 ```
 
 这串东西是怎么生成的呢？看图：
 
 ![img](../../assets/%E9%9D%A2%E8%AF%95/jwt.png)
 
+Payload 用来存放实际需要传递的数据，JWT 规定的7个官方字段，供选用：
+
+- iss (Issuer)：签发者
+- sub (Subject)：主题
+- aud (Audience)：接收者
+- exp (Expiration time)：过期时间
+- nbf (Not Before)：生效时间
+- iat (Issued At)：签发时间
+- jti (JWT ID)：编号
+
 类型、加密算法的选项，以及 JWT 标准数据字段，可以参考 [RFC 7519 - JSON Web Token (JWT)](https://link.juejin.cn/?target=https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc7519%23section-4.1)
 
 node 上同样有相关的库实现：[express-jwt - npm](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fexpress-jwt) 、[koa-jwt - npm](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fkoa-jwt)
+
+
 
 #### 总结
 

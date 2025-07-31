@@ -183,7 +183,7 @@ xhrFields: {
 未登录时候: 访问A.com, A站发现你没有登录, 就把网址重定向到S.com/?server=A.com, 此时浏览器在S站, S站发现没有登录,会让你输入 账号密码, 然后确认, 好, 此时S站已经登录了, S站会生成1个session-对应的浏览器生成一个cookie(S站的), 下次访问S站, 是用这个cookie,
 S站存完cookie后, 又会重定向到A.com/?ticket=asdsadad, 到此,又回到了A站, A站还是没有登录状态, 接下来A站后台发现你传了ticket参数, 后台会拿着 ticket 和A站的域名(A.com) 这两个东西 去S站的后台去验证,这个是ticket是否有效,以及ticket这个人的身份信息, 如果正确, 则A站会生成一个session,给浏览器发放一个cookie(A站的), 此时A站完成登录状态, 浏览器会有2个不同的cookie (A站的, 和S站的).
 B.com 免登效果:
-然后用户访问B.com, B站(不是bilibili...) B站发现没有登录, 重定向到S.com/?server=B.com , 此时S站有cookie, S站发现用户已经登录, 不用输入密码了, 直接重定向到B.com/ticket=wqeipofvijwrpt, 接下和A站的流程一样了.... B站后台发现你传了ticket参数, 后台会拿着 ticket 和B站的域名(B.com) 这两个东西.....
+然后用户访问B.com, B.com发现没有登录, 重定向到S.com/?server=B.com , 此时S站有cookie, S站发现用户已经登录, 不用输入密码了, 直接重定向到B.com/ticket=wqeipofvijwrpt, 接下和A站的流程一样了.... B站后台发现你传了ticket参数, 后台会拿着 ticket 和B站的域名(B.com) 这两个东西.....
 用户只输入了B.com 会发现已经是登录状态
 
 ### 2. 多系统注销
