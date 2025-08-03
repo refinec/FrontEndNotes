@@ -206,7 +206,7 @@ Object.setPrototypeOf = function (obj, proto) {
 
 所以三者的关系是，**(重要)每个构造函数都有一个原型对象，原型对象都包含一个指向构造函数的指针**，而**实例都包含一个指向原型对象的内部指针**。通俗点说就是，**实例通过内部指针可以访问到原型对象，原型对象通过constructor指针，又可以找到构造函数 **。
 
-![](../../assets/面试/原型链.jpg)
+<img src="../../assets/面试/原型链.png" style="zoom:50%;" />
 
 ```javascript
 function Dog (name) {
