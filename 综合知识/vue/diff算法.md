@@ -10,21 +10,19 @@
 4. 一个`组件节点`，`vnode`就是`Component 对象实例`
 5. ......
 
-## key
-
-`key` 表示节点的唯一标识
-
-# vue2 双端diff算法
-
 ## 什么是虚拟DOM？
 
-> 虚拟DOM就是一个JS对象，包含的字段有**标签名称**、**标签属性**、**子标签的名称**、**子标签属性**、**文本节点**
+> diff算法是一种精准更新真实Dom树的性能优化方法。虚拟DOM是用来表示真实dom的一个JS对象，包含的字段有**标签名称**、**标签属性**、**子标签的名称**、**子标签属性**、**文本节点**。
+>
+> vue通过模版编译生成虚拟DOM树，然后在通过渲染器渲染成真实DOM，当数据更新时，产生新的虚拟dom树，如果直接用新的虚拟DOM树生成真实DOM并不是最优的方法。为了进一步降低找出差异的性能消耗，就要使用diff算法。Diff算法是一种对比算法。对比新旧虚拟DOM，对比出是哪个虚拟节点更改了，找出这个虚拟节点，并只更新这个虚拟节点所对应的真实节点，实现精准地更新真实DOM。
 
 ![虚拟DOM](../../assets/%E9%9D%A2%E8%AF%95/image-20221108193025809.png)
 
+# vue2 双端diff算法
+
 ## key有什么作用？
 
-> **diff 算法的目的是根据 key 复用 dom 节点，通过移动节点而不是创建新节点来减少 dom 操作。**
+> **`key` 是对节点的唯一标识，diff 算法的目的是根据 key 复用 dom 节点，通过移动节点而不是创建新节点来减少 dom 操作。**
 
 ## diff 算法干什么用？
 
@@ -32,7 +30,7 @@
 >
 > diff的过程就是调用名为`patch`的函数，比较新旧节点，一边比较一边给**真实的DOM**打补丁。
 
-diff 算法约定了两种处理原则：**<u>只做同层的对比，type 变了就不再对比子节点</u>。**
+diff 算法约定了两种处理原则：**<u>只做同层的对比，Vnode的节点类型type 变了就不再对比子节点</u>。**
 
 ![img](../../assets/%E9%9D%A2%E8%AF%95/diff.png)
 
@@ -224,6 +222,13 @@ function patchVnode (
       if (isDef(i = data.hook) && isDef(i = i.postpatch)) i(oldVnode, vnode)
     }
   }
+```
+
+```js
+// 判断两个vnode的标签和key是否相同 如果相同 就可以认为是同一节点就地复用
+function isSameVnode(oldVnode, newVnode) {
+  return oldVnode.tag === newVnode.tag && oldVnode.key === newVnode.key;
+}
 ```
 
 ## 具体分析
