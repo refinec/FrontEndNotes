@@ -207,6 +207,8 @@ signed: true,
 但上面的做法额外增加了 cookie 数量，数据本身也没有规范的格式，所以 [JSON Web Token Introduction - jwt.io](https://link.juejin.cn?target=https%3A%2F%2Fjwt.io%2Fintroduction%2F) 横空出世了。
 
 > JSON Web Token (JWT) 是一个开放标准，定义了一种传递 JSON 信息的方式。这些信息通过数字签名确保可信。
+>
+> 作用：**防止信息被篡改被伪造**。
 
 它是一种成熟的 token 字符串生成方案，包含了我们前面提到的数据、签名。不如直接看一下一个 JWT token 长什么样：
 
