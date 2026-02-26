@@ -138,7 +138,7 @@ module.exports = {
 }
 ```
 
-### **项目目录别名 ( src目录配置为@ )
+### 项目目录别名 ( src目录配置为@ )
 
 ```js
 const path = require('path')
