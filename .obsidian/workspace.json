@@ -184,16 +184,6 @@
             }
           },
           {
-            "id": "a085b3afe68b6d6e",
-            "type": "leaf",
-            "state": {
-              "type": "github-issue-controls-view",
-              "state": {},
-              "icon": "github",
-              "title": "Github Issue Controls"
-            }
-          },
-          {
             "id": "1677608d15131e5e",
             "type": "leaf",
             "state": {
@@ -204,7 +194,7 @@
             }
           }
         ],
-        "currentTab": 8
+        "currentTab": 7
       }
     ],
     "direction": "horizontal",
