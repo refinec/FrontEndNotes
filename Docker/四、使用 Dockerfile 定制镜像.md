@@ -613,7 +613,7 @@ $ docker inspect --format '{{json .State.Health}}' web | python -m json.tool
 }
 ```
 
-### `ONBUILD` 为他人作嫁衣裳
+### `ONBUILD`
 
 格式：`ONBUILD <其它指令>`。
 
