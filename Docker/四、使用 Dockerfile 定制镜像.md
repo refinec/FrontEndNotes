@@ -1,55 +1,4 @@
-# 使用 Dockerfile 定制镜像
-
-> Dockerfile 是一个文本文件，其内包含了一条条的 **指令(Instruction)**，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。
-
-* `FROM` 指定基础镜像
-  * 除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为 `scratch`。这个镜像是虚拟的概念，并不实际存在，它表示一个空白的镜像。不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，对于 Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 `FROM scratch` 会让镜像体积更加小巧。
-
-* `RUN` 执行命令:
-
-  * `shell 格式`：`RUN <命令>`，就像直接在命令行中输入的命令一样。刚才写的 Dockerfile 中的 `RUN` 指令就是这种格式
-
-    ```dockerfile
-    RUN echo 'Hello, Docker!' > /usr/share/nginx/html/index.html
-    ```
-
-  * `exec 格式`：`RUN ["可执行文件", "参数1", "参数2"]`，这更像是函数调用中的格式
-
-```dockerfile
-FROM debian:stretch
-
-RUN apt-get update
-RUN apt-get install -y gcc libc6-dev make wget
-RUN wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz"
-RUN mkdir -p /usr/src/redis
-RUN tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1
-RUN make -C /usr/src/redis
-RUN make -C /usr/src/redis install
-```
-
-Dockerfile 中每一个指令都会建立一层，`RUN` 也不例外,而上面的这种写法，创建了 7 层镜像。这是完全没有意义的，而且很多运行时不需要的东西，都被装进了镜像里，比如编译环境、更新的软件包等等。结果就是产生非常臃肿、非常多层的镜像，不仅仅增加了构建部署的时间，也很容易出错。 这是很多初学 Docker 的人常犯的一个错误。
-
-上面的 `Dockerfile` 正确的写法应该是这样：
-
-```dockerfile
-FROM debian:stretch
-
-RUN set -x; buildDeps='gcc libc6-dev make wget' \
-    && apt-get update \
-    && apt-get install -y $buildDeps \
-    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
-    && mkdir -p /usr/src/redis \
-    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
-    && make -C /usr/src/redis \
-    && make -C /usr/src/redis install \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm redis.tar.gz \
-    && rm -r /usr/src/redis \
-    && apt-get purge -y --auto-remove $buildDeps
-```
-
-这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 `apt` 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉。
-
+>Dockerfile 是一个文本文件，其包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。
 ## `docker build` 的用法
 
 ### 1.直接用 Git repo 进行构建
@@ -103,14 +52,72 @@ $ docker build - < context.tar.gz
 
 如果发现标准输入的文件格式是 `gzip`、`bzip2` 以及 `xz` 的话，将会使其为上下文压缩包，直接将其展开，将里面视为上下文，并开始构建。
 
-## Dockerfile指令详解
+## `Dockerfile`指令详解
+###  `FROM` 构建镜像基于哪个镜像
+  除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为 `scratch`。这个镜像是虚拟的概念，并不实际存在，它表示一个空白的镜像。不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，对于 Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 `FROM scratch` 会让镜像体积更加小巧。
+  
+### `MAINTAINER`  镜像维护者姓名或邮箱地址
+
+
+### `RUN` 构建镜像时运行的指令
+* shell 格式：
+  ``` dockerfile
+  # <命令行命令> 等同于，在终端操作的 shell 命令。
+  RUN <命令行命令>
+  ```
+* exec 格式：
+
+```dockerfile
+FROM debian:stretch
+
+# 这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 `apt` 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉。
+RUN set -x; buildDeps='gcc libc6-dev make wget' \
+    && apt-get update \
+    && apt-get install -y $buildDeps \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+    && mkdir -p /usr/src/redis \
+    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+    && make -C /usr/src/redis \
+    && make -C /usr/src/redis install \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm redis.tar.gz \
+    && rm -r /usr/src/redis \
+    && apt-get purge -y --auto-remove $buildDeps
+```
+
+### 拷贝文件/目录
+#### `ADD` 拷贝文件或目录到容器中，如果是URL或压缩包便会自动下载或自动解压
+
+#### `COPY` 拷贝文件或目录到容器中，跟ADD类似，但不具备自动下载或解压的功能
+
+### `ENTRYPOINT` 运行容器时执行的shell命令
+
+
+### `ENV` 设置容器环境变量
+### `EXPOSE` 声明容器的服务端口（仅仅是声明）
+### `CMD` 运行容器时执行的shell环境
+### `VOLUME`  指定容器挂载点到宿主机自动生成的目录或其他容器
+### `USER` 为RUN、CMD、和 ENTRYPOINT 执行命令指定运行用户
+### `WORKDIR` 为 RUN、CMD、ENTRYPOINT、COPY 和 ADD 设置工作目录，就是切换目录
+``` dockerfile
+WORKDIR /app
+```
+
+`WORKDIR` 指令将工作目录设置为 `/app`。这意味着在接下来的指令中，如果使用相对路径，则将相对于 `/app` 这个工作目录来解析。
+例如，如果你有一个 `COPY` 指令：`COPY . .`。由于工作目录已设置为 `/app`，该 `COPY` 指令将会将当前构建上下文中的所有文件和目录复制到容器的 `/app` 目录中。通过使用 `WORKDIR` 指令，可以更方便地管理容器中的工作目录，并避免在每个指令中都使用绝对路径。这有助于使 Dockerfile 更具可读性和可维护性。请注意，`WORKDIR` 指令可以在 Dockerfile 中多次使用，后续的指令将相对于上一个 `WORKDIR` 指令设置的工作目录进行解析。如果使用相对路径的指令没有在任何 `WORKDIR` 指令之前出现，则**相对路径将以容器的根目录为基准**。
+
+### `HEALTHCHECH` 健康检查
+### `ARG` 构建时指定的一些参数
+
+
+
 
 ### `COPY` 复制文件
 
 > 格式：
 >
-> * `COPY [--chown=<user>:<group>] <源路径>... <目标路径>`
-> * `COPY [--chown=<user>:<group>] ["<源路径1>",... "<目标路径>"]`
+> `COPY [--chown=<user>:<group>] <源路径>... <目标路径>`
+`COPY [--chown=<user>:<group>] ["<源路径1>",... "<目标路径>"]`
 
 `COPY` 指令将从构建上下文目录中 `<源路径>` 的文件/目录复制到新的一层的镜像内的 `<目标路径>` 位置。比如：
 
