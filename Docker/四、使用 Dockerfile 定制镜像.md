@@ -720,6 +720,17 @@ FROM my-node
 
 ### 16. `STOPSIGNAL` 设置发送给容器以退出的系统调用信号。
 
+STOPSIGNAL用于设置在停止容器时要使用的信号。当使用docker stop命令停止容器时，Docker会向容器发送一个指定的信号，这个信号将触发容器的停止操作。
+
+```dockerfile
+FROM ubuntu:latest
+ 
+# 设置停止容器时使用的信号
+STOPSIGNAL SIGINT
+```
+
+在上面的例子中，我们使用STOPSIGNAL指令设置容器停止时使用的信号为SIGINT，即信号编号为2。这意味着当我们使用docker stop命令停止容器时，Docker会发送SIGINT信号给容器，触发容器的停止操作。
+
 ### 17. `SHELL` 覆盖Docker中默认的shell，用于RUN、CMD和ENTRYPOINT指令。
 
 > 格式：`SHELL ["executable", "parameters"]`
@@ -823,7 +834,7 @@ docker build --no-cache -t myimage:latest .
 
 1、创建 Dockerfile，内容如下：
 
-```
+```dockerfile
 # Dockerfile 示例
 FROM ubuntu:20.04
 LABEL maintainer="yourname@example.com"
@@ -834,8 +845,8 @@ CMD ["nginx", "-g", "daemon off;"]
 
 2、构建镜像
 
-```
-docker build -t mynginx:latest .
+```shell
+$ docker build -t mynginx:latest .
 ```
 
 输出示例：
