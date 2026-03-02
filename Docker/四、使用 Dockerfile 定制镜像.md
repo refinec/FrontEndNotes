@@ -1,165 +1,140 @@
->Dockerfile 是一个文本文件，其包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。
-## `docker build` 的用法
+> Dockerfile 是一个文本文件，其包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。
 
-### 1.直接用 Git repo 进行构建
+## 一、`Dockerfile`指令详解
 
-```bash
-# $env:DOCKER_BUILDKIT=0
-# export DOCKER_BUILDKIT=0
+### 1. `FROM` 构建镜像基于哪个镜像
 
-$ docker build -t hello-world https://github.com/docker-library/hello-world.git#master:amd64/hello-world
-
-Step 1/3 : FROM scratch
- --->
-Step 2/3 : COPY hello /
- ---> ac779757d46e
-Step 3/3 : CMD ["/hello"]
- ---> Running in d2a513a760ed
-Removing intermediate container d2a513a760ed
- ---> 038ad4142d2b
-Successfully built 038ad4142d2b
-```
-
-这行命令指定了构建所需的 Git repo，并且指定分支为 `master`，构建目录为 `/amd64/hello-world/`，然后 Docker 就会自己去 `git clone` 这个项目、切换到指定分支、并进入到指定目录后开始构建。
-
-### 2.用给定的 tar 压缩包构建
-
-```bash
-$ docker build http://server/context.tar.gz
-```
-
-如果所给出的 URL 是个 `tar` 压缩包，那么 Docker 引擎会下载这个包，并自动解压缩，以其作为上下文，开始构建。
-
-### 3.从标准输入中读取 Dockerfile 进行构建
-
-```bash
-$ docker build - < Dockerfile
-```
-
-或
-
-```bash
-$ cat Dockerfile | docker build -
-```
-
-如果标准输入传入的是文本文件，则将其视为 `Dockerfile`，并开始构建。这种形式由于直接从标准输入中读取 Dockerfile 的内容，它没有上下文，因此不可以像其他方法那样可以将本地文件 `COPY` 进镜像之类的事情。
-
-### 4.从标准输入中读取上下文压缩包进行构建
-
-```bash
-$ docker build - < context.tar.gz
-```
-
-如果发现标准输入的文件格式是 `gzip`、`bzip2` 以及 `xz` 的话，将会使其为上下文压缩包，直接将其展开，将里面视为上下文，并开始构建。
-
-## `Dockerfile`指令详解
-###  `FROM` 构建镜像基于哪个镜像
   除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为 `scratch`。这个镜像是虚拟的概念，并不实际存在，它表示一个空白的镜像。不以任何系统为基础，直接将可执行文件复制进镜像的做法并不罕见，对于 Linux 下静态编译的程序来说，并不需要有操作系统提供运行时支持，所需的一切库都已经在可执行文件里了，因此直接 `FROM scratch` 会让镜像体积更加小巧。
-  
-### `MAINTAINER`  镜像维护者姓名或邮箱地址
 
+### 2. `MAINTAINER`  镜像维护者姓名或邮箱地址（已弃用，推荐使用LABEL指令）
 
-### `RUN` 构建镜像时运行的指令
-* shell 格式：
-  ``` dockerfile
-  # <命令行命令> 等同于，在终端操作的 shell 命令。
-  RUN <命令行命令>
-  ```
-* exec 格式：
+### 3. `LABEL` 为镜像添加元数据
+
+`LABEL` 指令用来给镜像以键值对的形式添加一些元数据（metadata）。
+
+格式：
 
 ```dockerfile
-FROM debian:stretch
-
-# 这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 `apt` 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉。
-RUN set -x; buildDeps='gcc libc6-dev make wget' \
-    && apt-get update \
-    && apt-get install -y $buildDeps \
-    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
-    && mkdir -p /usr/src/redis \
-    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
-    && make -C /usr/src/redis \
-    && make -C /usr/src/redis install \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm redis.tar.gz \
-    && rm -r /usr/src/redis \
-    && apt-get purge -y --auto-remove $buildDeps
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
 ```
 
-### 拷贝文件/目录
-#### `ADD` 拷贝文件或目录到容器中，如果是URL或压缩包便会自动下载或自动解压
+我们可以用一些标签来声明镜像的作者、文档地址等：
 
-#### `COPY` 拷贝文件或目录到容器中，跟ADD类似，但不具备自动下载或解压的功能
+```dockerfile
+LABEL org.opencontainers.image.authors="yeasy"
 
-### `ENTRYPOINT` 运行容器时执行的shell命令
+LABEL org.opencontainers.image.documentation="https://yeasy.gitbooks.io"
+```
 
+具体可以参考 https://github.com/opencontainers/image-spec/blob/master/annotations.md
 
-### `ENV` 设置容器环境变量
-### `EXPOSE` 声明容器的服务端口（仅仅是声明）
-### `CMD` 运行容器时执行的shell环境
-### `VOLUME`  指定容器挂载点到宿主机自动生成的目录或其他容器
-### `USER` 为RUN、CMD、和 ENTRYPOINT 执行命令指定运行用户
-### `WORKDIR` 为 RUN、CMD、ENTRYPOINT、COPY 和 ADD 设置工作目录，就是切换目录
-``` dockerfile
+### 4.`USER` 为RUN、CMD、和 ENTRYPOINT 命令执行时指定运行用户
+
+> 用于指定执行后续命令的用户和用户组，这边只是切换后续命令执行的用户（用户和用户组必须提前已经存在）。
+>
+> `USER` 指令和 `WORKDIR` 相似，都是改变环境状态并影响以后的层。`WORKDIR` 是改变工作目录，`USER` 则是改变之后层的执行 `RUN`、`CMD` 、`ENTRYPOINT`、COPY 、 ADD 这类命令的身份。
+
+格式：
+
+```
+USER <用户名>[:<用户组>]
+```
+
+注意📢，`USER` 只是帮助你切换到指定用户而已，这个用户必须是事先建立好的，否则无法切换。
+
+```dockerfile
+RUN groupadd -r redis && useradd -r -g redis redis
+USER redis
+RUN [ "redis-server" ]
+```
+
+如果以 `root` 执行的脚本，在执行期间希望改变身份，比如希望以某个已经建立好的用户来运行某个服务进程，不要使用 `su` 或者 `sudo`，这些都需要比较麻烦的配置，而且在 TTY 缺失的环境下经常出错。建议使用 [`gosu`](https://github.com/tianon/gosu)。
+
+```dockerfile
+# 建立 redis 用户，并使用 gosu 换另一个用户执行命令
+RUN groupadd -r redis && useradd -r -g redis redis
+# 下载 gosu
+RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.12/gosu-amd64" \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true
+# 设置 CMD，并以另外的用户执行
+CMD [ "exec", "gosu", "redis", "redis-server" ]
+```
+
+### 5. `WORKDIR` 设置后续指令的工作目录
+
+> 为 RUN、CMD、ENTRYPOINT、COPY 和 ADD 设置工作目录，就是切换目录。
+
+通过使用 `WORKDIR` 指令，你可以设置容器中的默认工作目录，从而在后续的指令中指定相对路径时，它们将以该工作目录为基准。
+
+格式：
+
+```dockerfile
+WORKDIR <工作目录路径>
+```
+
+示例：
+
+```dockerfile
 WORKDIR /app
 ```
 
-`WORKDIR` 指令将工作目录设置为 `/app`。这意味着在接下来的指令中，如果使用相对路径，则将相对于 `/app` 这个工作目录来解析。
-例如，如果你有一个 `COPY` 指令：`COPY . .`。由于工作目录已设置为 `/app`，该 `COPY` 指令将会将当前构建上下文中的所有文件和目录复制到容器的 `/app` 目录中。通过使用 `WORKDIR` 指令，可以更方便地管理容器中的工作目录，并避免在每个指令中都使用绝对路径。这有助于使 Dockerfile 更具可读性和可维护性。请注意，`WORKDIR` 指令可以在 Dockerfile 中多次使用，后续的指令将相对于上一个 `WORKDIR` 指令设置的工作目录进行解析。如果使用相对路径的指令没有在任何 `WORKDIR` 指令之前出现，则**相对路径将以容器的根目录为基准**。
+在这个例子中，`WORKDIR` 指令将工作目录设置为 `/app`。这意味着在接下来的指令中，如果使用相对路径，则将相对于 `/app` 这个工作目录来解析。
 
-### `HEALTHCHECH` 健康检查
-### `ARG` 构建时指定的一些参数
-
-
-
-
-### `COPY` 复制文件
-
-> 格式：
->
-> `COPY [--chown=<user>:<group>] <源路径>... <目标路径>`
-`COPY [--chown=<user>:<group>] ["<源路径1>",... "<目标路径>"]`
-
-`COPY` 指令将从构建上下文目录中 `<源路径>` 的文件/目录复制到新的一层的镜像内的 `<目标路径>` 位置。比如：
+例如，如果你有一个 `COPY` 指令如下：
 
 ```dockerfile
-COPY package.json /usr/src/app/
+COPY . .
 ```
 
-`<源路径>` 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 [`filepath.Match`](https://golang.org/pkg/path/filepath/#Match) 规则，如：
+由于工作目录已设置为 `/app`，该 `COPY` 指令将会将当前构建上下文中的所有文件和目录复制到容器的 `/app` 目录中。
+
+通过使用 `WORKDIR` 指令，可以更方便地管理容器中的工作目录，并避免在每个指令中都使用绝对路径。这有助于使 Dockerfile 更具可读性和可维护性。
+
+请注意，`WORKDIR` 指令可以在 Dockerfile 中多次使用，后续的指令将相对于上一个 `WORKDIR` 指令设置的工作目录进行解析。如果使用相对路径的指令没有在任何 `WORKDIR` 指令之前出现，则**相对路径将以容器的根目录为基准**。
+
+初学者常犯的错误是把 `Dockerfile` 等同于 Shell 脚本来书写，这种错误的理解还可能会导致出现下面这样的错误：
 
 ```dockerfile
-COPY hom* /mydir/
-COPY hom?.txt /mydir/
+RUN cd /app
+RUN echo "hello" > world.txt
 ```
 
-`<目标路径>` 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 `WORKDIR` 指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。
+如果将这个 `Dockerfile` 进行构建镜像运行后，会发现找不到 `/app/world.txt` 文件，或者其内容不是 `hello`。原因其实很简单，在 Shell 中，连续两行是同一个进程执行环境，因此前一个命令修改的内存状态，会直接影响后一个命令；而在 `Dockerfile` 中，<u>这两行 `RUN` 命令的执行环境根本不同，是两个完全不同的容器</u>。这就是对 `Dockerfile` 构建分层存储的概念不了解所导致的错误。
 
-此外，还需要注意一点，使用 `COPY` 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。
+每一个 `RUN` 都是启动一个容器、执行命令、然后提交存储层文件变更。第一层 `RUN cd /app` 的执行仅仅是当前进程的工作目录变更，一个内存上的变化而已，其结果不会造成任何文件变更。而到第二层的时候，启动的是一个全新的容器，跟第一层的容器更完全没关系，自然不可能继承前一层构建过程中的内存变化。
 
-在使用该指令的时候还可以加上 `--chown=<user>:<group>` 选项来改变文件的所属用户及所属组。
+因此如果需要改变以后各层的工作目录的位置，那么应该使用 `WORKDIR` 指令。
 
 ```dockerfile
-COPY --chown=55:mygroup files* /mydir/
-COPY --chown=bin files* /mydir/
-COPY --chown=1 files* /mydir/
-COPY --chown=10:11 files* /mydir/
+WORKDIR /app
+
+RUN echo "hello" > world.txt
 ```
 
-如果源路径为文件夹，复制的时候不是直接复制该文件夹，而是将文件夹中的内容复制到目标路径。
+如果你的 `WORKDIR` 指令使用的相对路径，那么所切换的路径与之前的 `WORKDIR` 有关：
 
-### `ADD` 更高级的复制文件
+```dockerfile
+WORKDIR /a
+WORKDIR b
+WORKDIR c
 
-> `ADD` 指令和 `COPY` 的格式和性质基本一致。但是在 `COPY` 基础上增加了一些功能。
->
-> 1. 比如 `<源路径>` 可以是一个 `URL`，这种情况下，Docker 引擎会试图去下载这个链接的文件放到 `<目标路径>` 去。下载后的文件权限自动设置为 `600`，如果这并不是想要的权限，那么还需要增加额外的一层 `RUN` 进行权限调整
->
-> 2. 如果下载的是个压缩包，需要解压缩，也一样还需要额外的一层 `RUN` 指令进行解压缩。所以不如直接使用 `RUN` 指令，然后使用 `wget` 或者 `curl` 工具下载，处理权限、解压缩、然后清理无用文件更合理。因此，这个功能其实并不实用，而且不推荐使用。
->
->    如果 `<源路径>` 为一个 `tar` 压缩文件的话，压缩格式为 `gzip`, `bzip2` 以及 `xz` 的情况下，`ADD` 指令将会自动解压缩这个压缩文件到 `<目标路径>` 去。
+RUN pwd
+```
 
-📢需要注意的是，`ADD` 指令会令镜像构建缓存失效，从而可能会令镜像构建变得比较缓慢
+`RUN pwd` 的工作目录为 `/a/b/c`。
 
-因此在 `COPY` 和 `ADD` 指令中选择的时候，可以遵循这样的原则，所有的文件复制均使用 `COPY` 指令，仅在需要自动解压缩的场合使用 `ADD`。
+### 6. 拷贝文件/目录
+
+#### i.`ADD` 拷贝文件或目录到容器中，如果是URL或压缩包便会自动下载或自动解压
+
+ADD 指令和 COPY 的使用格类似（同样需求下，官方推荐使用 COPY）。功能也类似，但是在 `COPY` 基础上增加了一些功能：
+
+1. 比如 `<源路径>` 可以是一个 `URL`，这种情况下，Docker 引擎会试图去下载这个链接的文件放到 `<目标路径>` 去。下载后的文件权限自动设置为 `600`，如果这并不是想要的权限，那么还需要增加额外的一层 `RUN` 进行权限调整
+2. 如果下载的是个压缩包，需要解压缩，也一样还需要额外的一层 `RUN` 指令进行解压缩。所以不如直接使用 `RUN` 指令，然后使用 `wget` 或者 `curl` 工具下载，处理权限、解压缩、然后清理无用文件更合理。因此，这个功能其实并不实用，而且不推荐使用。
+   如果 `<源路径>` 为一个 `tar` 压缩文件的话，压缩格式为 `gzip`, `bzip2` 以及 `xz` 的情况下，`ADD` 指令将会自动解压缩这个压缩文件到 `<目标路径>` 去。
+
+📢 需要注意的是，`ADD` 指令会令镜像构建缓存失效，从而可能会令镜像构建变得比较缓慢。
 
 在使用该指令的时候还可以加上 `--chown=<user>:<group>` 选项来改变文件的所属用户及所属组。
 
@@ -170,17 +145,89 @@ ADD --chown=1 files* /mydir/
 ADD --chown=10:11 files* /mydir/
 ```
 
-### `CMD` 容器启动命令
+#### ii. `COPY` 拷贝文件或目录到容器中，跟ADD类似，但不具备自动下载或解压的功能
 
-> Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。`CMD` 指令就是用于指定默认的容器主进程的启动命令的
->
-> `CMD` 指令的格式和 `RUN` 相似，也是两种格式：
->
-> - `shell` 格式：`CMD <命令>`
-> - `exec` 格式：`CMD ["可执行文件", "参数1", "参数2"...]`
-> - 参数列表格式：`CMD ["参数1", "参数2"...]`。在指定了 `ENTRYPOINT` 指令后，用 `CMD` 指定具体的参数。
+格式：
 
-在运行时可以指定新的命令来替代镜像设置中的这个默认命令，比如，`ubuntu` 镜像默认的 `CMD` 是 `/bin/bash`，如果我们直接 `docker run -it ubuntu` 的话，会直接进入 `bash`。我们也可以在运行时指定运行别的命令，如 `docker run -it ubuntu cat /etc/os-release`。这就是用 `cat /etc/os-release` 命令替换了默认的 `/bin/bash` 命令了，输出了系统版本信息。
+```dockerfile
+COPY [--chown=<user>:<group>] <源路径1>...  <目标路径>
+COPY [--chown=<user>:<group>] ["<源路径1>",...  "<目标路径>"]
+# 比如
+COPY --chown=55:mygroup files* /mydir/
+COPY --chown=bin files* /mydir/
+COPY --chown=1 files* /mydir/
+COPY --chown=10:11 files* /mydir/
+```
+
+* **[--chown=<user>:<group>]**：可选参数，用户改变复制到容器内文件的拥有者和属组。
+
+* **<源路径>**：源文件或者源目录，这里可以是通配符表达式，其通配符规则要满足 Go 的 filepath.Match 规则。例如：
+
+  ```dockerfile
+  COPY hom* /mydir/
+  COPY hom?.txt /mydir/
+  ```
+
+* **<目标路径>**：容器内的指定路径，该路径不用事先建好，路径不存在的话，会自动创建。
+
+📢需要注意两点：
+
+1. 使用 `COPY` 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。
+2. 如果源路径为文件夹，复制的时候不是直接复制该文件夹，而是将文件夹中的内容复制到目标路径。
+
+### 7. `RUN` 构建镜像时(`docker build`)运行的指令
+
+- shell 格式：
+
+  ```dockerfile
+  # <命令行命令> 等同于，在终端操作的 shell 命令。
+  RUN <命令行命令>
+  ```
+
+- exec 格式：
+
+  ```dockerfile
+  FROM debian:stretch
+  
+  # 这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 `apt` 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉。
+  RUN set -x; buildDeps='gcc libc6-dev make wget' \
+      && apt-get update \
+      && apt-get install -y $buildDeps \
+      && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+      && mkdir -p /usr/src/redis \
+      && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+      && make -C /usr/src/redis \
+      && make -C /usr/src/redis install \
+      && rm -rf /var/lib/apt/lists/* \
+      && rm redis.tar.gz \
+      && rm -r /usr/src/redis \
+      && apt-get purge -y --auto-remove $buildDeps
+  ```
+
+### 8. `CMD` 运行容器时执行shell命令（可以被覆盖）
+
+> Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。`CMD` 指令就是用于指定容器主进程的启动命令的
+
+类似于 `RUN` 指令，用于运行程序，但二者运行的时机不同:
+
+* `RUN` 是在 `docker build` 时运行。
+* `CMD` 在 `docker run` 时运行。
+
+**作用**：为启动的容器指定默认要运行的程序，程序运行结束，容器也就结束。CMD 指令指定的程序可被 docker run 命令行参数中指定要运行的程序所覆盖。
+
+**注意**：如果 Dockerfile 中如果存在多个 CMD 指令，仅最后一个生效。
+
+格式：
+
+```dockerfile
+CMD <shell 命令> 
+CMD ["<可执行文件或命令>","<param1>","<param2>",...] 
+CMD ["<param1>","<param2>",...]  # 该写法是为 ENTRYPOINT 指令指定的程序提供默认参数
+```
+
+推荐使用第二种格式，执行过程比较明确。第一种格式实际上在运行的过程中也会自动转换成第二种格式运行，并且默认可执行文件是 sh。
+
+另外，在运行时可以指定新的命令来替代镜像设置中的这个默认命令，比如，`ubuntu` 镜像默认的 `CMD` 是 `/bin/bash`，如果我们直接 `docker run -it ubuntu` 的话，会直接进入 `bash`。我们也可以在运行时指定运行别的命令，如 `docker run -it ubuntu cat /etc/os-release`。这就是用 `cat /etc/os-release` 命令替换了默认的 `/bin/bash` 命令了，输出了系统版本信息。
 
 在指令格式上，一般推荐使用 `exec` 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 `"`，而不要使用单引号`'`。
 
@@ -218,19 +265,56 @@ CMD service nginx start
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-### `ENTRYPOINT` 入口点
+### 9. `ENTRYPOINT` 运行容器时执行shell命令（不可被覆盖）
 
-`ENTRYPOINT` 的格式和 `RUN` 指令格式一样，分为 `exec` 格式和 `shell` 格式。
+类似于 `CMD` 指令，但其不会被 `docker run` 的命令行参数指定的指令所覆盖，而是把这些命令行参数传给 `ENTRYPOINT` 指令指定的程序。但是, 如果运行 `docker run` 时使用了 `--entrypoint` 选项，将覆盖 `ENTRYPOINT` 指令指定的程序。
 
-`ENTRYPOINT` 的目的和 `CMD` 一样，都是在指定容器启动程序及参数。`ENTRYPOINT` 在运行时也可以替代，不过比 `CMD` 要略显繁琐，需要通过 `docker run` 的参数 `--entrypoint` 来指定。
+**优点**：在执行 `docker run` 的时候可以指定 `ENTRYPOINT` 运行所需的参数。
 
-当指定了 `ENTRYPOINT` 后，`CMD` 的含义就发生了改变，不再是直接的运行其命令，而是将 `CMD` 的内容作为参数传给 `ENTRYPOINT` 指令，换句话说实际执行时，将变为：
+**注意**：如果 `Dockerfile` 中如果存在多个 `ENTRYPOINT` 指令，仅最后一个生效。
 
-```bash
-<ENTRYPOINT> "<CMD>"
+格式：
+
+```dockerfile
+ENTRYPOINT ["<executeable>","<param1>","<param2>",...]
 ```
 
-那么有了 `CMD` 后，为什么还要有 `ENTRYPOINT` 呢？这种 `<ENTRYPOINT> "<CMD>"` 有什么好处么？让我们来看几个场景。
+可以搭配 CMD 命令使用：一般是变参才会使用 CMD ，这里的 CMD 等于是在给 ENTRYPOINT 传参，以下示例会提到。
+
+示例：
+
+假设已通过 Dockerfile 构建了 nginx:test 镜像：
+
+```dockerfile
+FROM nginx
+
+ENTRYPOINT ["nginx", "-c"] # 定参
+CMD ["/etc/nginx/nginx.conf"] # 变参。一定要在ENTRYPOINT命令之后，才能传给它
+```
+
+1、不传参运行
+
+```sh
+$ docker run  nginx:test
+```
+
+容器内会默认运行以下命令，启动主进程。
+
+```sh
+nginx -c /etc/nginx/nginx.conf
+```
+
+2、传参运行
+
+```sh
+$ docker run  nginx:test -c /etc/nginx/new.conf
+```
+
+容器内会默认运行以下命令，启动主进程(`/etc/nginx/new.conf`:假设容器内已有此文件)
+
+```sh
+nginx -c /etc/nginx/new.conf
+```
 
 #### 场景一：让镜像变成像命令一样使用
 
@@ -342,47 +426,37 @@ $ docker run -it redis id
 uid=0(root) gid=0(root) groups=0(root)
 ```
 
-### `ENV` 设置环境变量
+### 10. `ENV` 设置容器环境变量
 
-> 格式有两种：
->
-> - `ENV <key> <value>`
-> - `ENV <key1>=<value1> <key2>=<value2>...`
+设置环境变量，定义了环境变量，那么在后续的指令中，就可以使用这个环境变量。
 
-这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 `RUN`，还是运行时的应用，都可以直接使用这里定义的环境变量。
+格式：
 
 ```dockerfile
-ENV VERSION=1.0 DEBUG=on \
-    NAME="Happy Feet"
+ENV <key> <value>
+ENV <key1>=<value1> <key2>=<value2>...
 ```
 
-比如在官方 `node` 镜像 `Dockerfile` 中，就有类似这样的代码：
+以下示例设置 `NODE_VERSION = 7.2.0` ， 在后续的指令中可以通过 `$NODE_VERSION` 引用：
 
 ```dockerfile
 ENV NODE_VERSION 7.2.0
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
-  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
-  && grep " node-v$NODE_VERSION-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
-  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 \
-  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
-  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
+  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc"
 ```
 
-在这里先定义了环境变量 `NODE_VERSION`，其后的 `RUN` 这层里，多次使用 `$NODE_VERSION` 来进行操作定制。可以看到，将来升级镜像构建版本的时候，只需要更新 `7.2.0` 即可，`Dockerfile` 构建维护变得更轻松了。
+### 11. `ARG` 构建时指定的一些参数
 
-下列指令可以支持环境变量展开： `ADD`、`COPY`、`ENV`、`EXPOSE`、`FROM`、`LABEL`、`USER`、`WORKDIR`、`VOLUME`、`STOPSIGNAL`、`ONBUILD`、`RUN`。
+构建参数，与 ENV 作用一致。不过作用域不一样。`ARG` 设置的环境变量仅对 Dockerfile 内有效，也就是说只有 `docker build` 的过程中有效，构建好的镜像内不存在此环境变量，在将来容器运行时也不会存在这些环境变量的。但是不要因此就使用 `ARG` 保存密码之类的信息，因为 `docker history` 还是可以看到所有值的。
 
-### `ARG` 构建参数
+构建命令 `docker build` 中可以用 `--build-arg <参数名>=<值>` 来覆盖。
 
-> 格式：`ARG <参数名>[=<默认值>]`
->
-> `ARG`构建参数和 `ENV` 的效果一样，都是设置环境变量。所不同的是，`ARG` 所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。但是不要因此就使用 `ARG` 保存密码之类的信息，因为 `docker history` 还是可以看到所有值的。
+格式：
 
-`Dockerfile` 中的 `ARG` 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 `docker build` 中用 `--build-arg <参数名>=<值>` 来覆盖。
-
-灵活的使用 `ARG` 指令，能够在不修改 Dockerfile 的情况下，构建出不同的镜像
+```dockerfile
+ARG <参数名>[=<默认值>]
+```
 
 ARG 指令有生效范围，如果在 `FROM` 指令之前指定，那么只能用于 `FROM` 指令中.
 
@@ -443,20 +517,40 @@ ARG DOCKER_USERNAME=library
 RUN set -x ; echo ${DOCKER_USERNAME}
 ```
 
-### `VOLUME` 定义匿名卷
+### 12.`EXPOSE` 暴露端口
 
-> 格式为：
->
-> - `VOLUME ["<路径1>", "<路径2>"...]`
-> - `VOLUME <路径>`
+`EXPOSE` 指令是声明容器运行时提供服务的端口，这仅仅只是一个声明，在容器运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 `docker run -p` 时，会自动随机映射 `EXPOSE` 的端口。
 
-容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 `Dockerfile` 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。
+作用：
 
-```dockerfile
-VOLUME /data
+- 帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射。
+- 在运行时使用随机端口映射时，也就是 `docker run -P` 时，会自动随机映射 `EXPOSE` 的端口。
+
+格式：
+
+```d
+EXPOSE <端口1> [<端口2>...]
 ```
 
-这里的 `/data` 目录就会在容器运行时自动挂载为匿名卷，任何向 `/data` 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行容器时可以覆盖这个挂载设置。比如：
+要将 `EXPOSE` 和在运行时使用 `-p <宿主端口>:<容器端口>` 区分开来。`-p`，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 `EXPOSE` 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。
+
+### 13. `VOLUME` 指定容器挂载点到宿主机自动生成的目录或其他容器
+
+定义匿名数据卷，指定某些目录挂载为匿名卷，这样用户在启动容器时忘记挂载数据卷，会自动挂载到匿名卷。
+
+作用：
+
+- 避免重要的数据，因容器重启而丢失，这是非常致命的。
+- 避免容器不断变大。
+
+格式：
+
+```dockerfile
+VOLUME ["<路径1>", "<路径2>"...]
+VOLUME <路径>
+```
+
+在启动容器 `docker run` 的时候，我们可以通过 `-v` 参数修改挂载点，比如：
 
 ```bash
 $ docker run -d -v mydata:/data xxxx
@@ -464,86 +558,18 @@ $ docker run -d -v mydata:/data xxxx
 
 在这行命令中，就使用了 `mydata` 这个命名卷挂载到了 `/data` 这个位置，替代了 `Dockerfile` 中定义的匿名卷的挂载配置。
 
-### `EXPOSE` 暴露端口
+### 14. `HEALTHCHECH` 健康检查
 
-> 格式为 `EXPOSE <端口1> [<端口2>...]`
+> 用于指定某个程序或者指令来监控 docker 容器服务的运行状态。`HEALTHCHECK` 指令是告诉 Docker 应该如何进行判断容器的状态是否正常，这是 Docker 1.12 引入的新指令。
 
-`EXPOSE` 指令是声明容器运行时提供服务的端口，这只是一个声明，在容器运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 `docker run -p` 时，会自动随机映射 `EXPOSE` 的端口。
-
-要将 `EXPOSE` 和在运行时使用 `-p <宿主端口>:<容器端口>` 区分开来。`-p`，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 `EXPOSE` 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。
-
-### `WORKDIR` 指定工作目录
-
-> 格式： `WORKDIR <工作目录路径>`。
->
-> 使用 `WORKDIR` 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，`WORKDIR` 会帮你建立目录。
-
-之前提到一些初学者常犯的错误是把 `Dockerfile` 等同于 Shell 脚本来书写，这种错误的理解还可能会导致出现下面这样的错误：
+格式：
 
 ```dockerfile
-RUN cd /app
-RUN echo "hello" > world.txt
+HEALTHCHECK [选项] CMD <命令>：设置检查容器健康状况的命令
+HEALTHCHECK NONE：如果基础镜像有健康检查指令，使用这行可以屏蔽掉其健康检查指令
+
+HEALTHCHECK [选项] CMD <命令> : 这边 CMD 后面跟随的命令使用，可以参考 CMD 的用法。
 ```
-
-如果将这个 `Dockerfile` 进行构建镜像运行后，会发现找不到 `/app/world.txt` 文件，或者其内容不是 `hello`。原因其实很简单，在 Shell 中，连续两行是同一个进程执行环境，因此前一个命令修改的内存状态，会直接影响后一个命令；而在 `Dockerfile` 中，<u>这两行 `RUN` 命令的执行环境根本不同，是两个完全不同的容器</u>。这就是对 `Dockerfile` 构建分层存储的概念不了解所导致的错误。
-
-每一个 `RUN` 都是启动一个容器、执行命令、然后提交存储层文件变更。第一层 `RUN cd /app` 的执行仅仅是当前进程的工作目录变更，一个内存上的变化而已，其结果不会造成任何文件变更。而到第二层的时候，启动的是一个全新的容器，跟第一层的容器更完全没关系，自然不可能继承前一层构建过程中的内存变化。
-
-因此如果需要改变以后各层的工作目录的位置，那么应该使用 `WORKDIR` 指令。
-
-```dockerfile
-WORKDIR /app
-
-RUN echo "hello" > world.txt
-```
-
-如果你的 `WORKDIR` 指令使用的相对路径，那么所切换的路径与之前的 `WORKDIR` 有关：
-
-```dockerfile
-WORKDIR /a
-WORKDIR b
-WORKDIR c
-
-RUN pwd
-```
-
-`RUN pwd` 的工作目录为 `/a/b/c`。
-
-### `USER` 指定当前用户
-
-> 格式：`USER <用户名>[:<用户组>]`
->
-> `USER` 指令和 `WORKDIR` 相似，都是改变环境状态并影响以后的层。`WORKDIR` 是改变工作目录，`USER` 则是改变之后层的执行 `RUN`, `CMD` 以及 `ENTRYPOINT` 这类命令的身份。
-
-注意📢，`USER` 只是帮助你切换到指定用户而已，这个用户必须是事先建立好的，否则无法切换。
-
-```dockerfile
-RUN groupadd -r redis && useradd -r -g redis redis
-USER redis
-RUN [ "redis-server" ]
-```
-
-如果以 `root` 执行的脚本，在执行期间希望改变身份，比如希望以某个已经建立好的用户来运行某个服务进程，不要使用 `su` 或者 `sudo`，这些都需要比较麻烦的配置，而且在 TTY 缺失的环境下经常出错。建议使用 [`gosu`](https://github.com/tianon/gosu)。
-
-```dockerfile
-# 建立 redis 用户，并使用 gosu 换另一个用户执行命令
-RUN groupadd -r redis && useradd -r -g redis redis
-# 下载 gosu
-RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.12/gosu-amd64" \
-    && chmod +x /usr/local/bin/gosu \
-    && gosu nobody true
-# 设置 CMD，并以另外的用户执行
-CMD [ "exec", "gosu", "redis", "redis-server" ]
-```
-
-### `HEALTHCHECK` 健康检查
-
-> 格式：
->
-> - `HEALTHCHECK [选项] CMD <命令>`：设置检查容器健康状况的命令
-> - `HEALTHCHECK NONE`：如果基础镜像有健康检查指令，使用这行可以屏蔽掉其健康检查指令
->
-> `HEALTHCHECK` 指令是告诉 Docker 应该如何进行判断容器的状态是否正常，这是 Docker 1.12 引入的新指令。
 
 在没有 `HEALTHCHECK` 指令前，Docker 引擎只可以通过容器内主进程是否退出来判断容器是否状态异常。很多情况下这没问题，但是如果程序进入死锁状态，或者死循环状态，应用进程并不退出，但是该容器已经无法提供服务了。在 1.12 以前，Docker 不会检测到容器的这种状态，从而不会重新调度，导致可能会有部分容器已经无法提供服务了却还在接受用户请求。
 
@@ -620,9 +646,15 @@ $ docker inspect --format '{{json .State.Health}}' web | python -m json.tool
 }
 ```
 
-### `ONBUILD`
+### 15. `ONBUILD` 当该镜像被用作另一个构建过程的基础时，添加触发器
 
-格式：`ONBUILD <其它指令>`。
+用于延迟构建命令的执行。简单的说，就是 Dockerfile 里用 ONBUILD 指定的命令，在本次构建镜像的过程中不会执行（假设镜像为 test-build）。当有新的 Dockerfile 使用了之前构建的镜像 FROM test-build ，这时执行新镜像的 Dockerfile 构建时候，会执行 test-build 的 Dockerfile 里的 ONBUILD 指定的命令。
+
+格式：
+
+```dockerfile
+ONBUILD <其它指令>
+```
 
 `ONBUILD` 是一个特殊的指令，它后面跟的是其它指令，比如 `RUN`, `COPY` 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。
 
@@ -632,7 +664,7 @@ $ docker inspect --format '{{json .State.Health}}' web | python -m json.tool
 
 ```dockerfile
 FROM node:slim
-RUN mkdir /app
+
 WORKDIR /app
 COPY ./package.json /app
 RUN [ "npm", "install" ]
@@ -648,7 +680,7 @@ CMD [ "npm", "start" ]
 
 ```dockerfile
 FROM node:slim
-RUN mkdir /app
+
 WORKDIR /app
 CMD [ "npm", "start" ]
 ```
@@ -670,7 +702,7 @@ COPY . /app/
 
 ```dockerfile
 FROM node:slim
-RUN mkdir /app
+
 WORKDIR /app
 ONBUILD COPY ./package.json /app
 ONBUILD RUN [ "npm", "install" ]
@@ -686,29 +718,13 @@ FROM my-node
 
 是的，只有这么一行。当在各个项目目录中，用这个只有一行的 `Dockerfile` 构建镜像时，之前基础镜像的那三行 `ONBUILD` 就会开始执行，成功的将当前项目的代码复制进镜像、并且针对本项目执行 `npm install`，生成应用镜像。
 
-### `LABEL` 为镜像添加元数据
+### 16. `STOPSIGNAL` 设置发送给容器以退出的系统调用信号。
 
-`LABEL` 指令用来给镜像以键值对的形式添加一些元数据（metadata）。
-
-```dockerfile
-LABEL <key>=<value> <key>=<value> <key>=<value> ...
-```
-
-我们还可以用一些标签来申明镜像的作者、文档地址等：
-
-```dockerfile
-LABEL org.opencontainers.image.authors="yeasy"
-
-LABEL org.opencontainers.image.documentation="https://yeasy.gitbooks.io"
-```
-
-具体可以参考 https://github.com/opencontainers/image-spec/blob/master/annotations.md
-
-### `SHELL` 指令
+### 17. `SHELL` 覆盖Docker中默认的shell，用于RUN、CMD和ENTRYPOINT指令。
 
 > 格式：`SHELL ["executable", "parameters"]`
 
-SHELL` 指令可以指定 `RUN` `ENTRYPOINT` `CMD` 指令的 shell，Linux 中默认为 `["/bin/sh", "-c"]
+`SHELL` 指令可以指定 `RUN`、 `ENTRYPOINT`、 `CMD` 指令的 shell，Linux 中默认为 `["/bin/sh", "-c"]`
 
 ```dockerfile
 SHELL ["/bin/sh", "-c"]
@@ -722,7 +738,7 @@ RUN lll ; ls
 
 两个 `RUN` 运行同一命令，第二个 `RUN` 运行的命令会打印出每条命令并当遇到错误时退出。
 
-当 `ENTRYPOINT` `CMD` 以 shell 格式指定时，`SHELL` 指令所指定的 shell 也会成为这两个指令的 shell
+当 `ENTRYPOINT`、 `CMD` 以 shell 格式指定时，`SHELL` 指令所指定的 shell 也会成为这两个指令的 shell
 
 ```dockerfile
 SHELL ["/bin/sh", "-cex"]
@@ -737,6 +753,160 @@ SHELL ["/bin/sh", "-cex"]
 # /bin/sh -cex "nginx"
 CMD nginx
 ```
+
+## 二、`docker build` 的用法
+
+> `docker build` 命令用于从 Dockerfile 构建 Docker 镜像。
+>
+> `docker build` 命令通过读取 Dockerfile 中定义的指令，逐步构建镜像，并将最终结果保存到本地镜像库中。
+
+格式：
+
+```shell
+$ docker build [OPTIONS] PATH | URL | -
+```
+
+- **`PATH`**: 包含 Dockerfile 的目录路径或 `.`（当前目录）。
+- **`URL`**: 指向包含 Dockerfile 的远程存储库地址（如 Git 仓库）。
+- **`-`**: 从标准输入读取 Dockerfile。
+
+常用选项：
+
+- **`-t, --tag`**: 为构建的镜像指定名称和标签。
+- **`-f, --file`**: 指定 Dockerfile 的路径（默认是 `PATH` 下的 `Dockerfile`）。
+- **`--build-arg`**: 设置构建参数。
+- **`--no-cache`**: 不使用缓存层构建镜像。
+- **`--rm`**: 构建成功后删除中间容器（默认开启）。
+- **`--force-rm`**: 无论构建成功与否，一律删除中间容器。
+- **`--pull`**: 始终尝试从注册表拉取最新的基础镜像。
+
+更多选项说明：
+
+- **`--build-arg=[]`**: 设置构建镜像时的变量。
+- **`--cpu-shares`**: 设置 CPU 使用权重。
+- **`--cpu-period`**: 限制 CPU CFS 周期。
+- **`--cpu-quota`**: 限制 CPU CFS 配额。
+- **`--cpuset-cpus`**: 指定可使用的 CPU ID。
+- **`--cpuset-mems`**: 指定可使用的内存节点 ID。
+- **`--disable-content-trust`**: 忽略内容信任验证（默认启用）。
+- **`-f`**: 指定 Dockerfile 的路径。
+- **`--force-rm`**: 强制在构建过程中删除中间容器。
+- **`--isolation`**: 使用指定的容器隔离技术。
+- **`--label=[]`**: 设置镜像的元数据。
+- **`-m`**: 设置内存的最大值。
+- **`--memory-swap`**: 设置交换空间的最大值（内存 + 交换空间），`-1` 表示不限制交换空间。
+- **`--no-cache`**: 构建镜像时不使用缓存。
+- **`--pull`**: 尝试拉取基础镜像的最新版本。
+- **`--quiet, -q`**: 安静模式，构建成功后只输出镜像 ID。
+- **`--rm`**: 构建成功后删除中间容器（默认启用）。
+- **`--shm-size`**: 设置 `/dev/shm` 的大小，默认值为 64M。
+- **`--ulimit`**: 设置 Ulimit 配置。
+- **`--squash`**: 将 Dockerfile 中所有步骤压缩为一层。
+- **`--tag, -t`**: 为镜像指定名称和标签，格式为 `name:tag` 或 `name`；可以在一次构建中为一个镜像设置多个标签。
+- **`--network`**: 在构建期间设置 `RUN` 指令的网络模式，默认值为 `default`。
+
+```dockerfile
+# 1. 从当前目录读取 Dockerfile 并构建一个名为 myimage:latest 的镜像。
+docker build -t myimage:latest .
+
+# 2. 指定 Dockerfile 路径
+docker build -f /path/to/Dockerfile -t myimage:latest .
+
+# 3. 设置构建参数。这会在构建过程中使用 HTTP_PROXY 环境变量
+docker build --build-arg HTTP_PROXY=http://proxy.example.com -t myimage:latest .
+
+# 4. 不使用缓存层构建镜像。这会在构建镜像时忽略所有缓存层，确保每一步都重新执行。
+docker build --no-cache -t myimage:latest .
+```
+
+### 1. 使用 Dockerfile 构建镜像
+
+1、创建 Dockerfile，内容如下：
+
+```
+# Dockerfile 示例
+FROM ubuntu:20.04
+LABEL maintainer="yourname@example.com"
+RUN apt-get update && apt-get install -y nginx
+COPY index.html /var/www/html/index.html
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+2、构建镜像
+
+```
+docker build -t mynginx:latest .
+```
+
+输出示例：
+
+```bash
+Sending build context to Docker daemon  3.072kB
+Step 1/5 : FROM ubuntu:20.04
+20.04: Pulling from library/ubuntu
+...
+Step 2/5 : LABEL maintainer="yourname@example.com"
+...
+Step 3/5 : RUN apt-get update && apt-get install -y nginx
+...
+Step 4/5 : COPY index.html /var/www/html/index.html
+...
+Step 5/5 : CMD ["nginx", "-g", "daemon off;"]
+...
+Successfully built 123456789abc
+Successfully tagged mynginx:latest
+```
+
+3、验证镜像
+
+```shell
+$ docker images
+```
+
+输出示例：
+
+```
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+mynginx      latest    123456789abc   10 minutes ago   200MB
+```
+
+- 确保 Dockerfile 语法正确，并按照顺序执行每一步。
+- 使用 `.dockerignore` 文件排除不需要的文件和目录，以减少构建上下文的大小。
+- 在生产环境中，尽量使用精简的基础镜像以减小镜像体积和提高安全性。
+- 避免在 Dockerfile 中暴露敏感信息（如密码、密钥）。
+
+`docker build` 命令是构建 Docker 镜像的核心工具，通过定义清晰的 Dockerfile，可以自动化地构建应用程序的运行环境和依赖。在使用时，确保合理设置选项和优化 Dockerfile，以提高构建效率和镜像质量。
+
+### 2.  直接用 Git repo 进行构建
+
+```bash
+# $env:DOCKER_BUILDKIT=0
+# export DOCKER_BUILDKIT=0
+
+$ docker build -t hello-world https://github.com/docker-library/hello-world.git#master:amd64/hello-world
+
+Step 1/3 : FROM scratch
+ --->
+Step 2/3 : COPY hello /
+ ---> ac779757d46e
+Step 3/3 : CMD ["/hello"]
+ ---> Running in d2a513a760ed
+Removing intermediate container d2a513a760ed
+ ---> 038ad4142d2b
+Successfully built 038ad4142d2b
+```
+
+这行命令指定了构建所需的 Git repo，并且指定分支为 `master`，构建目录为 `/amd64/hello-world/`，然后 Docker 就会自己去 `git clone` 这个项目、切换到指定分支、并进入到指定目录后开始构建。
+
+### 3. 用给定的 tar 压缩包构建
+
+```bash
+$ docker build http://server/context.tar.gz
+```
+
+如果所给出的 URL 是个 `tar` 压缩包，那么 Docker 引擎会下载这个包，并自动解压缩，以其作为上下文，开始构建。
+
+
 
 ## 参考文档
 
