@@ -225,7 +225,7 @@ command: ["bundle", "exec", "thin", "-p", "3000"]
 
 ```yaml
 healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost"] # 设置检测程序
+  test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/generatePdf', (r) => {process.exit(r.statusCode === 404 ? 0 : 1)})"] # 设置检测程序
   interval: 1m30s # 设置检测间隔
   timeout: 10s # 设置检测超时时间
   retries: 3 # 设置重试次数
