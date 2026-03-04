@@ -1,5 +1,3 @@
-# docker详解
-
 ![image-20230924204129248](../assets/Docker/image-20230924204129248-5559298.png)
 
 ##  一、docker工作原理
@@ -149,7 +147,7 @@ Dockerfile
 
 
 
-## 多容器间共享数据卷`volume`
+## 多容器间共享数据卷volume
 
 > 即多个容器共享的”文件夹“
 
@@ -159,3 +157,7 @@ Dockerfile
 docker volume create <数据卷名称>
 ```
 
+## 参考资料
+
+1. [Docker 从入门到实践](https://yeasy.gitbook.io/docker_practice)
+2. [Docker 教程](https://www.runoob.com/docker/docker-tutorial.html)
