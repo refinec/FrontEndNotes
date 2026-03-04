@@ -310,7 +310,7 @@ services:
         window: 120s
 ```
 
-**可选参数**：
+#### **可选参数**
 
 * **`endpoint_mode`**：访问集群服务的方式
 
@@ -365,6 +365,26 @@ services:
   * `monitor`：每个容器更新后，持续观察是否失败了的时间 (ns|us|ms|s|m|h)（默认为0s）。
   * `max_failure_ratio`：在回滚期间可以容忍的故障率（默认为0）。
   * `order`：回滚期间的操作顺序。值包括：`stop-first`（串行回滚）、 `start-first`（并行回滚）（默认 `stop-first` ）。
+
+#### 单机时资源限制
+
+  如果需要在单机部署时限制资源，建议使用 Docker 原生参数：
+
+```yaml
+services:
+    kary-bff-server:
+      # 替代方案：使用 mem_limit 和 cpus（已废弃但单机仍可用）
+      mem_limit: 1g
+      memswap_limit: 1g
+      cpu_count: 1
+
+      # 或者使用 cgroup 版本兼容的写法
+      deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 1G
+```
 
 ### 18. `devices` 指定设备映射列表
 
