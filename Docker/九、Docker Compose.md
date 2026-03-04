@@ -366,7 +366,7 @@ services:
   * `max_failure_ratio`：在回滚期间可以容忍的故障率（默认为0）。
   * `order`：回滚期间的操作顺序。值包括：`stop-first`（串行回滚）、 `start-first`（并行回滚）（默认 `stop-first` ）。
 
-#### 单机时资源限制
+#### 如何在单机时加入资源限制？
 
   如果需要在单机部署时限制资源，建议使用 Docker 原生参数：
 
@@ -375,8 +375,8 @@ services:
     kary-bff-server:
       # 替代方案：使用 mem_limit 和 cpus（已废弃但单机仍可用）
       mem_limit: 1g
-      memswap_limit: 1g
-      cpu_count: 1
+      mem_reservation: 1g
+      cpus: 1
 
       # 或者使用 cgroup 版本兼容的写法
       deploy:
