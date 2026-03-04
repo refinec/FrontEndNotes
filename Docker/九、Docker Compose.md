@@ -598,3 +598,18 @@ ulimits:
    ```
 
    此时访问本地 `5000` 端口，每次刷新页面，计数就会加 1。
+
+## 三、常用命令
+
+| 命令      | 作用                                         | 常用示例                                                     |
+| :-------- | :------------------------------------------- | :----------------------------------------------------------- |
+| `up`      | **创建并启动**所有服务容器。                 | `docker compose up -d` （`-d` 表示后台运行）                 |
+| `down`    | **停止并删除**所有服务容器、网络等资源。     | `docker compose down`                                        |
+| `ps`      | **列出**当前项目正在运行的所有容器。         | `docker compose ps`                                          |
+| `logs`    | **查看**服务的日志输出。                     | `docker compose logs -f web` （`-f` 实时追踪，`web` 是服务名） |
+| `exec`    | **进入**一个正在运行的服务容器内部执行命令。 | `docker compose exec web bash`                               |
+| `stop`    | **停止**运行中的服务，但不会删除容器。       | `docker compose stop web`                                    |
+| `start`   | **启动**之前创建并停止的服务。               | `docker compose start web`                                   |
+| `restart` | **重启**服务。                               | `docker compose restart web`                                 |
+| `build`   | **构建**或重新构建服务的镜像。               | `docker compose build web`                                   |
+| `pull`    | **拉取**服务所需的镜像。                     | `docker compose pull`                                        |
