@@ -42,7 +42,7 @@
   "model": "haiku",
   "thinkingBudget": "off",
   "enableAutoTitleGeneration": true,
-  "titleGenerationModel": "",
+  "titleGenerationModel": "haiku",
   "show1MModel": false,
   "enableChrome": true,
   "enableBangBash": false,

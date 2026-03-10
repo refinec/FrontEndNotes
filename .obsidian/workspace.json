@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "7fe9917220752b50",
+        "id": "a06b5f3129cdbe43",
         "type": "tabs",
         "children": [
           {
-            "id": "0b9cace073b0c106",
+            "id": "a7f6089cc0553a2d",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Docker/四、使用 Dockerfile 定制镜像.md",
-                "mode": "source",
+                "file": "软件设计师证/第1章 计算机系统知识.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "四、使用 Dockerfile 定制镜像"
+              "title": "第1章 计算机系统知识"
             }
           }
         ]
@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "3668365e97922fff",
@@ -199,7 +198,7 @@
             }
           }
         ],
-        "currentTab": 7
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
@@ -220,14 +219,14 @@
       "obsidian-kanban:创建新看板": false
     }
   },
-  "active": "1677608d15131e5e",
+  "active": "475ffcdac54ad5d3",
   "lastOpenFiles": [
+    "Docker/四、使用 Dockerfile 定制镜像.md",
     "Docker/七、使用网络.md",
     "Docker/三、Docker Container 操作容器.md",
     "Docker/九、Docker Compose.md",
     "Docker/六、Docker Volumes 数据管理.md",
     "未命名.canvas",
-    "Docker/四、使用 Dockerfile 定制镜像.md",
     "Docker/一、Docker详解.md",
     "未命名看板.md",
     "Excalidraw/Drawing 2026-02-26 18.42.53.excalidraw.md",
